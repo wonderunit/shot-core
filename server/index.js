@@ -41,6 +41,9 @@ app.get('/slater.png', async (req, res) => {
   slaterCanvas.draw().createPNGStream().pipe(res)
 })
 
+app.get('/monitor', async (req, res) => {
+  res.render('monitor')
+})
 
 const port = 3000
 app.listen(port, () => {
