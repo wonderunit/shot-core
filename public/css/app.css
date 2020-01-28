@@ -1,0 +1,17 @@
+html, body {
+  margin: 0;
+  background-color: #eee;
+}
+
+a {
+  color: mediumblue;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+tr {
+  vertical-align: top;
+}

@@ -1,0 +1,18 @@
+{
+  "name": "shotlists",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "browser-refresh ./server/index.js"
+  },
+  "dependencies": {
+    "browser-refresh": "1.7.3",
+    "ejs": "3.0.1",
+    "express": "4.17.1",
+    "knex": "0.20.8",
+    "sqlite3": "4.1.1"
+  },
+  "devDependencies": {
+    "browser-refresh": "1.7.3"
+  }
+}
