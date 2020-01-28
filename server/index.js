@@ -1,6 +1,8 @@
 const express = require('express')
 const path = require('path')
 
+const slaterCanvas = require('./slater-canvas')
+
 const app = express()
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
@@ -28,6 +30,15 @@ app.get('/projects/:projectId/schedules/:startDate', async (req, res) => {
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId', async (req, res) => {
   res.render('take')
+})
+
+app.get('/slater', async (req, res) => {
+  res.render('slater')
+})
+
+app.get('/slater.png', async (req, res) => {
+  res.setHeader('Content-Type', 'image/png');
+  slaterCanvas.draw().createPNGStream().pipe(res)
 })
 
 
