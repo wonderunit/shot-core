@@ -5,23 +5,18 @@
       <a href="/">Home</a> /
       Example Multi-Scene Project
     </h1>
+
     <h2 class="f4 mv3">Schedules</h2>
     <table>
+      <% for (day of days) { %>
       <tr>
         <td>
-          <a href="/projects/1/schedules/20200128">28 Jan, Tue</a>
+          <a href="/projects/1/schedules/<%= format(day.date, 'yyyy-MM-dd') %>">
+            <%= format(day.date, 'd MMM, E') %>
+          </a>
         </td>
       </tr>
-      <tr>
-        <td>
-          <a href="/projects/1/schedules/20200129">29 Jan, Wed</a>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <a href="/projects/1/schedules/20200130">30 Jan, Thu</a>
-        </td>
-      </li>
+      <% } %>
     </table>
   </div>
 </div>

@@ -5,7 +5,7 @@
       <a href="/">Home</a> /
       <a href="/projects/1">Example Multi-Scene Project</a> /
       <br/>
-      <%= day.title %>
+      Schedule for <%= format(utcToZonedTime(startDate, 'America/New York'), 'EEEE, dd MMM yyyy') %>
     </h1>
     <h2 class="f4 mv3">Schedule</h2>
     <table>
