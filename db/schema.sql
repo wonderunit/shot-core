@@ -1,8 +1,8 @@
 CREATE TABLE projects (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  title TEXT
+  name TEXT
 );
-INSERT INTO projects (title) VALUES(
+INSERT INTO projects (name) VALUES(
   'Example Multi-Scene Project'
 );
 
