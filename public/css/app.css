@@ -12,6 +12,7 @@ table {
   border-spacing: 0;
 }
 
-tr {
+th, tr {
   vertical-align: top;
+  text-align: left;
 }

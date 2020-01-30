@@ -1,0 +1,43 @@
+<%- include('header') %>
+<div class="helvetica">
+  <div class="pa4 lh-copy">
+    <h1 class="f3 ma0 mb4">
+      <a href="/">Home</a> /
+      <a href="/projects/<%= project.id %>"><%= project.name %></a> /
+      <br />
+      Scene <%= scene.scene_number %> / Shot <%= shot.shot_number %>
+    </h1>
+
+    <h2 class="f4 mv3">Boards</h2>
+    <div style="display:grid; grid-gap: 0.5rem; grid-template-columns: 1fr 1fr;">
+      <% for (let board of shot.boards_json) { %>
+        <div class="flex">
+          <div class="nested-img w-50">
+            <img src="<%= `${imagesPath}/board-${board.number}-${board.uid}-posterframe.jpg` %>" />
+          </div>
+          <div class="w-50">
+            <div class="f7 ma3">
+              <b><%= board.shot %></b><br />
+              notes: <%= board.notes %><br />
+              dialogue: <%= board.dialogue %><br />
+              action: <%= board.action %><br />
+              SG camera settings<br />
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <h2 class="f4 mv3">Data</h2>
+    <code>
+      <pre class="f7"><%= JSON.stringify(shot, null, 2) %></pre>
+    </code>
+
+    <h2 class="f4 mv3">Takes</h2>
+    <code>
+      <pre class="f7"><%= JSON.stringify(takes, null, 2) %></pre>
+    </code>
+
+  </div>
+</div>
+<%- include('footer') -%>

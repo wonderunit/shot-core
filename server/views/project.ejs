@@ -3,16 +3,46 @@
   <div class="pa4 lh-copy">
     <h1 class="f3 ma0 mb4">
       <a href="/">Home</a> /
-      Example Multi-Scene Project
+      <%= project.name %>
     </h1>
 
-    <h2 class="f4 mv3">Schedules</h2>
+    <h2 class="f4 mv3">Shots</h2>
     <table>
-      <% for (day of days) { %>
+      <thead>
+        <th>No.</th>
+        <th>Notes</th>
+        <th>Boards</th>
+      </thead>
+      <tbody>
+        <% for (let shot of shots) { %>
+        <tr>
+          <td>
+            <a
+              href="<%= `/projects/${shot.project_id}/scenes/${shot.scene_id}/shots/${shot.id}` %>"
+            >
+              <%= shot.shot_number %>
+            </a>
+          </td>
+          <td>
+            <%= shot.boards_json[0].notes %>
+          </td>
+          <td>
+            <% for (let board of shot.boards_json) { %>
+              <%= board.shot %>
+            <% } %>
+          </td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <h2 class="f4 mv3">Scheduled Days</h2>
+    <table>
+      <% for (let event of events) { %>
       <tr>
         <td>
-          <a href="/projects/1/schedules/<%= format(day.date, 'yyyy-MM-dd') %>">
-            <%= format(day.date, 'd MMM, E') %>
+          <a href="/projects/1/schedules/<%= format(event.start_at, 'yyyy-MM-dd') %>">
+            <%= format(event.start_at, 'd MMM, E') %>
           </a>
         </td>
       </tr>

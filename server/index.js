@@ -1,16 +1,12 @@
 const express = require('express')
 const path = require('path')
 const sqlite3 = require('sqlite3').verbose()
-const SQLiteTag = require('sqlite-tag')
 
 const format = require('date-fns/format')
-const parse = require('date-fns/parse')
 const { utcToZonedTime } = require('date-fns-tz')
 
+const { promisified } = require('../lib/promisify-sqlite3')
 const slaterCanvas = require('./slater-canvas')
-
-const db = new sqlite3.Database('./dev.sqlite3')
-const { all, get, query, raw } = SQLiteTag(db)
 
 const app = express()
 app.set('view engine', 'ejs')
@@ -19,26 +15,54 @@ app.use(express.static('public'))
 
 app.locals = {
   format,
-  parse,
   utcToZonedTime
 }
 
+const db = new sqlite3.Database('./dev.sqlite3')
+const { get, all } = promisified(db)
+
 app.get('/', async (req, res) => {
-  res.render('index')
+  let projects = await all('SELECT * FROM projects')
+  res.render('index', { projects })
 })
 
 app.get('/projects/:projectId', async (req, res) => {
-  // TODO should grab only unique days
-  let events = await all`SELECT * FROM events`
-  events.forEach(event => (event.date = new Date(event.date)))
-  res.render('project', { days: events })
+  let { projectId } = req.params
+
+  let project = await get('SELECT * FROM projects WHERE id = ?', projectId)
+
+  let shots = await all('SELECT * FROM shots WHERE project_id = ?', projectId)
+  shots.forEach(shot => (shot.boards_json = JSON.parse(shot.boards_json)))
+
+  let events = (await all(`select start_at, date(start_at, 'localtime') as day from events group by day`))
+  events.forEach(event => (event.start_at = new Date(event.start_at)))
+  res.render('project', { project, shots, events })
 })
 
 app.get('/projects/:projectId/schedules/:startDate', async (req, res) => {
-  let { startDate } = req.params
-  let events = await all`SELECT * FROM events WHERE date(date) = ${startDate}`
-  events.forEach(event => (event.date = new Date(event.date)))
-  res.render('schedule', { startDate: new Date(startDate), events })
+  let { projectId, startDate } = req.params
+  let project = await get('SELECT * FROM projects WHERE id = ?', projectId)
+  let events = await all(`SELECT * FROM events WHERE date(start_at, 'localtime') = ?`, startDate)
+  events.forEach(event => (event.start_at = new Date(event.start_at)))
+  res.render('schedule', { project, startDate: new Date(startDate), events })
+})
+
+app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', async (req, res) => {
+  let { projectId, sceneId, shotId } = req.params
+  let project = await get('SELECT id, name FROM projects WHERE id = ?', projectId)
+  let scene = await get('SELECT id, scene_number, storyboarder_path FROM scenes WHERE id = ?', sceneId)
+  let shot = await get('SELECT * FROM shots WHERE id = ?', shotId)
+  shot.boards_json = JSON.parse(shot.boards_json)
+  let takes = await all('SELECT * FROM takes WHERE shot_id = ?', shotId)
+
+  let imagesPath = '/' +
+    scene.storyboarder_path
+      .replace(
+        path.basename(scene.storyboarder_path),
+        'images'
+      )
+
+  res.render('shot', { project, scene, shot, takes, imagesPath })
 })
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId', async (req, res) => {
