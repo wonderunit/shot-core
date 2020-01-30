@@ -6,6 +6,15 @@
       <%= project.name %>
     </h1>
 
+    <% if (scenes.length) { %>
+      <h2 class="f4 mv3">Scenes</h2>
+      <% for (let scene of scenes) { %>
+        <a href="<%= `/projects/${scene.project_id}/scenes/${scene.id}` %>">
+          Scene <%= scene.scene_number %> <%= scene.slugline %><br/>
+        </a>
+      <% } %>
+    <% } %>
+
     <h2 class="f4 mv3">Shots</h2>
     <table>
       <thead>

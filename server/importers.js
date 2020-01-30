@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 
 const groupBy = (fn) => (groups, item) => {
@@ -17,15 +18,13 @@ function durationOr(value, defaultValue) {
   return value == null ? defaultValue : value
 }
 
-function nameFromPath(pathToStoryboarderFile) {
-  return path.basename(pathToStoryboarderFile, '.storyboarder')
+function insertProject ({ name, scriptPath }) {
+  return scriptPath
+    ? ['INSERT INTO projects (name, script_path) VALUES (?, ?)', name, scriptPath]
+    : ['INSERT INTO projects (name) VALUES (?)', name]
 }
 
-function insertProject ({ name }) {
-  return ['INSERT INTO projects (name) VALUES (?)', name]
-}
-
-function insertScene ({ scene, sceneNumber, projectId, storyboarderPath }) {
+function insertScene ({ scene, sceneNumber, projectId, storyboarderPath, scriptData = {} }) {
   let {
     version,
     aspectRatio,
@@ -40,12 +39,18 @@ function insertScene ({ scene, sceneNumber, projectId, storyboarderPath }) {
     defaultBoardTiming
   })
 
-  return [
-    `INSERT INTO scenes
-    (project_id, scene_number, metadata_json, storyboarder_path)
-    VALUES (?, ?, ?, ?)`,
-    projectId, sceneNumber, metadataJson, storyboarderPath
-  ]
+  let { slugline } = scriptData
+
+  return sql({
+    table: 'scenes',
+    insert: {
+      project_id: projectId,
+      scene_number: sceneNumber,
+      metadata_json: metadataJson,
+      storyboarder_path: storyboarderPath,
+      slugline
+    }
+  })
 }
 
 function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
@@ -99,18 +104,32 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
 
   let boards_json = JSON.stringify(boards)
 
-  let insert = {
-    project_id: projectId,
-    scene_id: sceneId,
-    shot_number: shotNumber,
-    duration,
+  return sql({
+    table: 'shots',
+    insert: {
+      project_id: projectId,
+      scene_id: sceneId,
+      shot_number: shotNumber,
+      duration,
 
-    // TODO grab action, dialogue, and notes from first board?
+      // TODO grab action, dialogue, and notes from first board?
 
-    boards_json
+      boards_json
+    }
+  })
+}
+
+function insertEvent({ projectId, sceneId, shotId, rank, duration, startAt }) {
+  return [
+    'INSERT INTO events (project_id, scene_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?)',
+    projectId, sceneId, shotId, rank, duration, startAt
+  ]
+}
+
+function sql ({ table, insert }) {
+  for (let key in insert) {
+    if (insert[key] === undefined) delete insert[key]
   }
-
-  let table = 'shots'
 
   let keys = Object.keys(insert).join(',')
   let values = Object.values(insert)
@@ -122,27 +141,97 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
   ]
 }
 
-function insertEvent({ projectId, sceneId, shotId, rank, duration, startAt }) {
-  return [
-    'INSERT INTO events (project_id, scene_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?)',
-    projectId, sceneId, shotId, rank, duration, startAt
-  ]
+const fountain = require('../vendor/fountain')
+const { parse } = require('../lib/fountain/fountain-data-parser')
+
+const filenameify = string =>
+  string
+    .substring(0, 50)
+    .replace(/\|&;\$%@"<>\(\)\+,/g, '')
+    .replace(/\./g, '')
+    .replace(/ - /g, ' ')
+    .replace(/ /g, '-')
+    .replace(/[|&;/:$%@"{}?|<>()+,]/g, '-')
+
+const getSceneFolderName = node => {
+  let desc = node.synopsis
+    ? node.synopsis
+    : node.slugline
+
+  return `Scene-${node.scene_number}-${filenameify(desc)}-${node.scene_id}`
 }
 
-function importScript (pathToFountainFile) {
-  // load script
-  // import each named folder
+function getSceneListFromFountain ({ script }) {
+  let { tokens } = fountain.parse(script)
+  let parsed = parse(tokens)
+
+  return Object.values(parsed)
+    .filter(node => node.type === 'scene')
+    .map(node => {
+      let name = getSceneFolderName(node)
+
+      return {
+        name,
+        storyboarderFilePath: path.join('storyboards', name, `${name}.storyboarder`),
+        node
+      }
+    })
 }
 
-async function importScene (run, { scene, pathToStoryboarderFile }) {
+async function importScript (run, { script, scriptPath, pathToFountainFile }) {
+  const sourcePath = path.dirname(scriptPath)
+
   let projectId = (await run(...insertProject({
-    name: nameFromPath(pathToStoryboarderFile)
+    name: path.basename(scriptPath, '.fountain'),
+    scriptPath
   }))).lastID
+
+  let scenes = getSceneListFromFountain({ script }).map(folder => {
+    let scene = JSON.parse(fs.readFileSync(path.join(sourcePath, folder.storyboarderFilePath)))
+
+    return {
+      folder,
+      scene,
+      pathToStoryboarderFile: path.join(
+        path.dirname(pathToFountainFile),
+        folder.storyboarderFilePath
+      )
+    }
+  })
+
+  let results = []
+  for (let { folder, scene, pathToStoryboarderFile } of scenes) {
+    let sceneNumber = folder.node.scene_number
+    let slugline = folder.node.slugline
+
+    // let id = folder.node.scene_id
+    // let synopsis = folder.node.synopsis
+    // let time = folder.node.time
+    // let duration = folder.node.duration
+
+    let scriptData = {
+      slugline
+    }
+    results.push(
+      await importScene(run, { scene, sceneNumber, pathToStoryboarderFile, projectId, scriptData })
+    )
+  }
+  return results
+}
+
+async function importScene (run, {
+  scene,
+  pathToStoryboarderFile,
+  projectId,
+  sceneNumber = 1,
+  scriptData = {}
+}) {
   let sceneId = (await run(...insertScene({
     scene,
-    sceneNumber: 1,
+    sceneNumber,
     projectId,
-    storyboarderPath: pathToStoryboarderFile
+    storyboarderPath: pathToStoryboarderFile,
+    scriptData
   }))).lastID
   let shots = scene.boards.reduce(groupBy(board => board.newShot), [])
   let shotIds = []
@@ -169,5 +258,8 @@ async function importScene (run, { scene, pathToStoryboarderFile }) {
 }
 
 module.exports = {
+  getSceneListFromFountain,
+  insertProject,
+  importScript,
   importScene
 }

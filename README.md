@@ -14,7 +14,7 @@ Listens on [http://localhost:3000](http://localhost:3000)
 
 ```
 rm test.sqlite3; sqlite3 test.sqlite3 < db/schema.sql
-node test/import.test.js
+node test/importers.test.js
 ```
 
 ### Security

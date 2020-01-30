@@ -9,7 +9,8 @@ CREATE TABLE scenes(
   project_id INTEGER NOT NULL,
   scene_number INTEGER,
   metadata_json JSON,
-  storyboarder_path TEXT
+  storyboarder_path TEXT,
+  slugline TEXT
 );
 
 CREATE TABLE shots(
