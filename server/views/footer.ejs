@@ -1,6 +1,8 @@
 <div class="ma4">
   <small class="lh-copy helvetica black-40">
-    Server Time: <%= format(new Date(), 'd MMM, E hh:mm a') %>
+    Server Time:
+    <%= format(new Date(), 'd MMM, E hh:mm a') %>
+    <%= Intl.DateTimeFormat().resolvedOptions().timeZone %>
   </small>
 </div>
 <%- include('browser-refresh') %>
