@@ -119,12 +119,16 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
   })
 }
 
-function insertEvent({ projectId, sceneId, shotId, rank, duration, startAt }) {
-  return [
-    'INSERT INTO events (project_id, scene_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?)',
-    projectId, sceneId, shotId, rank, duration, startAt
-  ]
-}
+// let rank = //
+// let duration = durationOr(shot.duration, scene.defaultBoardTiming)
+// let startAt = (new Date()).toISOString()
+// let eventId = (await run(...insertEvent({ projectId, sceneId, shotId, rank, duration, startAt }))).lastID
+// function insertEvent({ projectId, sceneId, shotId, rank, duration, startAt }) {
+//   return [
+//     'INSERT INTO events (project_id, scene_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?)',
+//     projectId, sceneId, shotId, rank, duration, startAt
+//   ]
+// }
 
 function sql ({ table, insert }) {
   for (let key in insert) {
@@ -235,25 +239,16 @@ async function importScene (run, {
   }))).lastID
   let shots = scene.boards.reduce(groupBy(board => board.newShot), [])
   let shotIds = []
-  let eventIds = []
   for (let shot of shots) {
     let shotNumber = shotIds.length + 1
     let shotId = (await run(...insertShot({ shot, shotNumber, scene, projectId, sceneId }))).lastID
-
-    let rank = shotNumber // TODO
-    let duration = durationOr(shot.duration, scene.defaultBoardTiming)
-    let startAt = (new Date()).toISOString()
-    let eventId = (await run(...insertEvent({ projectId, sceneId, shotId, rank, duration, startAt }))).lastID
-
     shotIds.push(shotId)
-    eventIds.push(eventId)
   }
 
   return {
     projectId,
     sceneId,
-    shotIds,
-    eventIds
+    shotIds
   }
 }
 
