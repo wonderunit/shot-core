@@ -9,17 +9,16 @@
     <% if (scenes.length) { %>
       <h2 class="f4 mv3">Scenes</h2>
       <% for (let scene of scenes) { %>
-        <a href="<%= `/projects/${scene.project_id}/scenes/${scene.id}` %>">
-          Scene <%= scene.scene_number %> <%= scene.slugline %><br/>
-        </a>
+        Scene <%= scene.scene_number %>
+        <%= scene.slugline ? `: ${scene.slugline}` : '' %><br/>
       <% } %>
     <% } %>
 
     <h2 class="f4 mv3">Shots</h2>
-    <table>
+    <table class="w-100">
       <thead>
-        <th>No.</th>
-        <th>Notes</th>
+        <th># <small>(in Scene)</small></th>
+        <th class="w-50">Notes <small>(from 1st board)</small></th>
         <th>Boards</th>
       </thead>
       <tbody>
