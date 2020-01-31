@@ -14,7 +14,7 @@ function sum (a, b) {
   return a + b
 }
 
-function durationOr(value, defaultValue) {
+function durationOr (value, defaultValue) {
   return value == null ? defaultValue : value
 }
 
@@ -119,16 +119,20 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
   })
 }
 
-// let rank = //
-// let duration = durationOr(shot.duration, scene.defaultBoardTiming)
-// let startAt = (new Date()).toISOString()
-// let eventId = (await run(...insertEvent({ projectId, sceneId, shotId, rank, duration, startAt }))).lastID
-// function insertEvent({ projectId, sceneId, shotId, rank, duration, startAt }) {
-//   return [
-//     'INSERT INTO events (project_id, scene_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?)',
-//     projectId, sceneId, shotId, rank, duration, startAt
-//   ]
-// }
+// startAt: string in sqlite-compatible date format (e.g.: new Date().toISOString())
+function insertSchedule ({ projectId, startAt }) {
+  return [
+    'INSERT INTO schedules (project_id, start_at) VALUES (?, ?)',
+    projectId, startAt
+  ]
+}
+
+function insertEventForShot ({ projectId, sceneId, scheduleId, shotId, rank, duration, startAt }) {
+  return [
+    'INSERT INTO events (project_id, scene_id, schedule_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    projectId, sceneId, scheduleId, shotId, rank, duration, startAt
+  ]
+}
 
 function sql ({ table, insert }) {
   for (let key in insert) {
@@ -253,8 +257,10 @@ async function importScene (run, {
 }
 
 module.exports = {
-  getSceneListFromFountain,
   insertProject,
+  insertSchedule,
+  insertEventForShot,
+
   importScript,
   importScene
 }

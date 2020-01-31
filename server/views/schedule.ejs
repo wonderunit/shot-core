@@ -10,10 +10,11 @@
       %>
     </h1>
 
-    All Shots on this day:<br/>
+    Events on this day:<br/>
     <% for (let event of events) { %>
       shot_id:<%= event.shot_id %>
-      at:<%= format(event.start_at, 'EEEE, dd MMM') %><br/>
+      at:<%= format(event.start_at, 'EEEE, dd MMM hh:mm:ss a') %>
+      duration:<%= event.duration %><br />
     <% } %>
 
     <h2 class="f4 mv3">Schedule</h2>
