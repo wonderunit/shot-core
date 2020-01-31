@@ -2,8 +2,8 @@ const express = require('express')
 const path = require('path')
 const sqlite3 = require('sqlite3').verbose()
 
-const format = require('date-fns/format')
-const { utcToZonedTime } = require('date-fns-tz')
+const parse = require('date-fns/parse')
+const { format } = require('date-fns-tz')
 
 const { promisified } = require('../lib/promisify-sqlite3')
 const slaterCanvas = require('./slater-canvas')
@@ -14,8 +14,8 @@ app.set('views', path.join(__dirname, './views'))
 app.use(express.static('public'))
 
 app.locals = {
-  format,
-  utcToZonedTime
+  parse,
+  format
 }
 
 const db = new sqlite3.Database('./dev.sqlite3')
@@ -47,7 +47,7 @@ app.get('/projects/:projectId/schedules/:startDate', async (req, res) => {
   let project = await get('SELECT * FROM projects WHERE id = ?', projectId)
   let events = await all(`SELECT * FROM events WHERE date(start_at, 'localtime') = ?`, startDate)
   events.forEach(event => (event.start_at = new Date(event.start_at)))
-  res.render('schedule', { project, startDate: new Date(startDate), events })
+  res.render('schedule', { project, startDate: parse(startDate, 'yyyy-MM-dd', new Date()), events })
 })
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', async (req, res) => {

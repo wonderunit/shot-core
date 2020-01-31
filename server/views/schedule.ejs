@@ -5,8 +5,17 @@
       <a href="/">Home</a> /
       <a href="/projects/<%= project.id %>"><%= project.name %></a>
       <br/>
-      <%= format(utcToZonedTime(startDate, 'America/New York'), 'EEEE, dd MMM yyyy') %>
+      <%=
+        format(startDate, 'EEEE, dd MMM yyyy')
+      %>
     </h1>
+
+    All Shots on this day:<br/>
+    <% for (let event of events) { %>
+      shot_id:<%= event.shot_id %>
+      at:<%= format(event.start_at, 'EEEE, dd MMM') %><br/>
+    <% } %>
+
     <h2 class="f4 mv3">Schedule</h2>
     <table>
       <tr>
