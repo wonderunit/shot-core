@@ -49,7 +49,7 @@
       <% for (let event of events) { %>
       <tr>
         <td>
-          <a href="/projects/1/schedules/<%= format(event.start_at, 'yyyy-MM-dd') %>">
+          <a href="/projects/<%= project.id %>/schedules/<%= format(event.start_at, 'yyyy-MM-dd') %>">
             <%= format(event.start_at, 'd MMM, E') %>
           </a>
         </td>
