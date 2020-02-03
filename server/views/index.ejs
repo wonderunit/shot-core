@@ -1,20 +1,23 @@
 <%- include('header') %>
-<div class="helvetica">
-  <div class="pa4 lh-copy">
+<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
+  <div class="lh-copy">
     <h1 class="f3 ma0 mb4">
       Home
     </h1>
+
     <h2 class="f4 mv3">Projects</h2>
-    <ul>
-      <% for (let project of projects) { %>
-      <li>
-        <a href="/projects/<%= project.id %>"><%= project.name %></a>
-      </li>
-      <% } %>
-    </ul>
+    <% for (let project of projects) { %>
+    <a href="/projects/<%= project.id %>"><%= project.name %></a><br />
+    <% } %>
+
+    <br />
+
     <h2 class="f4 mv3">
       <a href="/slater">Slater</a>
     </h2>
+
+    <br />
+
     <h2 class="f4 mv3">
       <a href="/monitor">Monitor</a>
     </h2>
