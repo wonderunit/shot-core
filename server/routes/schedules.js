@@ -7,7 +7,7 @@ const mapped = (prev, curr) => {
   return prev
 }
 
-exports.view = async (req, res) => {
+exports.show = async (req, res) => {
   let { projectId, startDate } = req.params
 
   let schedule = await get(`SELECT * FROM schedules WHERE project_id = ? AND date(start_at, 'localtime') = ?`, projectId, startDate)

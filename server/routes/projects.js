@@ -1,6 +1,6 @@
 const { get, all } = require('../db')
 
-exports.view = async (req, res) => {
+exports.show = async (req, res) => {
   let { projectId } = req.params
 
   let project = await get('SELECT * FROM projects WHERE id = ?', projectId)

@@ -1,3 +1,3 @@
-exports.view = async (req, res) => {
+exports.show = async (req, res) => {
   res.render('take')
 }

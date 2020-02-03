@@ -24,16 +24,16 @@ app.locals = {
 
 app.get('/', home.index)
 
-app.get('/projects/:projectId', projects.view)
+app.get('/projects/:projectId', projects.show)
 
-app.get('/projects/:projectId/schedules/:startDate', schedules.view)
+app.get('/projects/:projectId/schedules/:startDate', schedules.show)
 
-app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', shots.view)
+app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', shots.show)
 
-app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId', takes.view)
+app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId', takes.show)
 
 app.get('/slater', slater.index)
-app.get('/slater.png', slater.indexAsPng)
+app.get('/slater.png', slater.png)
 
 app.get('/monitor', monitor.index)
 

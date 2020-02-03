@@ -4,7 +4,7 @@ exports.index = async (req, res) => {
   res.render('slater')
 }
 
-exports.indexAsPng = async (req, res) => {
+exports.png = async (req, res) => {
   res.setHeader('Content-Type', 'image/png')
   slaterCanvas.draw().createPNGStream().pipe(res)
 }

@@ -1,4 +1,8 @@
-exports.view = async (req, res) => {
+const path = require('path')
+
+const { get, all } = require('../db')
+
+exports.show = async (req, res) => {
   let { projectId, sceneId, shotId } = req.params
   let project = await get('SELECT id, name FROM projects WHERE id = ?', projectId)
   let scene = await get('SELECT id, scene_number, storyboarder_path FROM scenes WHERE id = ?', sceneId)
