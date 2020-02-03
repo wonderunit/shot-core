@@ -33,40 +33,42 @@ const { run, get, all } = promisified(db)
     }
 
     // schedule
-    let startAt = new Date()
+    let projects = await all('SELECT * FROM projects')
 
-    let project = await get('SELECT * FROM projects WHERE name = ?', 'multi-scene')
-    let scenes = await all('SELECT * from scenes where project_id = ?', project.id)
+    for (let project of projects) {
+      let scenes = await all('SELECT * from scenes where project_id = ?', project.id)
 
-    let scheduleId = (await run(...insertSchedule({
-      projectId: project.id,
-      startAt: startAt.toISOString()
-    }))).lastID
+      let startAt = new Date()
+      let scheduleId = (await run(...insertSchedule({
+        projectId: project.id,
+        startAt: startAt.toISOString()
+      }))).lastID
 
-    let eventIds = []
-    let rank = 0
-    for (let scene of scenes) {
-      let shotsInScene = await all('SELECT * FROM shots WHERE scene_id = ?', scene.id)
-      // shotsInScene.forEach(deserialize)
+      let eventIds = []
+      let rank = 0
+      for (let scene of scenes) {
+        let shotsInScene = await all('SELECT * FROM shots WHERE scene_id = ?', scene.id)
+        // shotsInScene.forEach(deserialize)
 
-      for (shot of shotsInScene) {
-        let duration = durationOr(shot.duration, scene.defaultBoardTiming)
+        for (shot of shotsInScene) {
+          let duration = durationOr(shot.duration, scene.defaultBoardTiming)
 
-        startAt = addMilliseconds(startAt, duration)
+          startAt = addMilliseconds(startAt, duration)
 
-        let statement = insertEventForShot({
-          projectId: project.id,
-          sceneId: scene.id,
-          scheduleId,
-          shotId: shot.id,
-          rank: rank++,
-          duration,
-          startAt: startAt.toISOString()
-        })
+          let statement = insertEventForShot({
+            projectId: project.id,
+            sceneId: scene.id,
+            scheduleId,
+            shotId: shot.id,
+            rank: rank++,
+            duration,
+            startAt: startAt.toISOString()
+          })
 
-        let eventId = (await run(...statement)).lastID
+          let eventId = (await run(...statement)).lastID
 
-        eventIds.push(eventId)
+          eventIds.push(eventId)
+        }
       }
     }
 

@@ -3,75 +3,59 @@
   <div class="pa4 lh-copy">
     <h1 class="f3 ma0 mb4">
       <a href="/">Home</a> /
-      <a href="/projects/<%= project.id %>"><%= project.name %></a>
-      <br/>
-      <%=
-        format(startDate, 'EEEE, dd MMM yyyy')
-      %>
+      <a href="/projects/<%= project.id %>"><%= project.name %></a> / <br />
+      <%= format(schedule.start_at, 'EEEE, dd MMM yyyy') %>
     </h1>
 
-    Events on this day:<br/>
-    <% for (let event of events) { %>
-      shot_id:<%= event.shot_id %>
-      at:<%= format(event.start_at, 'EEEE, dd MMM hh:mm:ss a') %>
-      duration:<%= event.duration %><br />
-    <% } %>
+    <table class="w-100">
+      <thead>
+        <th></th>
+        <th>Scene</th>
+        <th>Shot #</th>
+        <th>Details</th>
+        <th>Takes</th>
+      </thead>
+      <tbody>
+        <% for (let event of events) { %>
+          <% if (shotsById[event.shot_id]) { %>
+            <tr>
+              <td>
+                Shot
+                <% if (events.indexOf(event) === events.length - 1) { %>🍸<% } %>
+              </td>
+              <td class="w-20">
+                <!-- <%`/projects/${project.id}/scenes/${scenesById[shotsById[event.shot_id].scene_id].id}` %> -->
 
-    <h2 class="f4 mv3">Schedule</h2>
-    <table>
-      <tr>
-        <td>
-          <a href="/projects/1/scenes/1/shots/1">Shot 1</a>
-        </td>
-        <td>
-          <table>
-            <tr>
+                <%= scenesById[shotsById[event.shot_id].scene_id].scene_number %>
+                <small><%= scenesById[shotsById[event.shot_id].scene_id].slugline %></small>
+              </td>
+              <td class="w-10">
+                <a href="<%= `/projects/${project.id}/scenes/${scenesById[shotsById[event.shot_id].scene_id].id}/shots/${event.shot_id}` %>">
+                  <%= shotsById[event.shot_id].shot_number %>
+                </a>
+              </td>
+              <td class="w-40">
+                at: <small><%= format(event.start_at, 'hh:mm:ss a') %></small><br />
+                duration: <%= Math.ceil(event.duration / 1000) %> s<br />
+              </td>
               <td>
-                <a href="/projects/1/scenes/1/shots/5/takes/1">Take #1</a>
+                <table>
+                  <tr>
+                    <td>
+                      <a href="/projects/1/scenes/1/shots/5/takes/1">Take #1</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="#">New Take</a>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
-            <tr>
-              <td>
-                Take 2
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Take 3
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <a href="#">New Take</a>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td>Shot 6</td>
-      </tr>
-      <tr>
-        <td>Shot 7</td>
-      </tr>
-      <tr>
-        <td>Shot 8</td>
-      </tr>
-      <tr>
-        <td>Break for Lunch</td>
-      </tr>
-      <tr>
-        <td>Shot 1</td>
-      </tr>
-      <tr>
-        <td>Shot 3</td>
-      </tr>
-      <tr>
-        <td>Shot 4</td>
-      </tr>
-      <tr>
-        <td>Shot 2</td>
-      </tr>
+          <% } %>
+        <% } %>
+      </tbody>
     </table>
   </div>
 </div>

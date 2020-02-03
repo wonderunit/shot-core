@@ -42,12 +42,39 @@ app.get('/projects/:projectId', async (req, res) => {
   res.render('project', { project, scenes, shots, events })
 })
 
+const q = arr => arr.map(() => '?').join(',')
+
+const mapped = (prev, curr) => {
+  prev[curr.id] = curr
+  return prev
+}
+
 app.get('/projects/:projectId/schedules/:startDate', async (req, res) => {
   let { projectId, startDate } = req.params
-  let project = await get('SELECT * FROM projects WHERE id = ?', projectId)
-  let events = await all(`SELECT * FROM events WHERE date(start_at, 'localtime') = ?`, startDate)
+
+  let schedule = await get(`SELECT * FROM schedules WHERE project_id = ? AND date(start_at, 'localtime') = ?`, projectId, startDate)
+
+  let project = await get('SELECT * FROM projects WHERE id = ?', schedule.project_id)
+
+  let events = await all(`SELECT * FROM events WHERE schedule_id = ? ORDER BY rank`, schedule.id)
+
+  // shots by event
+  let shotIds = events.map(event => event.shot_id)
+  let shots = await all(`SELECT * FROM shots WHERE id IN (${q(shotIds)})`, shotIds)
+
+  // scenes by shot
+  let sceneIds = shots.map(shot => shot.scene_id)
+  let scenes = await all(`SELECT * FROM scenes WHERE id IN (${q(sceneIds)})`, sceneIds)
+
+  // deserialize
+  schedule.start_at = new Date(schedule.start_at)
   events.forEach(event => (event.start_at = new Date(event.start_at)))
-  res.render('schedule', { project, startDate: parse(startDate, 'yyyy-MM-dd', new Date()), events })
+
+  // map
+  let shotsById = shots.reduce(mapped, {})
+  let scenesById = scenes.reduce(mapped, {})
+
+  res.render('schedule', { schedule, project, events, shotsById, scenesById })
 })
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', async (req, res) => {

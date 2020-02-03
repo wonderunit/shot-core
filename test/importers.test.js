@@ -26,17 +26,17 @@ const readJson = (...rest) => JSON.parse(fs.readFileSync(...rest))
     console.log(
       await importScene(run, {
         scene: readJson('./test/fixtures/scenes/example/example.storyboarder'),
-        pathToStoryboarderFile: 'uploads/scenes/example/example.storyboarder',
+        storyboarderPath: 'uploads/scenes/example/example.storyboarder',
         projectId
       })
     )
     // let projectId = (await run(...insertProject({
-    //   name: path.basename(pathToStoryboarderFile, '.storyboarder')
+    //   name: path.basename(storyboarderPath, '.storyboarder')
     // }))).lastID
     // console.log(
     //   await importScene(run, {
     //     scene: readJson('./test/fixtures/projects/multi-scene/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM.storyboarder'),
-    //     pathToStoryboarderFile: 'uploads/projects/multi-scene/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM.storyboarder'
+    //     storyboarderPath: 'uploads/projects/multi-scene/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM.storyboarder'
     //   })
     // )
 

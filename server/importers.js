@@ -200,7 +200,7 @@ async function importScript (run, { script, scriptPath, pathToFountainFile }) {
     return {
       folder,
       scene,
-      pathToStoryboarderFile: path.join(
+      storyboarderPath: path.join(
         path.dirname(pathToFountainFile),
         folder.storyboarderFilePath
       )
@@ -208,7 +208,7 @@ async function importScript (run, { script, scriptPath, pathToFountainFile }) {
   })
 
   let results = []
-  for (let { folder, scene, pathToStoryboarderFile } of scenes) {
+  for (let { folder, scene, storyboarderPath } of scenes) {
     let sceneNumber = folder.node.scene_number
     let slugline = folder.node.slugline
 
@@ -221,7 +221,12 @@ async function importScript (run, { script, scriptPath, pathToFountainFile }) {
       slugline
     }
     results.push(
-      await importScene(run, { scene, sceneNumber, pathToStoryboarderFile, projectId, scriptData })
+      await importScene(run, {
+        scene,
+        sceneNumber,
+        storyboarderPath,
+        projectId,
+        scriptData })
     )
   }
   return results
@@ -229,7 +234,7 @@ async function importScript (run, { script, scriptPath, pathToFountainFile }) {
 
 async function importScene (run, {
   scene,
-  pathToStoryboarderFile,
+  storyboarderPath,
   projectId,
   sceneNumber = 1,
   scriptData = {}
@@ -238,7 +243,7 @@ async function importScene (run, {
     scene,
     sceneNumber,
     projectId,
-    storyboarderPath: pathToStoryboarderFile,
+    storyboarderPath,
     scriptData
   }))).lastID
   let shots = scene.boards.reduce(groupBy(board => board.newShot), [])
