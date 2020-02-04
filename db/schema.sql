@@ -43,5 +43,9 @@ CREATE TABLE takes(
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   project_id INTEGER NOT NULL,
   scene_id INTEGER NOT NULL,
-  shot_id INTEGER NOT NULL
+  shot_id INTEGER NOT NULL,
+  take_number INTEGER NOT NULL,
+  ready_at TEXT,
+  action_at TEXT,
+  cut_at TEXT
 );

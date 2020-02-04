@@ -35,6 +35,11 @@ exports.show = async (req, res) => {
     `SELECT * FROM scenes WHERE id IN (${q(sceneIds)})`, sceneIds
   )
 
+  // takes by shot
+  let takes = await all(
+    `SELECT * FROM takes WHERE shot_id IN (${q(shotIds)})`, shotIds
+  )
+
   // deserialize
   schedule.start_at = new Date(schedule.start_at)
   events.forEach(event => (event.start_at = new Date(event.start_at)))
@@ -42,6 +47,11 @@ exports.show = async (req, res) => {
   // map
   let shotsById = shots.reduce(keyById, {})
   let scenesById = scenes.reduce(keyById, {})
+  let takesByShotById = takes.reduce((prev, curr) => {
+    prev[curr.shot_id] = prev[curr.shot_id] || {}
+    prev[curr.shot_id][curr.id] = curr
+    return prev
+  }, {})
 
-  res.render('schedule', { schedule, project, events, shotsById, scenesById })
+  res.render('schedule', { schedule, project, events, shotsById, scenesById, takesByShotById })
 }

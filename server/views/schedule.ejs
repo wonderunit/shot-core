@@ -24,13 +24,13 @@
                 <% if (events.indexOf(event) === events.length - 1) { %>🍸<% } %>
               </td>
               <td class="w-20">
-                <!-- <%`/projects/${project.id}/scenes/${scenesById[shotsById[event.shot_id].scene_id].id}` %> -->
+                <!-- <%`/projects/${project.id}/scenes/${shotsById[event.shot_id].scene_id}` %> -->
 
                 <%= scenesById[shotsById[event.shot_id].scene_id].scene_number %>
                 <small><%= scenesById[shotsById[event.shot_id].scene_id].slugline %></small>
               </td>
               <td class="w-10">
-                <a href="<%= `/projects/${project.id}/scenes/${scenesById[shotsById[event.shot_id].scene_id].id}/shots/${event.shot_id}` %>">
+                <a href="<%= `/projects/${project.id}/scenes/${shotsById[event.shot_id].scene_id}/shots/${event.shot_id}` %>">
                   <%= shotsById[event.shot_id].shot_number %>
                 </a>
               </td>
@@ -40,11 +40,15 @@
               </td>
               <td>
                 <table>
+                  <% for (let take of Object.values(takesByShotById[event.shot_id])) { %>
                   <tr>
                     <td>
-                      <a href="/projects/1/scenes/1/shots/5/takes/1">Take #1</a>
+                      <a href="<%= `/projects/${project.id}/scenes/${scenesById[shotsById[event.shot_id].scene_id].id}/shots/${event.shot_id}/takes/${take.id}` %>">
+                        Take #<%= take.take_number %>
+                      </a>
                     </td>
                   </tr>
+                  <% } %>
                   <tr>
                     <td>
                       <a href="#">New Take</a>

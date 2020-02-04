@@ -3,14 +3,39 @@
   <div class="lh-copy">
     <h1 class="f3 ma0 mb4">
       <a href="/">Home</a> /
-      <a href="/projects/1">Example Multi-Scene Project</a> /
+      <a href="/projects/<%= project.id %>"><%= project.name %></a> /
       <br />
-      Scene 1 / Shot 1 /
+      Scene <%= scene.scene_number %> / Shot <%= shot.shot_number %>
       <br />
       Take 1
     </h1>
+
+    <div class="mb4">
+      On
+      <b><%= format(take.ready_at, 'EEE, dd MMM yyyy') %></b>
+      from <b><%= format(take.ready_at, 'hh:mm:ss a') %></b>
+      to <b><%= format(take.cut_at, 'hh:mm:ss a') %></b>
+    </div>
+
     <div>
-      From <a href="/projects/1/schedules/2020-01-28">28 Jan, Tue</a> at 01:48 PM EST
+      <table class="w-100">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Ready</th>
+            <th>Action</th>
+            <th>Cut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><%= take.take_number %></td>
+            <td><%= format(take.ready_at, 'hh:mm:ss.SSS a') %></td>
+            <td><%= format(take.action_at, 'hh:mm:ss.SSS a') %></td>
+            <td><%= format(take.cut_at, 'hh:mm:ss.SSS a') %></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <h2 class="f4 mv3">Media</h2>
