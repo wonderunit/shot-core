@@ -9,7 +9,9 @@ for (let form of forms) {
       acc[name] = value
       return acc
     }, {})
-    object.now = (new Date()).toISOString()
+
+    object.at = (new Date()).toISOString()
+
     await fetch(
       form.action,
       {

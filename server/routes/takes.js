@@ -2,7 +2,7 @@ const { run, get } = require('../db')
 
 exports.create = async (req, res) => {
   let { projectId, sceneId, shotId } = req.params
-  let { now } = req.body
+  let { at } = req.body
 
   // determine the next take number given the shot id
   let { take_number } = await get(
@@ -22,7 +22,7 @@ exports.create = async (req, res) => {
     )`,
     projectId, sceneId, shotId,
     take_number,
-    now
+    at
   )).lastID
 
   res.status(201).send({ id })
@@ -30,13 +30,13 @@ exports.create = async (req, res) => {
 
 exports.action = async (req, res) => {
   let { takeId } = req.params
-  let { now } = req.body
+  let { at } = req.body
 
   await run(
     `UPDATE takes
      SET action_at = ?
      WHERE id = ?`,
-     now,
+     at,
      takeId
   )
 
@@ -45,13 +45,13 @@ exports.action = async (req, res) => {
 
 exports.cut = async (req, res) => {
   let { takeId } = req.params
-  let { now } = req.body
+  let { at } = req.body
 
   await run(
     `UPDATE takes
      SET cut_at = ?
      WHERE id = ?`,
-    now,
+    at,
     takeId
   )
 
