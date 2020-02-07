@@ -1,4 +1,5 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const path = require('path')
 
 const parse = require('date-fns/parse')
@@ -11,6 +12,8 @@ const shots = require('./routes/shots')
 const takes = require('./routes/takes')
 const slater = require('./routes/slater')
 const monitor = require('./routes/monitor')
+
+const jsonParser = bodyParser.json()
 
 const app = express()
 app.set('view engine', 'ejs')
@@ -31,11 +34,14 @@ app.get('/projects/:projectId/schedules/:startDate', schedules.show)
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', shots.show)
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId', takes.show)
+app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes.json', jsonParser, takes.create)
+app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId/action.json', jsonParser, takes.action)
+app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId/cut.json', jsonParser, takes.cut)
 
-app.get('/slater', slater.index)
-app.get('/slater.png', slater.png)
+app.get('/projects/:projectId/slater', slater.show)
+app.get('/projects/:projectId/slater.png', slater.png)
 
-app.get('/monitor', monitor.index)
+app.get('/projects/:projectId/monitor', monitor.show)
 
 const port = 3000
 app.listen(port, () => {

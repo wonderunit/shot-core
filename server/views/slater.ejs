@@ -3,15 +3,145 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/tachyons.min.css">
   <link rel="stylesheet" href="/css/slater.css">
 </head>
 <body>
 
-<div>
-  <img src="/slater.png" />
+<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
+  <div class="lh-copy">
+
+    <% if (project.slater_shot_id) { %>
+    <div class="flex">
+      <div class="w-70 pa2">
+        <h1 class="f3 ma0"><%= project.name %></h1>
+
+        <div class="flex w-100">
+          <div class="mv3 mr3 w-30">
+            <div class="flex flex-column">
+              <div class="center">
+                Scene
+              </div>
+              <div class="f1 center">
+                <%= scene.scene_number %>
+              </div>
+              <div class="center">
+                <small class="f7 gray">
+                  <%= scene.slugline %>
+                </small>
+              </div>
+            </div>
+          </div>
+          <div class="mv3 mr3 w-30">
+            <div class="flex flex-column">
+              <div class="center">
+                Shot
+              </div>
+              <div class="f1 center">
+                <%= shot.shot_number %>
+              </div>
+            </div>
+          </div>
+          <div class="mv3 mr3 w-30">
+            <div class="flex flex-column">
+              <div class="center">
+                Take
+              </div>
+              <div class="f1 center status_<%= status %>">
+                <%= number %>
+              </div>
+              <div class="center">
+                <small class="f7 gray"><%= label %></small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex">
+          <% if (button == 'ready') { %>
+          <form
+            class="mv3 mr3"
+            data-remote="true"
+            method="POST"
+            action="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}/takes.json` %>"
+          >
+            <input name="project_id" value="<%= project.id %>" type="hidden" />
+            <input name="scene_id" value="<%= scene.id %>" type="hidden" />
+            <input name="shot_id" value="<%= shot.id %>" type="hidden" />
+            <button>Ready</button>
+          </form>
+          <% } else if (button == 'action') { %>
+          <form
+            class="mv3 mr3"
+            data-remote="true"
+            method="POST"
+            action="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}/takes/${take.id}/action.json` %>"
+          >
+            <button>Action</button>
+          </form>
+          <% } else if (button == 'cut') { %>
+          <form
+            class="mv3 mr3"
+            data-remote="true"
+            method="POST"
+            action="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}/takes/${take.id}/cut.json` %>"
+          >
+            <button>Cut</button>
+          </form>
+          <% } %>
+
+          <form
+            class="mv3 mr3"
+          >
+            <button title="Next Scheduled Shot">Next Shot</button>
+          </form>
+          <form
+            class="mv3 mr3"
+          >
+            <button title="Previous Scheduled Shot">Previous Shot</button>
+          </form>
+          <form
+            class="mv3 mr3"
+          > 
+            <button title="Insert an Impromptu Shot">Impromptu Shot</button>
+          </form>
+        </div>
+      </div>
+      <div class="pa2">
+        <div class="f7">
+          <h3 class="f4 ma0 mb4">All Takes for Shot <%= shot.shot_number %></h3>
+          <% for (let take of takes) { %>
+            <div class="mb3">
+              <b>Take <%= take.take_number %></b><br />
+              <%= take.ready_at && '📣 ' + format(Date.parse(take.ready_at), 'hh:mm:ss.SSS a') %><br />
+              <%= take.action_at && '🎬 ' + format(Date.parse(take.action_at), 'hh:mm:ss.SSS a') %><br />
+              <%= take.cut_at && '✂️ ' + format(Date.parse(take.cut_at), 'hh:mm:ss.SSS a') %><br />
+            </div>
+          <% } %>
+          <% if (takes.length == 0) { %>
+            <span class="gray">None</span>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <% } else { %>
+      <div class="flex">
+        <div class="w-70 pa2">
+          <h1 class="f3 ma0"><%= project.name %></h1>
+          <p>
+            Slater hasn’t started yet.
+          </p>
+        </div>
+      </div>
+    <% } %>
+  </div>
 </div>
 
-<div id="slater"></div>
+<div class="ma4">
+  <small class="lh-copy helvetica black-40">
+    Device Time: <span id="clock"></span>
+  </small>
+</div>
+
 <script src="/js/slater.js"></script>
 
 <%- include('browser-refresh') %>

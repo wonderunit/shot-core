@@ -36,6 +36,8 @@ const { run, get, all } = promisified(db)
     let projects = await all('SELECT * FROM projects')
 
     for (let project of projects) {
+      console.log('scheduling', project.name)
+
       let scenes = await all('SELECT * from scenes where project_id = ?', project.id)
 
       let startAt = new Date()
@@ -70,8 +72,23 @@ const { run, get, all } = promisified(db)
           eventIds.push(eventId)
         }
       }
+
+      // initialize slater for the schedule of the project
+      // using the shot of the earliest scheduled event
+      let earliest_scheduled_event_shot_id = (await get(
+        'SELECT id, MIN(start_at) FROM events WHERE project_id = ?',
+        project.id
+      )).id
+      await run(
+        `UPDATE projects
+         SET slater_shot_id = ?
+         WHERE id = ?`,
+         earliest_scheduled_event_shot_id,
+         project.id
+      )
     }
 
+    console.log('done.')
   } catch (err) {
     console.error(err)
   }
