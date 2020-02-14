@@ -186,13 +186,13 @@ function getSceneListFromFountain ({ script }) {
     })
 }
 
-async function importScript (run, { script, scriptPath, pathToFountainFile }) {
+function importScript (run, { script, scriptPath, pathToFountainFile }) {
   const sourcePath = path.dirname(scriptPath)
 
-  let projectId = (await run(...insertProject({
+  let projectId = run(...insertProject({
     name: path.basename(scriptPath, '.fountain'),
     scriptPath
-  }))).lastID
+  })).lastInsertRowid
 
   let scenes = getSceneListFromFountain({ script }).map(folder => {
     let scene = JSON.parse(fs.readFileSync(path.join(sourcePath, folder.storyboarderFilePath)))
@@ -221,7 +221,7 @@ async function importScript (run, { script, scriptPath, pathToFountainFile }) {
       slugline
     }
     results.push(
-      await importScene(run, {
+      importScene(run, {
         scene,
         sceneNumber,
         storyboarderPath,
@@ -232,25 +232,25 @@ async function importScript (run, { script, scriptPath, pathToFountainFile }) {
   return results
 }
 
-async function importScene (run, {
+function importScene (run, {
   scene,
   storyboarderPath,
   projectId,
   sceneNumber = 1,
   scriptData = {}
 }) {
-  let sceneId = (await run(...insertScene({
+  let sceneId = run(...insertScene({
     scene,
     sceneNumber,
     projectId,
     storyboarderPath,
     scriptData
-  }))).lastID
+  })).lastInsertRowid
   let shots = scene.boards.reduce(groupBy(board => board.newShot), [])
   let shotIds = []
   for (let shot of shots) {
     let shotNumber = shotIds.length + 1
-    let shotId = (await run(...insertShot({ shot, shotNumber, scene, projectId, sceneId }))).lastID
+    let shotId = run(...insertShot({ shot, shotNumber, scene, projectId, sceneId })).lastInsertRowid
     shotIds.push(shotId)
   }
 

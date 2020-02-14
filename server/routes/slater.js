@@ -42,16 +42,16 @@ const display = take => {
   }
 }
 
-exports.show = async (req, res) => {
+exports.show = (req, res) => {
   let { projectId } = req.params
 
-  let project = await get('SELECT * FROM projects WHERE id = ?', projectId)
+  let project = get('SELECT * FROM projects WHERE id = ?', projectId)
 
   let slater
   if (project.slater_shot_id) {
-    let shot = await get('SELECT * FROM shots WHERE id = ?', project.slater_shot_id)
-    let scene = await get('SELECT * FROM scenes WHERE id = ?', shot.scene_id)
-    let takes = await all('SELECT * FROM takes WHERE shot_id = ?', shot.id)
+    let shot = get('SELECT * FROM shots WHERE id = ?', project.slater_shot_id)
+    let scene = get('SELECT * FROM scenes WHERE id = ?', shot.scene_id)
+    let takes = all('SELECT * FROM takes WHERE shot_id = ?', shot.id)
 
     let take
     if (takes.length) {
@@ -71,7 +71,7 @@ exports.show = async (req, res) => {
   res.render('slater', { project, ...slater })
 }
 
-exports.png = async (req, res) => {
+exports.png = (req, res) => {
   res.setHeader('Content-Type', 'image/png')
   slaterCanvas.draw().createPNGStream().pipe(res)
 }

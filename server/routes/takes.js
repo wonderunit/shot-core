@@ -1,16 +1,16 @@
 const { run, get } = require('../db')
 
-exports.create = async (req, res) => {
+exports.create = (req, res) => {
   let { projectId, sceneId, shotId } = req.params
   let { at } = req.body
 
   // determine the next take number given the shot id
-  let { take_number } = await get(
+  let { take_number } = get(
     `SELECT COUNT(id) + 1 as take_number FROM takes WHERE shot_id = ?`,
     shotId
   )
 
-  let id = (await run(
+  let id = run(
     `INSERT INTO takes
     (project_id, scene_id, shot_id,
       take_number,
@@ -23,16 +23,16 @@ exports.create = async (req, res) => {
     projectId, sceneId, shotId,
     take_number,
     at
-  )).lastID
+  ).lastInsertRowid
 
   res.status(201).send({ id })
 }
 
-exports.action = async (req, res) => {
+exports.action = (req, res) => {
   let { takeId } = req.params
   let { at } = req.body
 
-  await run(
+  run(
     `UPDATE takes
      SET action_at = ?
      WHERE id = ?`,
@@ -43,11 +43,11 @@ exports.action = async (req, res) => {
   res.sendStatus(200)
 }
 
-exports.cut = async (req, res) => {
+exports.cut = (req, res) => {
   let { takeId } = req.params
   let { at } = req.body
 
-  await run(
+  run(
     `UPDATE takes
      SET cut_at = ?
      WHERE id = ?`,
@@ -58,14 +58,14 @@ exports.cut = async (req, res) => {
   res.sendStatus(200)
 }
 
-exports.show = async (req, res) => {
+exports.show = (req, res) => {
   let { projectId, sceneId, shotId, takeId } = req.params
 
-  let project = await get(`SELECT id, name FROM projects where id = ?`, projectId)
-  let scene = await get(`SELECT id, scene_number FROM scenes where id = ?`, sceneId)
-  let shot = await get(`SELECT id, shot_number FROM shots where id = ?`, shotId)
+  let project = get(`SELECT id, name FROM projects where id = ?`, projectId)
+  let scene = get(`SELECT id, scene_number FROM scenes where id = ?`, sceneId)
+  let shot = get(`SELECT id, shot_number FROM shots where id = ?`, shotId)
 
-  let take = await get(`SELECT * FROM takes WHERE id = ?`, takeId)
+  let take = get(`SELECT * FROM takes WHERE id = ?`, takeId)
 
   take.ready_at = new Date(take.ready_at)
   take.action_at = new Date(take.action_at)

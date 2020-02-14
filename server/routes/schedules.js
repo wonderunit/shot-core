@@ -4,39 +4,39 @@ const q = arr => arr.map(() => '?').join(',')
 
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
 
-exports.show = async (req, res) => {
+exports.show = (req, res) => {
   let { projectId, startDate } = req.params
 
-  let schedule = await get(
+  let schedule = get(
     `SELECT *
      FROM schedules
      WHERE project_id = ? AND date(start_at, 'localtime') = ?`, projectId, startDate
   )
 
-  let project = await get(
+  let project = get(
     'SELECT * FROM projects WHERE id = ?',
     schedule.project_id
   )
 
-  let events = await all(
+  let events = all(
     `SELECT * FROM events WHERE schedule_id = ? ORDER BY rank`,
     schedule.id
   )
 
   // shots by event
   let shotIds = events.map(event => event.shot_id)
-  let shots = await all(
+  let shots = all(
     `SELECT * FROM shots WHERE id IN (${q(shotIds)})`, shotIds
   )
 
   // scenes by shot
   let sceneIds = shots.map(shot => shot.scene_id)
-  let scenes = await all(
+  let scenes = all(
     `SELECT * FROM scenes WHERE id IN (${q(sceneIds)})`, sceneIds
   )
 
   // takes by shot
-  let takes = await all(
+  let takes = all(
     `SELECT * FROM takes WHERE shot_id IN (${q(shotIds)})`, shotIds
   )
 

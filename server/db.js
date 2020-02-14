@@ -1,8 +1,22 @@
-const sqlite3 = require('sqlite3').verbose()
-const { promisified } = require('../lib/promisify-sqlite3')
+const Database = require('better-sqlite3')
 
-const db = new sqlite3.Database('./dev.sqlite3')
-const { run, get, all } = promisified(db)
+let filepath = process.env.NODE_ENV == 'test'
+  ? './test.sqlite3'
+  : './dev.sqlite3'
+
+const db = new Database(filepath/*, { verbose: console.log }*/)
+
+function run (string, ...bindParameters) {
+  return db.prepare(string).run(...bindParameters)
+}
+
+function get (string, ...bindParameters) {
+  return db.prepare(string).get(...bindParameters)
+}
+
+function all (string, ...bindParameters) {
+  return db.prepare(string).all(...bindParameters)
+}
 
 module.exports = {
   run,
