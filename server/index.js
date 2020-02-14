@@ -1,5 +1,4 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const path = require('path')
 
 const parse = require('date-fns/parse')
@@ -13,7 +12,8 @@ const takes = require('./routes/takes')
 const slater = require('./routes/slater')
 const monitor = require('./routes/monitor')
 
-const jsonParser = bodyParser.json()
+const jsonParser = express.json()
+const urlencodedParser = express.urlencoded()
 
 const app = express()
 app.set('view engine', 'ejs')
@@ -27,6 +27,8 @@ app.locals = {
 
 app.get('/', home.index)
 
+app.get('/projects/new', projects.new)
+app.post('/projects', urlencodedParser, projects.create)
 app.get('/projects/:projectId', projects.show)
 
 app.get('/projects/:projectId/schedules/:startDate', schedules.show)

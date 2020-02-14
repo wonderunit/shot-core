@@ -1,0 +1,27 @@
+<%- include('../header') %>
+<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
+  <div class="lh-copy">
+    <h1 class="f3 ma0 mb4">
+      <a href="/">Home</a> /
+      New Project
+    </h1>
+
+    <form action="/projects" method="POST" class="w-50 center">
+      <div class="mb4">
+        <label class="black-70 db pb1 f5" for="name">Project Name</label>
+        <input class="w-100 pa2" type="text" id="name" name="name" />
+      </div>
+
+      <div class="mb4 shadow-4 bg-white h4 pa4">
+        <label class="db pb1" for="file">Storyboarder .ZIP</label>
+        <input class="w-100 pa2 ma0 nl2" type="file" id="file" name="file" />
+      </div>
+      
+      <div>
+        <button>Create Project</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+<%- include('../footer') -%>

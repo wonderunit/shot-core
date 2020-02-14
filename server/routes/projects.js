@@ -1,5 +1,17 @@
 const { get, all } = require('../db')
 
+exports.new = (req, res) => {
+  res.render('project/new')
+}
+
+exports.create = (req, res) => {
+  res.send({
+    ok: true,
+    name: req.body.name,
+    file: req.body.file
+  })
+}
+
 exports.show = (req, res) => {
   let { projectId } = req.params
 

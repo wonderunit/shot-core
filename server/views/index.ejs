@@ -5,10 +5,19 @@
       Home
     </h1>
 
-    <h2 class="f4 mv3">Projects</h2>
-    <% for (let project of projects) { %>
-    <a href="/projects/<%= project.id %>"><%= project.name %></a><br />
-    <% } %>
+    <div class="mb4">
+      <h2 class="f4 mv3">Projects</h2>
+      <% for (let project of projects) { %>
+      <a href="/projects/<%= project.id %>"><%= project.name %></a><br />
+      <% } %>
+      <% if (projects.length == 0) { %>
+      <span class="gray">None</span>
+      <% } %>
+    </div>
+
+    <div class="mb4">
+      <a href="/projects/new">Create a Project</a>
+    </div>
   </div>
 </div>
 <%- include('footer') -%>
