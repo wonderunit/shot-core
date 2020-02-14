@@ -10,7 +10,7 @@ exports.show = (req, res) => {
   shot.boards_json = JSON.parse(shot.boards_json)
   let takes = all('SELECT * FROM takes WHERE shot_id = ?', shotId)
 
-  let imagesPath = '/' +
+  let imagesPath = '/uploads/' +
     scene.storyboarder_path
       .replace(
         path.basename(scene.storyboarder_path),

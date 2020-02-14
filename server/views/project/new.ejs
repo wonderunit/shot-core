@@ -6,15 +6,15 @@
       New Project
     </h1>
 
-    <form action="/projects" method="POST" class="w-50 center">
+    <form action="/projects" enctype="multipart/form-data" method="POST" class="w-60 center pa3">
       <div class="mb4">
         <label class="black-70 db pb1 f5" for="name">Project Name</label>
         <input class="w-100 pa2" type="text" id="name" name="name" />
       </div>
 
-      <div class="mb4 shadow-4 bg-white h4 pa4">
-        <label class="db pb1" for="file">Storyboarder .ZIP</label>
-        <input class="w-100 pa2 ma0 nl2" type="file" id="file" name="file" />
+      <label class="black-70 db pb2 f5" for="file">Upload a Storyboarder .ZIP Export</label>
+      <div class="mb4 shadow-4 bg-white h4 pa4 flex items-center justify-center">
+        <input class="w-100 pa0 ma0" type="file" id="file" name="file" />
       </div>
       
       <div>
@@ -24,4 +24,33 @@
 
   </div>
 </div>
+<script>
+  function preventDefault (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
+  function onChange () {
+    if (nameInput.value.length == 0) {
+      if (fileInput.files.length) {
+        nameInput.value = fileInput.files[0].name.replace(/\.zip/i, '')
+      }
+    }
+  }
+
+  let form = document.querySelector('form')
+  let fileInput = document.querySelector('input[type="file"]')
+  let nameInput = document.querySelector('input[type="text"]')
+
+  ;(['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop']).forEach(
+    type => form.addEventListener(type, preventDefault)
+  )
+  form.addEventListener('drop', event => {
+    if (event.dataTransfer.files.length) {
+      fileInput.files = event.dataTransfer.files
+      onChange()
+    }
+  })
+  fileInput.addEventListener('change', onChange)
+</script>
 <%- include('../footer') -%>

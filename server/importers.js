@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 
 const groupBy = (fn) => (groups, item) => {
@@ -186,13 +186,8 @@ function getSceneListFromFountain ({ script }) {
     })
 }
 
-function importScript (run, { script, scriptPath, pathToFountainFile }) {
+function importScript (run, { projectId, script, scriptPath, pathToFountainFile }) {
   const sourcePath = path.dirname(scriptPath)
-
-  let projectId = run(...insertProject({
-    name: path.basename(scriptPath, '.fountain'),
-    scriptPath
-  })).lastInsertRowid
 
   let scenes = getSceneListFromFountain({ script }).map(folder => {
     let scene = JSON.parse(fs.readFileSync(path.join(sourcePath, folder.storyboarderFilePath)))

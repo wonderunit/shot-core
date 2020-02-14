@@ -8,7 +8,8 @@ node test/importers.test.js
 
 process.env.NODE_ENV = 'test'
 
-const fs = require('fs')
+const fs = require('fs-extra')
+const path = require('path')
 
 const { run } = require('../server/db')
 const { insertProject, importScene, importScript } = require('../server/importers')
@@ -16,14 +17,12 @@ const { insertProject, importScene, importScript } = require('../server/importer
 const readJson = (...rest) => JSON.parse(fs.readFileSync(...rest))
 
 try {
-  let projectId = run(...insertProject({
-    name: 'example'
-  })).lastInsertRowid
+  let sceneProjectId = run(...insertProject({ name: 'example' })).lastInsertRowid
   console.log(
     importScene(run, {
       scene: readJson('./test/fixtures/scenes/example/example.storyboarder'),
       storyboarderPath: 'uploads/scenes/example/example.storyboarder',
-      projectId
+      projectId: sceneProjectId
     })
   )
   // let projectId = run(...insertProject({
@@ -36,10 +35,14 @@ try {
   //   })
   // )
 
+  let scriptPath = './test/fixtures/projects/multi-scene/multi-scene.fountain'
+  let name = path.basename(scriptPath, '.fountain')
+  let scriptProjectId = run(...insertProject({ name, scriptPath })).lastInsertRowid
   console.log(
     importScript(run, {
-      script: fs.readFileSync('./test/fixtures/projects/multi-scene/multi-scene.fountain', 'utf-8'),
-      scriptPath: './test/fixtures/projects/multi-scene/multi-scene.fountain',
+      projectId: scriptProjectId,
+      script: fs.readFileSync(scriptPath, 'utf-8'),
+      scriptPath: scriptPath,
       pathToFountainFile: 'uploads/projects/multi-scene/multi-scene.fountain'
     })
   )

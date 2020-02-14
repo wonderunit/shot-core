@@ -6,12 +6,15 @@
     "start": "browser-refresh ./server/index.js"
   },
   "dependencies": {
+    "adm-zip": "0.4.14",
     "better-sqlite3": "5.4.3",
     "canvas": "2.6.1",
     "date-fns": "2.9.0",
     "date-fns-tz": "1.0.9",
     "ejs": "3.0.1",
-    "express": "4.17.1"
+    "express": "4.17.1",
+    "fs-extra": "8.1.0",
+    "multiparty": "4.2.1"
   },
   "devDependencies": {
     "browser-refresh": "1.7.3"
