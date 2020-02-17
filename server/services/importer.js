@@ -6,7 +6,7 @@ const path = require('path')
 const { run } = require('../db')
 const { insertProject, importScene, importScript } = require('../importers')
 
-const UPLOADS_PATH = path.join(__dirname, '../../public/uploads')
+const { UPLOADS_PATH } = require('../config')
 
 const readJson = (...rest) => JSON.parse(fs.readFileSync(...rest))
 
@@ -48,7 +48,7 @@ module.exports = function ({ pathToZip }) {
     )
 
     return {
-      redirectUri: `/projects/${projectId}`
+      uri: `/projects/${projectId}`
     }
   } else {
     let storyboarderFile = fs.readdirSync(folder).find(filename => filename.toLowerCase().endsWith('.storyboarder'))

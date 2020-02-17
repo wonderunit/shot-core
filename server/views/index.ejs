@@ -1,4 +1,20 @@
 <%- include('header') %>
+<style>
+.project-row {
+  background-color: #ddd;
+}
+.project-row form {
+  display: none;
+}
+.project-row:hover form {
+  display: block;
+}
+</style>
+<script>
+  function confirmation (event) {
+    return confirm('Are you sure?')
+  }
+</script>
 <div class="helvetica ph3 pa4-ns mv3 ma0-ns">
   <div class="lh-copy">
     <h1 class="f3 ma0 mb4">
@@ -8,7 +24,13 @@
     <div class="mb4">
       <h2 class="f4 mv3">Projects</h2>
       <% for (let project of projects) { %>
-      <a href="/projects/<%= project.id %>"><%= project.name %></a><br />
+        <div class="project-row pa2 flex justify-between">
+          <a class="db" href="/projects/<%= project.id %>"><%= project.name %></a>
+          <form onsubmit="return confirmation(event)" method="POST" action="/projects/<%= project.id %>">
+            <input name="_method" type="hidden" value="DELETE" />
+            <button>Delete</button>
+          </form>
+        </div>
       <% } %>
       <% if (projects.length == 0) { %>
       <span class="gray">None</span>

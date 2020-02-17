@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "browser-refresh ./server/index.js"
+    "start": "browser-refresh ./server/index.js",
+    "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js"
   },
   "dependencies": {
     "adm-zip": "0.4.14",
@@ -14,9 +15,12 @@
     "ejs": "3.0.1",
     "express": "4.17.1",
     "fs-extra": "8.1.0",
+    "method-override": "3.0.0",
     "multiparty": "4.2.1"
   },
   "devDependencies": {
-    "browser-refresh": "1.7.3"
+    "browser-refresh": "1.7.3",
+    "mock-fs": "4.10.4",
+    "tap": "14.10.6"
   }
 }

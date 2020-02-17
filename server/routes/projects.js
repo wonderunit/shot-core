@@ -2,6 +2,7 @@ const multiparty = require('multiparty')
 
 const { get, all } = require('../db')
 const importer = require('../services/importer')
+const projectDestroyer = require('../services/project-destroyer')
 
 exports.new = (req, res) => {
   res.render('project/new')
@@ -21,7 +22,7 @@ exports.create = (req, res, next) => {
     }
 
     try {
-      let { redirectUri } = importer({ pathToZip: file.path })
+      let { uri: redirectUri } = importer({ pathToZip: file.path })
       return res.redirect(redirectUri)
     } catch (err) {
       return next(err)
@@ -43,4 +44,15 @@ exports.show = (req, res) => {
   events.forEach(event => (event.start_at = new Date(event.start_at)))
 
   res.render('project', { project, scenes, shots, events })
+}
+
+exports.destroy = (req, res) => {
+  let { projectId } = req.params
+
+  try {
+    projectDestroyer({ projectId })
+    return res.redirect('/')
+  } catch (err) {
+    return next(err)
+  }
 }
