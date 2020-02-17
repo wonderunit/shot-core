@@ -59,7 +59,6 @@ module.exports = function ({ pathToZip }) {
       return new Error('Not implemented yet. Try a script-based project.')
     } else {
       return new Error('Invalid ZIP. No .fountain or .storyboarder files found.')
-      return
     }
   }
 }
