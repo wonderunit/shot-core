@@ -1,16 +1,13 @@
 # Notes for Developers
 
-## Quick Testing
+## Testing
 
-Create a new database, run the first two tests, and seed with additional data. Then make the test database the development database so we can browse via the web server.
-
-    rm dev.sqlite3
-    rm test.sqlite3
-    sqlite3 test.sqlite3 < db/schema.sql
-    node test/importers.test.js
-    node test/scheduler.test.js
-    sqlite3 test.sqlite3 < db/seeds.sql
-    cp test.sqlite3 dev.sqlite3
+```
+npm install
+rm -f test.sqlite3
+sqlite3 test.sqlite3 < db/schema.sql
+npm t
+```
 
 ## Data
 
@@ -29,26 +26,42 @@ Shot durations are stored in milliseconds, as they are in board data for `.story
 
 ### Schedules and Events
 
-A schedule presents a list of events to a user  
+A schedule presents a list of events to a user.  
 A schedule has a start date.  
 
-An event can be for a shot or for some other task  
-An event has a rank within its schedule which determines the sort order  
-An event can only be on one schedule. But multiple events, each on different schedules, can be associated with the same shot.  
+An event can be for a shot or for some other task.  
+An event has a rank within its day which determines the sort order.  
 
 ### Projects and Scenes
 
 In shot list server, a script-based project is a "project", but a single scene is ALSO a "project".
 
-single scenes:
-- project does not have a `script_path`
-- `select * from scenes where scene.project_id = ?` returns a single row
-- assets are stored in `public/uploads/scenes`
-
-script-based projects:
-- project has a `script_path`
-- `select * from scenes where scene.project_id = ?` returns one or more rows
+Script-Based Project:
+- `project` has a `script_path` value
+- has one or multiple `scenes` rows associated by `project_id`
 - assets are stored in `public/uploads/projects`
+  ```
+  public/uploads/projects/1
+    multi-scene.fountain
+    storyboards/
+      Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/
+      storyboard.settings
+  ```
+
+Single Scene:
+- `project` does not have a `script_path` value
+- has only one `scenes` row associated by `project_id`
+- assets are stored in `public/uploads/scenes`, e.g.:  
+  ```
+  public/uploads/scenes/1
+    example.storyboarder
+    images/
+  ```
+
+To clear the uploads folder(s):
+
+    rm -f public/uploads/projects/*
+    rm -f public/uploads/scenes/*
 
 ### Style
 
