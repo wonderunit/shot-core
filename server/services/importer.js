@@ -24,8 +24,13 @@ module.exports = function ({ pathToZip }) {
   if (scriptFilename) {
     let scriptPath = path.join(folder, scriptFilename)
     let name = path.basename(scriptPath, '.fountain')
-    let projectId = run(...insertProject({ name, scriptPath })).lastInsertRowid
+    let projectId = run(...insertProject({ name })).lastInsertRowid
     let pathToFountainFile = `projects/${projectId}/${scriptFilename}`
+    run(
+      'UPDATE projects SET script_path = ? WHERE id = ?',
+      pathToFountainFile,
+      projectId
+    )
 
     importScript(run, {
       projectId,
