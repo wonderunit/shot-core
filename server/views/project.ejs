@@ -33,13 +33,21 @@
     <h2 class="f4 mv3">Shots</h2>
     <table class="w-100">
       <thead>
-        <th># <small>(in Scene)</small></th>
+        <th>Scene</th>
+        <th># in Scene</th>
         <th class="w-50">Notes <small>(from 1st board)</small></th>
         <th>Boards</th>
       </thead>
       <tbody>
         <% for (let shot of shots) { %>
         <tr>
+          <td>
+            <a
+              href="<%= `/projects/${shot.project_id}/scenes/${shot.scene_id}` %>"
+            >
+              <%= scenes.find(id => shot.scene_id).scene_number %>
+            </a>
+          </td>
           <td>
             <a
               href="<%= `/projects/${shot.project_id}/scenes/${shot.scene_id}/shots/${shot.id}` %>"
