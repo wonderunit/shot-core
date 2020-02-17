@@ -119,18 +119,10 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
   })
 }
 
-// startAt: string in sqlite-compatible date format (e.g.: new Date().toISOString())
-function insertSchedule ({ projectId, startAt }) {
+function insertEventForShot ({ projectId, sceneId, shotId, rank, duration, startAt }) {
   return [
-    'INSERT INTO schedules (project_id, start_at) VALUES (?, ?)',
-    projectId, startAt
-  ]
-}
-
-function insertEventForShot ({ projectId, sceneId, scheduleId, shotId, rank, duration, startAt }) {
-  return [
-    'INSERT INTO events (project_id, scene_id, schedule_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    projectId, sceneId, scheduleId, shotId, rank, duration, startAt
+    'INSERT INTO events (project_id, scene_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?)',
+    projectId, sceneId, shotId, rank, duration, startAt
   ]
 }
 
@@ -258,7 +250,6 @@ function importScene (run, {
 
 module.exports = {
   insertProject,
-  insertSchedule,
   insertEventForShot,
 
   importScript,

@@ -41,7 +41,7 @@ app.post('/projects', projects.create)
 app.get('/projects/:projectId', projects.show)
 app.delete('/projects/:projectId', projects.destroy)
 
-app.get('/projects/:projectId/schedules/:startDate', schedules.show)
+app.get('/projects/:projectId/schedule', schedules.show)
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', shots.show)
 

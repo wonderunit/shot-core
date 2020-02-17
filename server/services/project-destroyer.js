@@ -8,12 +8,11 @@ module.exports = function projectDestroyer ({ projectId }) {
 
   let scenes = all('SELECT * from scenes WHERE project_id = ?', projectId)
   let shots = all('SELECT * from shots WHERE project_id = ?', projectId)
-  let schedules = all('SELECT * from schedules WHERE project_id = ?', projectId)
   let events = all('SELECT * from events WHERE project_id = ?', projectId)
   let takes = all('SELECT * from takes WHERE project_id = ?', projectId)
 
   let tables = {
-    scenes, shots, schedules, events, takes
+    scenes, shots, events, takes
   }
 
   for (let [table, rows] of Object.entries(tables)) {

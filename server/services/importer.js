@@ -5,6 +5,7 @@ const path = require('path')
 
 const { run } = require('../db')
 const { insertProject, importScene, importScript } = require('../importers')
+const autoScheduler = require('./auto-scheduler')
 
 const { UPLOADS_PATH } = require('../config')
 
@@ -46,6 +47,8 @@ module.exports = function ({ pathToZip }) {
       uploadsPath,
       { preserveTimestamps: true, overwrite: false }
     )
+
+    autoScheduler({ projectId })
 
     return {
       uri: `/projects/${projectId}`

@@ -40,10 +40,7 @@ exports.show = (req, res) => {
   let shots = all('SELECT * FROM shots WHERE project_id = ?', projectId)
   shots.forEach(shot => (shot.boards_json = JSON.parse(shot.boards_json)))
 
-  let events = all(`select start_at, date(start_at, 'localtime') as day from events group by day`)
-  events.forEach(event => (event.start_at = new Date(event.start_at)))
-
-  res.render('project', { project, scenes, shots, events })
+  res.render('project', { project, scenes, shots })
 }
 
 exports.destroy = (req, res) => {

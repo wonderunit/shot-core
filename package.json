@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "browser-refresh ./server/index.js",
+    "start": "NODE_ENV=development browser-refresh ./server/index.js",
     "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js"
   },
   "dependencies": {
