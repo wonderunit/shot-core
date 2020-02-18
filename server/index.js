@@ -16,6 +16,7 @@ const monitor = require('./routes/monitor')
 const jsonParser = express.json()
 
 const app = express()
+app.set('port', process.env.PORT || 8000)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
 app.use(express.static('public'))
@@ -55,7 +56,18 @@ app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)
 
-const port = 8000
-app.listen(port, () => {
-  // console.log(`Listening on :${port}`)
+app.listen(app.get('port'), () => {
+  if (app.get('env') == 'development') {
+    const browserSync = require('browser-sync')
+    browserSync.create().init({
+      proxy: 'localhost:8000',
+      files: ['server/**/*', 'public/**/*', 'lib/*'],
+      ignore: ['node_modules'],
+      reloadDelay: 10,
+      notify: false,
+      ui: false,
+      open: false,
+      reloadOnRestart: true
+    })
+  }
 })

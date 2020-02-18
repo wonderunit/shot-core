@@ -1,11 +1,8 @@
 {
   "name": "shot-server",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "server": "NODE_ENV=development nodemon ./server/index.js",
-    "browser-sync": "NODE_ENV=development browser-sync start --proxy localhost:8000 --files='server/**/*, public/**/*, lib/*' --ignore=node_modules --reload-delay 10 --no-notify --no-ui --no-open",
-    "start": "NODE_ENV=development run-p --race server browser-sync",
+    "start": "nodemon ./server/index.js",
     "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js"
   },
   "dependencies": {
@@ -24,7 +21,6 @@
     "browser-sync": "2.26.7",
     "mock-fs": "4.10.4",
     "nodemon": "2.0.2",
-    "npm-run-all": "4.1.5",
     "tap": "14.10.6"
   }
 }
