@@ -49,9 +49,9 @@ module.exports = function ({ projectId }) {
   // initialize slater for the schedule of the project
   // using the shot of the earliest scheduled event
   let earliest_scheduled_event_shot_id = get(
-    'SELECT id, MIN(start_at) FROM events WHERE project_id = ?',
+    'SELECT id, shot_id, MIN(start_at) FROM events WHERE project_id = ?',
     project.id
-  ).id
+  ).shot_id
   run(
     `UPDATE projects
         SET slater_shot_id = ?
