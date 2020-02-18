@@ -181,7 +181,9 @@ function getSceneListFromFountain ({ script }) {
 function importScript (run, { projectId, script, scriptPath, pathToFountainFile }) {
   const sourcePath = path.dirname(scriptPath)
 
-  let scenes = getSceneListFromFountain({ script }).map(folder => {
+  let scenes = getSceneListFromFountain({ script })
+  .filter(folder => fs.existsSync(path.join(sourcePath, folder.storyboarderFilePath)))
+  .map(folder => {
     let scene = JSON.parse(fs.readFileSync(path.join(sourcePath, folder.storyboarderFilePath)))
 
     return {
