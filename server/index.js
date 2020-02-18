@@ -1,5 +1,6 @@
 const express = require('express')
 const methodOverride = require('method-override')
+const responseTime = require('response-time')
 const path = require('path')
 
 const parse = require('date-fns/parse')
@@ -29,6 +30,7 @@ app.use(methodOverride(function (req) {
     return method
   }
 }))
+app.use(responseTime())
 
 app.locals = {
   parse,

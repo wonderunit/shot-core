@@ -21,6 +21,7 @@
     "browser-sync": "2.26.7",
     "mock-fs": "4.10.4",
     "nodemon": "2.0.2",
+    "response-time": "2.3.2",
     "tap": "14.10.6"
   }
 }
