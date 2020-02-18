@@ -2,7 +2,7 @@ const addMilliseconds = require('date-fns/addMilliseconds')
 
 const { run, get, all } = require('../db')
 
-const { insertDay, insertEventForShot } = require('../importers')
+const { insertEventForShot } = require('../importers')
 
 // from importers.js
 function durationOr (value, defaultValue) {
