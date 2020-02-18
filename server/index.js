@@ -55,12 +55,7 @@ app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)
 
-const port = 3000
+const port = 8000
 app.listen(port, () => {
-  console.log(`Listening on :${port}`)
-
-  // browser-refresh
-  if (process.send) {
-    process.send('online')
-  }
+  // console.log(`Listening on :${port}`)
 })
