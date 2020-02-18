@@ -61,13 +61,16 @@ app.listen(app.get('port'), () => {
     const browserSync = require('browser-sync')
     browserSync.create().init({
       proxy: 'localhost:8000',
+      port: 3000,
       files: ['server/**/*', 'public/**/*', 'lib/*'],
       ignore: ['node_modules'],
       reloadDelay: 10,
       notify: false,
       ui: false,
       open: false,
-      reloadOnRestart: true
+      reloadOnRestart: true,
+      logLevel: 'silent'
     })
   }
+  console.log(`Listening on :3000`)
 })
