@@ -40,6 +40,8 @@ module.exports = function ({ pathToZip }) {
       pathToFountainFile
     })
 
+    autoScheduler({ projectId })
+
     let uploadsPath = path.join(UPLOADS_PATH, path.dirname(pathToFountainFile))
     fs.mkdirpSync(uploadsPath)
     fs.copySync(
@@ -47,8 +49,6 @@ module.exports = function ({ pathToZip }) {
       uploadsPath,
       { preserveTimestamps: true, overwrite: false }
     )
-
-    autoScheduler({ projectId })
 
     return {
       uri: `/projects/${projectId}`
