@@ -1,0 +1,21 @@
+<section class="schedule-scene section w-100 flex justify-between">
+  <div class="schedule-scene__number flex flex-column">
+    <div>Scene</div>
+    <div><%= scene.scene_number %>/---</div>
+  </div>
+  <div class="schedule-scene__shots flex flex-column">
+    <div>Shots</div>
+    <div>---</div>
+  </div>
+  <div class="schedule-scene__description flex flex-column">
+    <h3 class="ma0">Scene description and stuff</h3>
+    <p class="ma0">This is the synopsis of a scene and other stuff like that.</p>
+  </div>
+  <div class="schedule-scene__slugline flex flex-column">
+    <%= scene.slugline %>
+  </div>
+  <div class="schedule-scene__duration flex flex-column">
+    <div>Duration</div>
+    <div>---</div>
+  </div>
+</section>

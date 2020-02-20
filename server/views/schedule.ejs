@@ -1,67 +1,48 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
+<style>
+  .aspect-ratio--board {
+    <%= `padding-bottom: ${ 9 / 16 * 100 }%` %>
+  }
+  .section {
+    padding: 1rem 1rem;
+  }
+  .section > div {
+    padding-right: 1rem;
+  }
+  .schedule-day {
+    padding-bottom: 4rem;
+    background-color: gainsboro;
+  }
+  .schedule-scene {
+    color: #F5F5F5;
+    background-color: #285757;
+  }
+  .schedule-event {
+    background-color: #eee;
+  }
+</style>
+<div class="helvetica ph3 pa4-ns mv3 ma0-ns bg-white">
   <div class="lh-copy">
-    <h1 class="f3 ma0 mb4">
+    <h1 class="f3 ma0 mb4 mw8 center">
       <a href="/">Home</a> /
       <a href="/projects/<%= project.id %>"><%= project.name %></a> / <br />
     </h1>
 
-    <table class="w-100">
-      <thead>
-        <th></th>
-        <th></th>
-        <th>Scene</th>
-        <th>Shot</th>
-        <th class="w-20">Details</th>
-      </thead>
-      <tbody>
-        <% for (let [day, events] of Object.entries(eventsByDay)) { %>
-          <tr>
-            <td>
-              <div class="mt2 mb1">
-                <h4 class="f5 ma0"><%= format(new Date(day), 'd MMM, E') %></h4>
-              </div>
-            </td>
-            <td colspan="4">
-            </td>
-          </tr>
-          <% for (let event of events) { %>
-            <% if (shotsById[event.shot_id]) { %>
-              <tr>
-                <td></td>
-                <td>
-                  Shot
-                  <% if (events.indexOf(event) === events.length - 1) { %>🍸<% } %>
-                </td>
-                <td>
-                  <%= scenesById[shotsById[event.shot_id].scene_id].scene_number %>&nbsp;
-                  <%= scenesById[shotsById[event.shot_id].scene_id].slugline %>
-                </td>
-                <td>
-                  <a href="<%= `/projects/${project.id}/scenes/${shotsById[event.shot_id].scene_id}/shots/${event.shot_id}` %>">
-                    <%= shotsById[event.shot_id].shot_number %>
-                  </a>
-                </td>
-                <td>
-                  ⏰<%= format(event.start_at, 'hh:mm:ss a') %><br />
-                  ⏲<%= Math.ceil(event.duration / 1000) %> s<br />
-                </td>
-              </tr>
-              <tr>
-                <td colspan="5">
-                  <div class="mb2">
-                    <a
-                      class="db center w-100 no-underline hover-bg-light-blue h0 pa2"
-                      style="border-bottom: 1px solid #aaa"
-                      href=""></a>
-                  </div>
-                </td>
-              </tr>
+    <div class="schedule mw8 center flex flex-column f6">
+      <% for (let [dayId, day] of tree) { %>
+        <%- include('schedule/_day', { day: daysById[dayId] }) %>
+        <% for (let [parentType, parentId, children] of day) { %>
+          <% if (parentType == 'scene') { %>
+            <%- include('schedule/_scene', { scene: scenesById[parentId] }) %>
+            <% for (let id of children) { %>
+              <%- include('schedule/_shot-event', { event: eventsById[id], shot: shotsById[eventsById[id].shot_id], scene: scenesById[eventsById[id].scene_id] }) %>
             <% } %>
+          <% } else if (parentType == 'event') { %>
+            <%- include('schedule/_note-event', { event: { text: 'LUNCH' } }) %>
           <% } %>
         <% } %>
-      </tbody>
-    </table>
+      <% } %>
+    </div>
   </div>
 </div>
 <%- include('footer') -%>
