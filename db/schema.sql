@@ -26,11 +26,13 @@ CREATE TABLE shots(
 CREATE TABLE events(
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   project_id INTEGER NOT NULL,
-  scene_id INTEGER NOT NULL,
+  scene_id INTEGER,
   shot_id INTEGER,
   rank INTEGER NOT NULL,
-  start_at TEXT NOT NULL,
-  duration INTEGER
+  start_at TEXT,
+  duration INTEGER,
+  event_type TEXT,
+  metadata_json JSON
 );
 
 CREATE TABLE takes(
