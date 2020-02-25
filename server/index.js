@@ -74,6 +74,7 @@ app.listen(app.get('port'), () => {
       ui: false,
       open: false,
       reloadOnRestart: true,
+      online: false,
       logLevel: 'silent'
     })
   }
