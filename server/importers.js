@@ -119,13 +119,6 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
   })
 }
 
-function insertEventForShot ({ projectId, sceneId, shotId, rank, duration, startAt }) {
-  return [
-    'INSERT INTO events (project_id, scene_id, shot_id, rank, duration, start_at) VALUES (?, ?, ?, ?, ?, ?)',
-    projectId, sceneId, shotId, rank, duration, startAt
-  ]
-}
-
 function sql ({ table, insert }) {
   for (let key in insert) {
     if (insert[key] === undefined) delete insert[key]
@@ -252,7 +245,6 @@ function importScene (run, {
 
 module.exports = {
   insertProject,
-  insertEventForShot,
 
   importScript,
   importScene

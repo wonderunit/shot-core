@@ -1,22 +1,11 @@
-const path = require('path')
-const startOfDay = require('date-fns/startOfDay')
 const { format } = require('date-fns-tz')
-const isEqual = require('date-fns/isEqual')
 
 const { get, all } = require('../db')
-
 const { imagesPath } = require('../helpers')
 
 const q = arr => arr.map(() => '?').join(',')
 
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
-
-const dedupe = eq => (acc, curr) => {
-  if (!acc.find(prev => eq(prev, curr))) {
-    acc.push(curr)
-  }
-  return acc
-}
 
 const { entries } = Object
 
@@ -28,11 +17,19 @@ exports.show = (req, res) => {
     projectId
   )
 
-  let events = all(
-    `SELECT *, date(start_at, 'localtime') AS day
+  let days = all(
+    `SELECT *
      FROM events
-     WHERE project_id = ?
-     ORDER BY day, rank`,
+     WHERE project_id = ? AND event_type = 'day'
+     ORDER BY rank`,
+    projectId
+  )
+
+  let events = all(
+    `SELECT *
+     FROM events
+     WHERE project_id = ? AND event_type = 'shot'
+     ORDER BY rank`,
     projectId
   )
 
@@ -57,37 +54,35 @@ exports.show = (req, res) => {
     let board = boards.find(board => board.dialogue != null) || boards[0]
     event.thumbnail = `${imagesPath(scene)}/board-${board.number}-${board.uid}-thumbnail.png`
   })
+  days.forEach(event => (event.start_at = new Date(event.start_at)))
 
   // map
   let eventsById = events.reduce(keyById, {})
   let shotsById = shots.reduce(keyById, {})
   let scenesById = scenes.reduce(keyById, {})
 
-  // list days
-  let startAts = events
-    .map(event => event.start_at)
-    .map(startOfDay)
-    .reduce(dedupe(isEqual), [])
+  let daysById = days.reduce((acc, curr, n, arr) => {
+    let next = arr[n + 1]
 
-  // infer day data
-  let days = startAts.map(
-    (start_at, n) => {
-      let dayEvents = events.filter(event => isEqual(startOfDay(event.start_at), start_at))
+    let id = curr.start_at.toISOString()
 
-      return {
-        id: start_at.toISOString(),
-        start_at: dayEvents[0].start_at,
-        day_number: n + 1,
-        days_total: startAts.length,
-        event_ids: dayEvents.map(event => event.id),
-        shot_count: dayEvents.map(event => event.shot_id != null).length,
-        text: format(start_at, 'EEEE, dd MMM yyyy'),
-        lunch: '12am'
-      }
+    let dayEvents = events.filter(
+      event => event.rank > curr.rank && (next ? event.rank < next.rank : true)
+    )
+
+    acc[id] = {
+      id,
+      start_at: curr.start_at,
+      day_number: n + 1,
+      days_total: arr.length,
+      event_ids: dayEvents.map(event => event.id),
+      shot_count: dayEvents.map(event => event.shot_id != null).length,
+      text: format(curr.start_at, 'EEEE, dd MMM yyyy'),
+      lunch: '12am'
     }
-  )
 
-  let daysById = days.reduce(keyById, {})
+    return acc
+  }, {})
 
   // schedule tree
   // [
@@ -134,6 +129,7 @@ exports.show = (req, res) => {
         }
       }
     }
+    scene && children.push(scene)
 
     tree.push([id, children])
   }

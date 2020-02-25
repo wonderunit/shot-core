@@ -2,8 +2,6 @@ const addMilliseconds = require('date-fns/addMilliseconds')
 
 const { run, get, all } = require('../db')
 
-const { insertEventForShot } = require('../importers')
-
 // from importers.js
 function durationOr (value, defaultValue) {
   return value == null ? defaultValue : value
@@ -22,6 +20,21 @@ module.exports = function ({ projectId }) {
 
   let eventIds = []
   let rank = 0
+
+  // add an `event` for the first day
+  run(
+    `INSERT INTO events
+      (project_id, rank, start_at, event_type)
+    VALUES
+      (?, ?, ?, ?)`,
+    [
+      project.id,
+      rank++,
+      startAt.toISOString(),
+      'day'
+    ]
+  )
+
   for (let scene of scenes) {
     let shotsInScene = all('SELECT * FROM shots WHERE scene_id = ?', scene.id)
     // shotsInScene.forEach(deserialize)
@@ -29,18 +42,22 @@ module.exports = function ({ projectId }) {
     for (shot of shotsInScene) {
       let duration = durationOr(shot.duration, scene.defaultBoardTiming)
 
-      startAt = addMilliseconds(startAt, duration)
+      // startAt = addMilliseconds(startAt, duration)
 
-      let statement = insertEventForShot({
-        projectId: project.id,
-        sceneId: scene.id,
-        shotId: shot.id,
-        rank: rank++,
-        duration,
-        startAt: startAt.toISOString()
-      })
-
-      let eventId = run(...statement).lastInsertRowid
+      let eventId = run(
+        `INSERT INTO events
+          (project_id, scene_id, shot_id, rank, duration, event_type)
+        VALUES
+          (?, ?, ?, ?, ?, ?)`,
+        [
+          project.id,
+          scene.id,
+          shot.id,
+          rank++,
+          duration,
+          'shot'
+        ]
+      ).lastInsertRowid
 
       eventIds.push(eventId)
     }
