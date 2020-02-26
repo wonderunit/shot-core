@@ -1,20 +1,24 @@
-<section class="schedule-day section w-100 flex justify-between">
-  <div class="flex flex-column">
+<section class="schedule-day section w-100 flex">
+  <div class="flex flex-column w-10">
     <div>Day</div>
     <div><%= day.day_number %> / <%= day.days_total %></div>
   </div>
-  <div class="flex flex-column">
+  <div class="flex flex-column w-10">
     <div>Shots</div>
     <div><%= day.shot_count %></div>
   </div>
-  <div class="flex flex-column">
-    <div>
+  <div class="flex flex-column w-60">
+    <div class="center">
       <h3 class="f3 ma0">
         <%= day.text %>
       </h3>
     </div>
   </div>
-  <div class="flex flex-column">
-    <div>Start Time: <%= format(day.start_at, 'h:mm a') %></div>
+  <div class="flex flex-column w-20">
+    <% if (day.start_at) { %>
+      <div>
+        Start Time: <%= format(day.start_at, 'h:mm a') %>
+      </div>
+    <% } %>
   </div>
 </section>

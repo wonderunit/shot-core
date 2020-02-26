@@ -1,3 +1,4 @@
+const { addDays } = require('date-fns')
 const { format } = require('date-fns-tz')
 
 const { get, all } = require('../db')
@@ -54,30 +55,35 @@ exports.show = (req, res) => {
     let board = boards.find(board => board.dialogue != null) || boards[0]
     event.thumbnail = `${imagesPath(scene)}/board-${board.number}-${board.uid}-thumbnail.png`
   })
-  days.forEach(event => (event.start_at = new Date(event.start_at)))
+  days.forEach(event => (event.start_at = event.start_at ? new Date(event.start_at) : null))
 
   // map
   let eventsById = events.reduce(keyById, {})
   let shotsById = shots.reduce(keyById, {})
   let scenesById = scenes.reduce(keyById, {})
 
+  let lastStartAt = days[0].start_at
   let daysById = days.reduce((acc, curr, n, arr) => {
     let next = arr[n + 1]
-
-    let id = curr.start_at.toISOString()
 
     let dayEvents = events.filter(
       event => event.rank > curr.rank && (next ? event.rank < next.rank : true)
     )
 
-    acc[id] = {
-      id,
+    if (curr.start_at) {
+      lastStartAt = curr.start_at
+    } else {
+      lastStartAt = addDays(lastStartAt, 1)
+    }
+
+    acc[curr.id] = {
+      id: curr.id,
       start_at: curr.start_at,
       day_number: n + 1,
       days_total: arr.length,
       event_ids: dayEvents.map(event => event.id),
       shot_count: dayEvents.map(event => event.shot_id != null).length,
-      text: format(curr.start_at, 'EEEE, dd MMM yyyy'),
+      text: format(curr.start_at || lastStartAt, 'EEEE, dd MMM yyyy'),
       lunch: '12am'
     }
 
@@ -108,8 +114,10 @@ exports.show = (req, res) => {
 
   let scene
   let tree = []
-  for (let [id, day] of entries(daysById)) {
+  for (let { id } of days) {
+    let day = daysById[id]
     let children = []
+    scene = null
 
     for (let id of day.event_ids) {
       let event = eventsById[id]

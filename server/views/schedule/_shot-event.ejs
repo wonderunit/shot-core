@@ -1,4 +1,9 @@
-<section class="schedule-event section w-100 flex justify-between">
+<section
+  data-controller="shot-event"
+  data-shot-event-id="<%= event.id %>"
+  data-shot-event-project-id="<%= event.project_id %>"
+  class="schedule-event section w-100 flex justify-between"
+>
   <div class="schedule-event__scene-number flex flex-column">
     <div>Scene</div>
     <div><%= scene.scene_number %></div>
@@ -52,11 +57,16 @@
     <div>f/5.6</div>
   </div>
   <div class="flex flex-column">
-    <div>Duration</div>
+    <div>Dur.</div>
     <div>1:30</div>
   </div>
   <div class="flex flex-column">
     <div>Takes</div>
     <div>5</div>
+  </div>
+  <div class="flex flex-column">
+    <div>
+      <a class="link" data-action="click->shot-event#addDayAfter" href="#">Insert Day Below</a>
+    </div>
   </div>
 </section>

@@ -9,6 +9,7 @@ const { format } = require('date-fns-tz')
 const home = require('./routes/home')
 const projects = require('./routes/projects')
 const schedules = require('./routes/schedules')
+const events = require('./routes/events')
 const shots = require('./routes/shots')
 const takes = require('./routes/takes')
 const slater = require('./routes/slater')
@@ -48,6 +49,8 @@ app.get('/projects/:projectId', projects.show)
 app.delete('/projects/:projectId', projects.destroy)
 
 app.get('/projects/:projectId/schedule', schedules.show)
+
+app.post('/projects/:projectId/events', jsonParser, events.create)
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', shots.show)
 
