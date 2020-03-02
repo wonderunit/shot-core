@@ -22,12 +22,14 @@ async function handler (response) {
 application.register('shot-event', class extends Stimulus.Controller {
   addDayAfter (e) {
     e.preventDefault()
+  addDayAfter (event) {
+    event.preventDefault()
 
     let id = this.data.get('id')
     let projectId = this.data.get('project-id')
 
     let uri = `/projects/${projectId}/events`
-    let event = {
+    let body = {
       insertAfter: id
     }
 
@@ -36,7 +38,7 @@ application.register('shot-event', class extends Stimulus.Controller {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(event)
+        body: JSON.stringify(body)
       }
     )
     .then(handler)
