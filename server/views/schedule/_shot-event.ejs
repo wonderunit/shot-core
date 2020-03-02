@@ -1,8 +1,14 @@
 <section
-  data-controller="shot-event"
-  data-shot-event-id="<%= event.id %>"
-  data-shot-event-project-id="<%= event.project_id %>"
-  class="schedule-event section w-100 flex justify-between"
+  class="schedule-event  section w-100 flex justify-between"
+
+  data-controller="schedule-event"
+
+  data-schedule-event-id="<%= event.id %>"
+  data-schedule-event-rank="<%= event.rank %>"
+  data-schedule-event-project-id="<%= event.project_id %>"
+  data-schedule-event-event-type="<%= event.event_type %>"
+
+  data-action="pointerdown->schedule-event#pointerDown"
 >
   <div class="schedule-event__scene-number flex flex-column">
     <div>Scene</div>
@@ -66,7 +72,18 @@
   </div>
   <div class="flex flex-column">
     <div>
-      <a class="link" data-action="click->shot-event#addDayAfter" href="#">Insert Day Below</a>
+      <a class="link" data-action="click->schedule-event#addDayAfter" href="#">Insert Day Below</a>
+    </div>
+  </div>
+  <div class="flex flex-column" style="padding:0">
+    <div>
+      <a
+        class="link f2"
+        style="cursor:grab"
+        data-target="schedule-event.dragHandle schedule.dragHandle"
+      >
+      ≡
+      </a>
     </div>
   </div>
 </section>

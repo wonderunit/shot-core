@@ -20,6 +20,12 @@
   .schedule-event {
     background-color: #eee;
   }
+  .placeholder {
+    background-color:#eee;
+  }
+  .placeholder.highlight {
+    background-color: yellow;
+  }
 </style>
 <div class="helvetica ph3 pa4-ns mv3 ma0-ns bg-white">
   <div class="lh-copy">
@@ -29,7 +35,20 @@
       Schedule
     </h1>
 
-    <div class="schedule mw8 center flex flex-column f6">
+    <div
+      class="schedule mw8 center flex flex-column f6"
+      data-controller="schedule"
+      data-action="
+        pointerdown->schedule#pointerDown
+
+        dragstart->schedule#dragStart
+        dragover->schedule#dragOver
+        dragenter->schedule#dragOver
+        dragend@window->schedule#dragEnd
+
+        drop@window->schedule#drop
+      "
+    >
       <% for (let [dayId, day] of tree) { %>
         <%- include('schedule/_day', { day: daysById[dayId] }) %>
         <% for (let [parentType, parentId, children] of day) { %>

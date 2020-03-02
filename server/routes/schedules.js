@@ -1,7 +1,7 @@
 const { addDays } = require('date-fns')
 const { format } = require('date-fns-tz')
 
-const { get, all } = require('../db')
+const { get, all, run } = require('../db')
 const { imagesPath } = require('../helpers')
 
 const q = arr => arr.map(() => '?').join(',')
@@ -9,6 +9,49 @@ const q = arr => arr.map(() => '?').join(',')
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
 
 const { entries } = Object
+
+exports.update = (req, res) => {
+  let { projectId } = req.params
+  let [id, { rank }] = Object.entries(req.body)[0]
+
+  // console.log(`update id:${id} to rank:${rank}`)
+
+  let event = get('SELECT * FROM events WHERE id = ?', id)
+
+  let curr_rank = event.rank
+  let new_rank = rank
+
+  run(
+    `UPDATE events
+     SET rank = -1
+     WHERE id = ?`,
+     id)
+
+  if (new_rank > curr_rank) {
+    // down
+    run(`UPDATE events
+          SET rank = (rank - 1)
+          WHERE rank > ?
+          AND rank <= ?
+          AND project_id = ?`, curr_rank, new_rank, projectId)
+  } else {
+    // up
+    run(`UPDATE events
+          SET rank = (rank + 1)
+          WHERE rank >= ?
+          AND rank < ?
+          AND project_id = ?`, new_rank, curr_rank, projectId)
+  }
+
+  run(
+    `UPDATE events
+     SET rank = ?
+     WHERE id = ?`,
+    new_rank,
+    id)
+
+  res.sendStatus(204)
+}
 
 exports.show = (req, res) => {
   let { projectId } = req.params

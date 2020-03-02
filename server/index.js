@@ -49,6 +49,7 @@ app.get('/projects/:projectId', projects.show)
 app.delete('/projects/:projectId', projects.destroy)
 
 app.get('/projects/:projectId/schedule', schedules.show)
+app.patch('/projects/:projectId/schedule', jsonParser, schedules.update)
 
 app.post('/projects/:projectId/events', jsonParser, events.create)
 
