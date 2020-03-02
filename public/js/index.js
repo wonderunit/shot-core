@@ -180,7 +180,7 @@ application.register('schedule-event', class extends Stimulus.Controller {
     }
   }
 
-  addDayAfter (event) {
+  addDay (event) {
     event.preventDefault()
 
     let id = this.data.get('id')
@@ -188,7 +188,37 @@ application.register('schedule-event', class extends Stimulus.Controller {
 
     let uri = `/projects/${projectId}/events`
     let body = {
-      insertAfter: id
+      insertAfter: id,
+      eventType: 'day'
+    }
+
+    fetch(
+      uri,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    )
+    .then(handler)
+    .then(([{ ok, status }, result]) => {
+      window.location = window.location
+    })
+    .catch(err => {
+      alert(err)
+    })
+  }
+
+  addNote (event) {
+    event.preventDefault()
+
+    let id = this.data.get('id')
+    let projectId = this.data.get('project-id')
+
+    let uri = `/projects/${projectId}/events`
+    let body = {
+      insertAfter: id,
+      eventType: 'note'
     }
 
     fetch(

@@ -2,7 +2,7 @@ const { run, get } = require('../db')
 
 exports.create = (req, res, next) => {
   let { projectId } = req.params
-  let { insertAfter } = req.body
+  let { insertAfter, eventType } = req.body
 
   projectId = parseInt(projectId)
 
@@ -29,7 +29,7 @@ exports.create = (req, res, next) => {
     [
       projectId,
       rank,
-      'day'
+      eventType
     ]
   ]
 

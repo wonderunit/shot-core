@@ -8,7 +8,10 @@ const q = arr => arr.map(() => '?').join(',')
 
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
 
-const { entries } = Object
+const asDateOrNull = dateISOString => 
+  dateISOString
+    ? new Date(dateISOString)
+    : null
 
 exports.update = (req, res) => {
   let { projectId } = req.params
@@ -72,13 +75,15 @@ exports.show = (req, res) => {
   let events = all(
     `SELECT *
      FROM events
-     WHERE project_id = ? AND event_type = 'shot'
+     WHERE project_id = ?
      ORDER BY rank`,
     projectId
   )
 
   // shots by event
-  let shotIds = events.map(event => event.shot_id)
+  let shotIds = events
+    .filter(event => event.shot_id != null)
+    .map(event => event.shot_id)
   let shots = all(
     `SELECT * FROM shots WHERE id IN (${q(shotIds)})`, shotIds
   )
@@ -89,37 +94,38 @@ exports.show = (req, res) => {
     `SELECT * FROM scenes WHERE id IN (${q(sceneIds)})`, sceneIds
   )
 
-  // deserialize
-  events.forEach(event => (event.start_at = new Date(event.start_at)))
+  // process events
   events.forEach(event => {
+    event.start_at = asDateOrNull(event.start_at)
+
     let scene = scenes.find(scene => scene.id == event.scene_id)
-    let shot = shots.find(shot => shot.id == event.shot_id)
-    let boards = JSON.parse(shot.boards_json)
-    let board = boards.find(board => board.dialogue != null) || boards[0]
-    event.thumbnail = `${imagesPath(scene)}/board-${board.number}-${board.uid}-thumbnail.png`
+
+    if (event.shot_id) {
+      let shot = shots.find(shot => shot.id == event.shot_id)
+      let boards = JSON.parse(shot.boards_json)
+      let board = boards.find(board => board.dialogue != null) || boards[0]
+      event.thumbnail = `${imagesPath(scene)}/board-${board.number}-${board.uid}-thumbnail.png`
+    }
   })
-  days.forEach(event => (event.start_at = event.start_at ? new Date(event.start_at) : null))
 
-  // map
-  let eventsById = events.reduce(keyById, {})
-  let shotsById = shots.reduce(keyById, {})
-  let scenesById = scenes.reduce(keyById, {})
-
-  let lastStartAt = days[0].start_at
-  let daysById = days.reduce((acc, curr, n, arr) => {
+  let lastStartAt = asDateOrNull(days[0].start_at)
+  days = days.map((curr, n, arr) => {
     let next = arr[n + 1]
 
     let dayEvents = events.filter(
       event => event.rank > curr.rank && (next ? event.rank < next.rank : true)
     )
 
+    curr.start_at = asDateOrNull(curr.start_at)
     if (curr.start_at) {
       lastStartAt = curr.start_at
     } else {
       lastStartAt = addDays(lastStartAt, 1)
     }
 
-    acc[curr.id] = {
+    let displayDate = asDateOrNull(curr.start_at || lastStartAt)
+
+    return {
       id: curr.id,
       start_at: curr.start_at,
       project_id: curr.project_id,
@@ -130,63 +136,55 @@ exports.show = (req, res) => {
       days_total: arr.length,
       event_ids: dayEvents.map(event => event.id),
       shot_count: dayEvents.map(event => event.shot_id != null).length,
-      text: format(curr.start_at || lastStartAt, 'EEEE, dd MMM yyyy'),
+      text: displayDate ? format(displayDate, 'EEEE, dd MMM yyyy') : null,
       lunch: '12am'
     }
+  })
 
-    return acc
-  }, {})
+  // map
+  let eventsById = events.reduce(keyById, {})
+  let shotsById = shots.reduce(keyById, {})
+  let scenesById = scenes.reduce(keyById, {})
+  let daysById = days.reduce(keyById, {})
 
   // schedule tree
   // [
   //   [
   //     1, // day id
   //     [
-  //      [
-  //       // new scene
-  //       'scene',
-  //        2, // scene id
-  //        [
-  //          3 // shot event id
-  //        ]
-  //      ],
-  //      [
-  //       // note event
-  //       'event',
-  //       4 // event id
-  //      ]
+  //       [ "scene", 1 ], // type, id
+  //       [ "shot", 2 ],
+  //       [ "scene", 2 ],
+  //       [ "shot", 3 ],
+  //       [ "scene", 3 ],
+  //       [ "shot", 4 ],
+  //       [ "note", 12 ]
   //     ]
   //   ]
   // ]
-
-  let scene
+  let sceneId
   let tree = []
-  for (let { id } of days) {
-    let day = daysById[id]
+  for (let day of days) {
     let children = []
-    scene = null
+    sceneId = null
 
     for (let id of day.event_ids) {
       let event = eventsById[id]
 
-      if (event.shot_id == null) {
-        children.push('event', id)
+      if (event.shot_id == null && event.event_type == 'note') {
+        sceneId = null
+        children.push(['note', event.id])
+
       } else if (event.shot_id) {
-        if (scene && scene[1] != event.scene_id) {
-          children.push(scene)
-          scene = null
+        if (sceneId != event.scene_id) {
+          sceneId = event.scene_id
+          children.push(['scene', event.scene_id])
         }
 
-        if (scene) {
-          scene[2].push(event.id)
-        } else {
-          scene = ['scene', event.scene_id, [event.id]]
-        }
+        children.push(['shot', event.id])
       }
     }
-    scene && children.push(scene)
-
-    tree.push([id, children])
+    tree.push([day.id, children])
   }
 
   // for tree debugging

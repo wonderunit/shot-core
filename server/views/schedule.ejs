@@ -49,21 +49,20 @@
         drop@window->schedule#drop
       "
     >
-      <% for (let [dayId, day] of tree) { %>
+      <% for (let [dayId, children] of tree) { %>
         <%- include('schedule/_day', { day: daysById[dayId] }) %>
-        <% for (let [parentType, parentId, children] of day) { %>
-          <% if (parentType == 'scene') { %>
-            <%- include('schedule/_scene', { scene: scenesById[parentId] }) %>
-            <% for (let id of children) { %>
-              <%- include('schedule/_shot-event', {
+        <% for (let [type, id] of children) { %>
+          <% if (type == 'scene') { %>
+            <%- include('schedule/_scene', { scene: scenesById[id] }) %>
+          <% } else if (type == 'shot') { %>
+            <%- include('schedule/_shot-event', {
                 day: daysById[dayId],
                 event: eventsById[id],
                 shot: shotsById[eventsById[id].shot_id],
                 scene: scenesById[eventsById[id].scene_id]
               }) %>
-            <% } %>
-          <% } else if (parentType == 'event') { %>
-            <%- include('schedule/_note-event', { event: { text: 'LUNCH' } }) %>
+          <% } else if (type == 'note') { %>
+            <%- include('schedule/_note-event', { event: { ...eventsById[id], text: 'LUNCH' } }) %>
           <% } %>
         <% } %>
         <div class="schedule-divider mb3" style="border-top: 3px solid #ddd"></div>
