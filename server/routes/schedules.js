@@ -79,6 +79,10 @@ exports.show = (req, res) => {
     acc[curr.id] = {
       id: curr.id,
       start_at: curr.start_at,
+      project_id: curr.project_id,
+      rank: curr.rank,
+      event_type: curr.event_type,
+
       day_number: n + 1,
       days_total: arr.length,
       event_ids: dayEvents.map(event => event.id),

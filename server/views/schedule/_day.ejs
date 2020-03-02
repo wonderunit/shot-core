@@ -1,4 +1,13 @@
-<section class="schedule-day section w-100 flex">
+<section
+  class="schedule-day  section w-100 flex"
+
+  data-controller="schedule-event"
+
+  data-schedule-event-id="<%= day.id %>"
+  data-schedule-event-rank="<%= day.rank %>"
+  data-schedule-event-project-id="<%= day.project_id %>"
+  data-schedule-event-event-type="<%= day.event_type %>"
+>
   <div class="flex flex-column w-10">
     <div>Day</div>
     <div><%= day.day_number %> / <%= day.days_total %></div>
