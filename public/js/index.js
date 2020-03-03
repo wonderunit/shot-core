@@ -291,6 +291,7 @@ application.register('schedule-note', class extends Stimulus.Controller {
     this.labelTarget.style.display = state == 'idle' ? 'inline-block' : 'none'
     if (this.state == 'edit') {
       this.inputTarget.focus()
+      this.inputTarget.select()
     }
   }
 
