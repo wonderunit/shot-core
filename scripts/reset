@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+echo "Resetting ..."
+rm dev.sqlite3
+sqlite3 dev.sqlite3 < db/schema.sql
+rm -rf public/uploads/projects/*
+rm -rf public/uploads/scenes/*
+echo "Done. Server may be restarted now."

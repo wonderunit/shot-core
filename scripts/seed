@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+echo "Uploading …"
+curl \
+  -X POST \
+  -F "name=multi-part" \
+  -F "file=@test/fixtures/zip/multi-scene.zip" \
+  http://localhost:3000/projects
+echo ""
+echo "Done"
