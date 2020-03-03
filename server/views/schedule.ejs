@@ -1,4 +1,10 @@
 <%- include('header') %>
+<%
+const cycle = (() => {
+  let index = 0
+  return () => index++ % 2 == 0 ? true : false
+})()
+%>
 <style>
   .aspect-ratio--board {
     <%= `padding-bottom: ${ 9 / 16 * 100 }%` %>
@@ -16,11 +22,13 @@
     color: #F5F5F5;
     background-color: #285757;
   }
-  .zebra {
+  .schedule-shot,
+  .schedule-note {
     background-color: #eee;
   }
-  .zebra:nth-of-type(odd) {
-    background-color: #ddd;
+  .schedule-shot.zebra,
+  .schedule-note.zebra {
+    background-color: #fefeee;
   }
   .placeholder {
     background-color:#eee;
@@ -62,10 +70,16 @@
                 day: daysById[dayId],
                 event: eventsById[id],
                 shot: shotsById[eventsById[id].shot_id],
-                scene: scenesById[eventsById[id].scene_id]
+                scene: scenesById[eventsById[id].scene_id],
+
+                zebra: cycle()
               }) %>
           <% } else if (type == 'note') { %>
-            <%- include('schedule/_note-event', { event: { ...eventsById[id], text: 'LUNCH' } }) %>
+            <%- include('schedule/_note-event', {
+                event: { ...eventsById[id], text: 'LUNCH' },
+
+                zebra: cycle()
+              }) %>
           <% } %>
         <% } %>
         <div class="schedule-divider mb3" style="border-top: 3px solid #ddd"></div>
