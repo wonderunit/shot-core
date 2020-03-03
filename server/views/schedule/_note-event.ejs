@@ -1,7 +1,29 @@
-<section class="schedule-event section w-100 flex justify-center">
-  <div class="flex flex-column">
+<section
+  class="schedule-event  section w-100 flex justify-between"
+
+  data-controller="schedule-event"
+
+  data-schedule-event-id="<%= event.id %>"
+  data-schedule-event-rank="<%= event.rank %>"
+  data-schedule-event-project-id="<%= event.project_id %>"
+  data-schedule-event-event-type="<%= event.event_type %>"
+
+  data-action="pointerdown->schedule-event#pointerDown"
+>
+  <div class="flex flex-column w-100">
     <div class="center">
       <%= event.event_type %>
+    </div>
+  </div>
+  <div class="flex flex-column" style="padding:0">
+    <div>
+      <a
+        class="link f2"
+        style="cursor:grab"
+        data-target="schedule-event.dragHandle schedule.dragHandle"
+      >
+      ≡
+      </a>
     </div>
   </div>
 </section>
