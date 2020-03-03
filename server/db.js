@@ -5,7 +5,7 @@ let filepath = process.env.NODE_ENV == 'test'
   ? path.join(__dirname, '../test.sqlite3')
   : path.join(__dirname, '../dev.sqlite3')
 
-const db = new Database(filepath/*, { verbose: console.log }*/)
+const db = new Database(filepath/*, { verbose: console.info }*/)
 
 function run (string, ...bindParameters) {
   return db.prepare(string).run(...bindParameters)
