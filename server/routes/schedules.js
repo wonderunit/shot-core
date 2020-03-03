@@ -135,7 +135,7 @@ exports.show = (req, res) => {
       day_number: n + 1,
       days_total: arr.length,
       event_ids: dayEvents.map(event => event.id),
-      shot_count: dayEvents.map(event => event.shot_id != null).length,
+      shot_count: dayEvents.filter(event => event.shot_id != null).length,
       text: displayDate ? format(displayDate, 'EEEE, dd MMM yyyy') : null,
       lunch: '12am'
     }
