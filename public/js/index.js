@@ -307,6 +307,10 @@ application.register('schedule-note', class extends Stimulus.Controller {
     this.update()
   }
 
+  keyUp (event) {
+    if (event.key == 'Escape') this.cancel()
+  }
+
   submit (event) {
     event.preventDefault()
     this.update()

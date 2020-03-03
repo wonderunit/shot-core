@@ -32,7 +32,11 @@
       </label>
       <input
         class="w-100 pa2 db"
-        data-action="change->schedule-note#change blur->schedule-note#cancel"
+        data-action="
+          change->schedule-note#change
+          blur->schedule-note#cancel
+          keyup->schedule-note#keyUp
+        "
         data-target="schedule-note.input"
         value="<%= event.description %>" />
     </form>
