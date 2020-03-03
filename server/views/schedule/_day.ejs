@@ -1,5 +1,5 @@
 <section
-  class="schedule-day  section w-100 flex h4 hide-child justify-between"
+  class="schedule-event schedule-day  section pa3 w-100 flex hide-child justify-between"
 
   data-controller="schedule-event"
 
@@ -7,6 +7,8 @@
   data-schedule-event-rank="<%= day.rank %>"
   data-schedule-event-project-id="<%= day.project_id %>"
   data-schedule-event-event-type="<%= day.event_type %>"
+
+  style="height: 125px"
 >
   <div class="flex flex-column w-10">
     <div>Day</div>

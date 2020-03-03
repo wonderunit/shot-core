@@ -3,9 +3,6 @@
   .aspect-ratio--board {
     <%= `padding-bottom: ${ 9 / 16 * 100 }%` %>
   }
-  .section {
-    padding: 1rem 1rem;
-  }
   .section > div {
     padding-right: 1rem;
   }
@@ -13,15 +10,17 @@
     padding-right: 0;
   }
   .schedule-day {
-    padding-bottom: 4rem;
     background-color: gainsboro;
   }
   .schedule-scene {
     color: #F5F5F5;
     background-color: #285757;
   }
-  .schedule-event {
+  .zebra {
     background-color: #eee;
+  }
+  .zebra:nth-of-type(odd) {
+    background-color: #ddd;
   }
   .placeholder {
     background-color:#eee;

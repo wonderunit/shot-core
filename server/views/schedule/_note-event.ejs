@@ -1,5 +1,5 @@
 <section
-  class="schedule-event  section w-100 flex justify-between hide-child"
+  class="schedule-event schedule-note zebra  section pa3 w-100 flex justify-between hide-child"
 
   data-controller="schedule-event"
 
@@ -9,8 +9,10 @@
   data-schedule-event-event-type="<%= event.event_type %>"
 
   data-action="pointerdown->schedule-event#pointerDown"
+
+  style="height: 75px"
 >
-  <div class="flex flex-column w-100">
+  <div class="flex items-center w-100">
     <div class="center">
       <%= event.event_type %>
     </div>
