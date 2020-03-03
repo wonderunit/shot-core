@@ -38,3 +38,15 @@ exports.create = (req, res, next) => {
 
   return res.status(201).send()
 }
+
+exports.destroy = (req, res) => {
+  let { eventId } = req.params
+
+  run('DELETE FROM events WHERE id = ?', eventId)
+
+  try {
+    return res.sendStatus(204)
+  } catch (err) {
+    return next(err)
+  }
+}

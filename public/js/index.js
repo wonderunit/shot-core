@@ -254,6 +254,23 @@ application.register('schedule-event', class extends Stimulus.Controller {
       alert(err)
     })
   }
+
+  destroyEvent (event) {
+    event.preventDefault()
+
+    let id = this.data.get('id')
+    let projectId = this.data.get('project-id')
+    let uri = `/projects/${projectId}/events/${id}`
+
+    if (confirm('Are you sure?')) {
+      fetch( uri, { method: 'DELETE' })
+      .then(handler)
+        .then(reload)
+      .catch(err => {
+        alert(err)
+      })
+    }
+  }
 })
 
 application.register('placeholder', class extends Stimulus.Controller {

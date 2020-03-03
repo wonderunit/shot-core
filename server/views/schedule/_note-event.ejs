@@ -15,11 +15,11 @@
       <%= event.event_type %>
   <div class="flex flex-column">
     <div class="child">
-      Add:
-      <div class="flex flex-row">
-        <a class="dib link mr3" data-action="click->schedule-event#addDay" href="#">Day</a>
-        <a class="dib link" data-action="click->schedule-event#addNote" href="#">Note</a>
-      </div>
+    <div class="flex flex-row">
+      <a class="dib link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>
+      <a class="dib link mr3" data-action="click->schedule-event#addNote" href="#">+Note</a>
+      <a class="dib link dark-red" data-action="click->schedule-event#destroyEvent" href="#">Trash</a>
+    </div>
     </div>
   </div>
   <div class="flex flex-column" style="padding:0">

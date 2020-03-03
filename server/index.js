@@ -52,6 +52,7 @@ app.get('/projects/:projectId/schedule', schedules.show)
 app.patch('/projects/:projectId/schedule', jsonParser, schedules.update)
 
 app.post('/projects/:projectId/events', jsonParser, events.create)
+app.delete('/projects/:projectId/events/:eventId', events.destroy)
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', shots.show)
 
