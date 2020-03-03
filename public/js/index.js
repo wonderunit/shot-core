@@ -229,13 +229,17 @@ application.register('schedule-event', class extends Stimulus.Controller {
   addNote (event) {
     event.preventDefault()
 
+    let description = prompt('Description:')
+    if (description == null) return
+
     let id = this.data.get('id')
     let projectId = this.data.get('project-id')
 
     let uri = `/projects/${projectId}/events`
     let body = {
       insertAfter: id,
-      eventType: 'note'
+      eventType: 'note',
+      description
     }
 
     fetch(
@@ -270,6 +274,59 @@ application.register('schedule-event', class extends Stimulus.Controller {
         alert(err)
       })
     }
+  }
+})
+
+application.register('schedule-note', class extends Stimulus.Controller {
+  static targets = [ 'form', 'label', 'input' ]
+  state = 'idle' // idle, edit
+
+  initialize () {
+    this.transition(this.state)
+  }
+
+  transition (state) {
+    this.state = state
+    this.inputTarget.style.display = state == 'idle' ? 'none' : 'block'
+    this.labelTarget.style.display = state == 'idle' ? 'inline-block' : 'none'
+    if (this.state == 'edit') {
+      this.inputTarget.focus()
+    }
+  }
+
+  edit (event) {
+    this.transition('edit')
+  }
+
+  cancel (event) {
+    this.transition('idle')
+  }
+
+  change (event) {
+    this.update()
+  }
+
+  submit (event) {
+    event.preventDefault()
+    this.update()
+  }
+
+  update () {
+    let description = this.inputTarget.value
+    let uri = this.formTarget.action
+    let body = { description }
+
+    fetch(
+      uri,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    )
+    .then(handler)
+    .then(reload)
+    .catch(err => alert(err))
   }
 })
 

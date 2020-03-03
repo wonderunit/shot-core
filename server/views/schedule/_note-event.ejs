@@ -12,10 +12,30 @@
 
   style="height: 75px"
 >
-  <div class="flex items-center w-100">
-    <div class="center">
-      <%= event.event_type %>
-    </div>
+  <div
+    class="flex items-center w-100"
+    data-controller="schedule-note"
+  >
+    <form
+      class="w-100 tc"
+      action="/projects/<%= event.project_id %>/events/<%= event.id %>"
+      method="PATCH"
+      data-action="submit->schedule-note#submit"
+      data-target="schedule-note.form"
+      >
+      <label
+        class="dib bb bt-0 br-0 bl-0 b--dashed center pointer"
+        data-action="click->schedule-note#edit"
+        data-target="schedule-note.label"
+      >
+        <%= event.description %>
+      </label>
+      <input
+        class="w-100 pa2 db"
+        data-action="change->schedule-note#change blur->schedule-note#cancel"
+        data-target="schedule-note.input"
+        value="<%= event.description %>" />
+    </form>
   </div>
   <div class="flex items-center child">
     <a class="db link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>

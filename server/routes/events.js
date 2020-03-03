@@ -2,7 +2,7 @@ const { run, get } = require('../db')
 
 exports.create = (req, res, next) => {
   let { projectId } = req.params
-  let { insertAfter, eventType } = req.body
+  let { insertAfter, eventType, description = '' } = req.body
 
   projectId = parseInt(projectId)
 
@@ -23,13 +23,14 @@ exports.create = (req, res, next) => {
   // insert the new event
   let insertEvent = [
     `INSERT INTO events
-      (project_id, rank, event_type)
+      (project_id, rank, event_type, description)
     VALUES
-      (?, ?, ?)`,
+      (?, ?, ?, ?)`,
     [
       projectId,
       rank,
-      eventType
+      eventType,
+      description
     ]
   ]
 
@@ -37,6 +38,20 @@ exports.create = (req, res, next) => {
   let { changes, lastInsertRowId } = run(...insertEvent)
 
   return res.status(201).send()
+}
+
+exports.update = (req, res) => {
+  let { eventId } = req.params
+  let { description } = req.body
+
+  run(
+    `UPDATE events
+     SET description = :description
+     WHERE id = :eventId`,
+    { description, eventId }
+  )
+
+  return res.sendStatus(204)
 }
 
 exports.destroy = (req, res) => {
