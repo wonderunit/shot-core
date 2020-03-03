@@ -11,12 +11,15 @@
   data-action="pointerdown->schedule-event#pointerDown"
 >
   <div class="schedule-event__scene-number flex flex-column">
-    <div>Scene</div>
-    <div><%= scene.scene_number %></div>
+    <div class="ttu tracked f7">Scene</div>
+    <span class="dib center f3 lh-solid"
+    ><%= scene.scene_number %></span>
   </div>
   <div class="schedule-event__shot-number flex flex-column">
-    <div>Shot</div>
-    <div><%= shot.shot_number %></div>
+    <div class="ttu tracked f7">Shot</div>
+    <a class="dib center link f3 lh-solid"
+        href="/projects/<%= event.project_id %>/scenes/<%= scene.scene_number %>/shots/<%= shot.shot_number %>"
+    ><%= shot.shot_number %></a>
   </div>
   <div class="schedule-event__image flex flex-column">
     <div class="aspect-ratio aspect-ratio--board" style="width:100px;">
