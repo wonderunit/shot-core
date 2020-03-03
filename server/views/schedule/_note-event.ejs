@@ -15,6 +15,7 @@
   <div
     class="flex items-center w-100"
     data-controller="schedule-note"
+    data-schedule-note-current-description="<%= event.description %>"
   >
     <form
       class="w-100 tc"
@@ -28,17 +29,24 @@
         data-action="click->schedule-note#edit"
         data-target="schedule-note.label"
       >
-        <%= event.description %>
+        <% if (event.description && event.description != '') { %>
+          <%= event.description %>
+        <% } else { %>
+          <span class="o-50">---</span>
+        <% } %>
       </label>
       <input
         class="w-100 pa2 dn"
         data-action="
           change->schedule-note#change
-          blur->schedule-note#cancel
+          blur->schedule-note#blur
           keyup->schedule-note#keyUp
         "
         data-target="schedule-note.input"
         value="<%= event.description %>" />
+        <small data-target="schedule-note.hint" class="f7 black-60 dn pt1">
+          Esc to cancel
+        </small>
     </form>
   </div>
   <div class="flex items-center child">

@@ -278,7 +278,7 @@ application.register('schedule-event', class extends Stimulus.Controller {
 })
 
 application.register('schedule-note', class extends Stimulus.Controller {
-  static targets = [ 'form', 'label', 'input' ]
+  static targets = [ 'form', 'label', 'input', 'hint' ]
   state = 'idle' // idle, edit
 
   initialize () {
@@ -289,7 +289,10 @@ application.register('schedule-note', class extends Stimulus.Controller {
     this.state = state
     this.inputTarget.style.display = state == 'idle' ? 'none' : 'block'
     this.labelTarget.style.display = state == 'idle' ? 'inline-block' : 'none'
+    this.hintTarget.style.display = state == 'idle' ? 'none' : 'block'
+
     if (this.state == 'edit') {
+      this.inputTarget.value = this.data.get('current-description')
       this.inputTarget.focus()
       this.inputTarget.select()
     }
@@ -299,8 +302,8 @@ application.register('schedule-note', class extends Stimulus.Controller {
     this.transition('edit')
   }
 
-  cancel (event) {
-    this.transition('idle')
+  blur (event) {
+    this.cancel()
   }
 
   change (event) {
@@ -311,15 +314,23 @@ application.register('schedule-note', class extends Stimulus.Controller {
     if (event.key == 'Escape') this.cancel()
   }
 
+  cancel () {
+    this.transition('idle')
+  }
+
   submit (event) {
     event.preventDefault()
     this.update()
   }
 
   update () {
+    if (this.state != 'edit') return
+
     let description = this.inputTarget.value
     let uri = this.formTarget.action
     let body = { description }
+
+    if (description.length == 0) return
 
     fetch(
       uri,
