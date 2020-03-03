@@ -1,5 +1,5 @@
 <section
-  class="schedule-day  section w-100 flex hide-child"
+  class="schedule-day  section w-100 flex h4 hide-child justify-between"
 
   data-controller="schedule-event"
 
@@ -16,29 +16,21 @@
     <div>Shots</div>
     <div><%= day.shot_count %></div>
   </div>
-  <div class="flex flex-column w-60">
-    <div class="center">
-      <h3 class="f3 ma0">
-        <%= day.text %>
-      </h3>
-    </div>
+  <div class="flex justify-end w-40">
+    <h3 class="f3 ma0 lh-solid">
+      <%= day.text %>
+    </h3>
   </div>
-  <div class="flex flex-column w-20">
+  <div class="w-20">
     <% if (day.start_at) { %>
-      <div>
-        Start Time: <%= format(day.start_at, 'h:mm a') %>
-      </div>
+      Start: <%= format(day.start_at, 'h:mm a') %>
     <% } %>
   </div>
-  <div class="flex flex-column">
-    <div class="child">
-      <div class="flex flex-row">
-        <a class="dib link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>
-        <a class="dib link mr3" data-action="click->schedule-event#addNote" href="#">+Note</a>
-        <% if (day.day_number > 1) { %>
-          <a class="dib link dark-red" data-action="click->schedule-event#destroyEvent" href="#">Trash</a>
-        <% } %>
-      </div>
-    </div>
+  <div class="flex child w-20">
+    <a class="db link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>
+    <a class="db link <%= (day.day_number > 1) ? 'mr3' : '' %>" data-action="click->schedule-event#addNote" href="#">+Note</a>
+    <% if (day.day_number > 1) { %>
+      <a class="db link dark-red" data-action="click->schedule-event#destroyEvent" href="#">Trash</a>
+    <% } %>
   </div>
 </section>

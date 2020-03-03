@@ -70,23 +70,15 @@
     <div>Takes</div>
     <div>5</div>
   </div>
-  <div class="flex flex-column">
-    <div class="child">
-      <div class="flex flex-row">
-        <a class="dib link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>
-        <a class="dib link mr3" data-action="click->schedule-event#addNote" href="#">+Note</a>
-      </div>
-    </div>
+  <div class="flex items-center child">
+    <a class="db link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>
+    <a class="db link" data-action="click->schedule-event#addNote" href="#">+Note</a>
   </div>
-  <div class="flex flex-column" style="padding:0">
-    <div>
-      <a
-        class="link f2"
-        style="cursor:grab"
-        data-target="schedule-event.dragHandle schedule.dragHandle"
-      >
-      ≡
-      </a>
-    </div>
+  <div class="flex items-center child">
+    <a
+      class="db link f3 lh-solid relative"
+      data-target="schedule-event.dragHandle schedule.dragHandle"
+      style="cursor:grab; top: -0.125rem"
+    >≡</a>
   </div>
 </section>
