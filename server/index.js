@@ -67,20 +67,8 @@ app.get('/projects/:projectId/monitor', monitor.show)
 
 app.listen(app.get('port'), () => {
   if (app.get('env') == 'development') {
-    const browserSync = require('browser-sync')
-    browserSync.create().init({
-      proxy: 'localhost:8000',
-      port: 3000,
-      files: ['server/**/*', 'public/**/*', 'lib/*'],
-      ignore: ['node_modules'],
-      reloadDelay: 10,
-      notify: false,
-      ui: false,
-      open: false,
-      reloadOnRestart: true,
-      online: false,
-      logLevel: 'silent'
-    })
+    const http = require('http')
+    http.get('http://localhost:3000/__browser_sync__?method=reload')
+    console.log(`Listening on :3000`)
   }
-  console.log(`Listening on :3000`)
 })
