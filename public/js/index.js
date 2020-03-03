@@ -19,6 +19,25 @@ async function handler (response) {
 
 const closestScheduleEvent = el => el.closest('[data-controller="schedule-event"]')
 
+// very basic turbolinks-style HTML reloader
+function reload () {
+  document.body.style.cursor = 'wait'
+
+  fetch(window.location.toString())
+    .then(response => response.text())
+    .then(html => {
+      let element = document.createElement('html')
+      element.innerHTML = html
+      let body = element.querySelector('body') || document.createElement('body')
+      document.body.parentElement.replaceChild(body, document.body)
+    })
+    .catch(err => {
+      document.body.style.cursor = ''
+      console.error(err)
+      alert('An error occurred. Please reload.')
+    })
+}
+
 // const yPos = target => target.getBoundingClientRect().y + window.scrollY
 
 const application = Stimulus.Application.start()
@@ -122,8 +141,6 @@ application.register('schedule', class extends Stimulus.Controller {
     let id = parseInt(event.dataTransfer.getData('text/plain'), 10)
     let rank = this.dragState.rank
 
-    document.body.style.cursor = 'wait'
-
     this.moveScheduledEvent(id, rank)
   }
 
@@ -160,7 +177,7 @@ application.register('schedule', class extends Stimulus.Controller {
     )
     .then(handler)
     .then(([{ ok, status }, result]) => {
-      window.location = window.location
+      reload()
     })
     .catch(err => {
       alert(err)
@@ -202,7 +219,7 @@ application.register('schedule-event', class extends Stimulus.Controller {
     )
     .then(handler)
     .then(([{ ok, status }, result]) => {
-      window.location = window.location
+      reload()
     })
     .catch(err => {
       alert(err)
@@ -231,7 +248,7 @@ application.register('schedule-event', class extends Stimulus.Controller {
     )
     .then(handler)
     .then(([{ ok, status }, result]) => {
-      window.location = window.location
+      reload()
     })
     .catch(err => {
       alert(err)
