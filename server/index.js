@@ -15,7 +15,7 @@ const takes = require('./routes/takes')
 const slater = require('./routes/slater')
 const monitor = require('./routes/monitor')
 
-const { truncate } = require('./helpers')
+const { truncate, durationMsecsToString } = require('./helpers')
 
 const jsonParser = express.json()
 
@@ -38,7 +38,8 @@ app.use(responseTime())
 app.locals = {
   parse,
   format,
-  truncate
+  truncate,
+  durationMsecsToString
 }
 
 app.get('/', home.index)

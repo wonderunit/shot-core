@@ -93,7 +93,8 @@ exports.show = (req, res) => {
   let scenes = all(`
     SELECT
       scenes.*,
-      COUNT(shots.id) AS shots_count
+      COUNT(shots.id) AS shots_count,
+      SUM(shots.duration) AS shots_duration
     FROM
       scenes
       INNER JOIN shots ON shots.scene_id = scenes.id
