@@ -4,10 +4,12 @@ const cycle = (() => {
   let index = 0
   return () => index++ % 2 == 0 ? true : false
 })()
+
+let aspectRatio = JSON.parse(Object.values(scenesById)[0].metadata_json).aspectRatio
 %>
 <style>
   .aspect-ratio--board {
-    <%= `padding-bottom: ${ 9 / 16 * 100 }%` %>
+    <%= `padding-bottom: ${ 1 / aspectRatio * 100 }%` %>
   }
   .section > div {
     padding-right: 1rem;
