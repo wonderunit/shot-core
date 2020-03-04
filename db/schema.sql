@@ -32,6 +32,7 @@ CREATE TABLE events(
   start_at TEXT,
   duration INTEGER,
   event_type TEXT,
+  description TEXT,
   metadata_json JSON
 );
 
