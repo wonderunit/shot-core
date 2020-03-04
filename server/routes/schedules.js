@@ -72,11 +72,17 @@ exports.show = (req, res) => {
     projectId
   )
 
-  let events = all(
-    `SELECT *
-     FROM events
-     WHERE project_id = ?
-     ORDER BY rank`,
+  let events = all(`
+    SELECT
+      events.*,
+      COUNT(takes.id) as takes_count
+    FROM
+      events
+      LEFT JOIN takes ON takes.shot_id = events.shot_id
+    WHERE
+      events.project_id = ?
+    GROUP BY 1
+    ORDER BY rank`,
     projectId
   )
 
