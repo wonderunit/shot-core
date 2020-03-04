@@ -88,19 +88,32 @@ exports.show = (req, res) => {
     `SELECT * FROM shots WHERE id IN (${q(shotIds)})`, shotIds
   )
 
-  // scenes by shot
+  // scenes by shot, with shots_count (total # of shots in scene)
   let sceneIds = shots.map(shot => shot.scene_id)
-  let scenes = all(
-    `SELECT * FROM scenes WHERE id IN (${q(sceneIds)})`, sceneIds
+  let scenes = all(`
+    SELECT
+      scenes.*,
+      COUNT(shots.id) AS shots_count
+    FROM
+      scenes
+      INNER JOIN shots ON shots.scene_id = scenes.id
+    WHERE scenes.id IN (${q(sceneIds)})
+    GROUP BY 1
+    `,
+    sceneIds
+  )
+  // total # of scenes in project
+  let { project_scenes_count } = get(
+    `SELECT count(id) AS project_scenes_count FROM scenes WHERE project_id = ?`,
+    projectId
   )
 
   // process events
   events.forEach(event => {
     event.start_at = asDateOrNull(event.start_at)
 
-    let scene = scenes.find(scene => scene.id == event.scene_id)
-
     if (event.shot_id) {
+      let scene = scenes.find(scene => scene.id == event.scene_id)
       let shot = shots.find(shot => shot.id == event.shot_id)
       let boards = JSON.parse(shot.boards_json)
       let board = boards.find(board => board.dialogue != null) || boards[0]
@@ -162,6 +175,7 @@ exports.show = (req, res) => {
   //     ]
   //   ]
   // ]
+
   let sceneId
   let tree = []
   for (let day of days) {
@@ -178,7 +192,7 @@ exports.show = (req, res) => {
       } else if (event.shot_id) {
         if (sceneId != event.scene_id) {
           sceneId = event.scene_id
-          children.push(['scene', event.scene_id])
+          children.push(['scene', event.scene_id, { project_scenes_count }])
         }
 
         children.push(['shot', event.id])
@@ -191,5 +205,7 @@ exports.show = (req, res) => {
   // res.set('Content-Type', 'text/plain')
   // res.send(JSON.stringify(tree, null, 2))
 
-  res.render('schedule', { project, scenesById, shotsById, eventsById, daysById, tree })
+  res.render('schedule', {
+    project, scenesById, shotsById, eventsById, daysById, tree
+  })
 }

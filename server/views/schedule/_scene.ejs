@@ -1,11 +1,11 @@
 <section class="schedule-event schedule-scene   section pa3 w-100 flex justify-between">
   <div class="schedule-scene__number flex flex-column">
     <div>Scene</div>
-    <div><%= scene.scene_number %>/---</div>
+    <div><%= scene.scene_number %> / <%= project_scenes_count %></div>
   </div>
   <div class="schedule-scene__shots flex flex-column">
     <div>Shots</div>
-    <div>---</div>
+    <div><%= scene.shots_count %></div>
   </div>
   <div class="schedule-scene__description flex flex-column">
     <h3 class="ma0">Scene description and stuff</h3>

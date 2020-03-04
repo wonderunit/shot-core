@@ -62,9 +62,12 @@ const cycle = (() => {
     >
       <% for (let [dayId, children] of tree) { %>
         <%- include('schedule/_day', { day: daysById[dayId] }) %>
-        <% for (let [type, id] of children) { %>
+        <% for (let [type, id, rest] of children) { %>
           <% if (type == 'scene') { %>
-            <%- include('schedule/_scene', { scene: scenesById[id] }) %>
+            <%- include('schedule/_scene', {
+                scene: scenesById[id],
+                ...rest
+              }) %>
           <% } else if (type == 'shot') { %>
             <%- include('schedule/_shot-event', {
                 day: daysById[dayId],
