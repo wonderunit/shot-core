@@ -227,6 +227,7 @@ exports.show = (req, res) => {
   // res.send(JSON.stringify(tree, null, 2))
 
   res.render('schedule', {
-    project, scenesById, shotsById, eventsById, daysById, tree
+    project, scenesById, shotsById, eventsById, daysById, tree,
+    aspectRatio: JSON.parse(scenes[0].metadata_json).aspectRatio
   })
 }
