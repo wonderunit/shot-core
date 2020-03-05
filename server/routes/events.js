@@ -42,16 +42,36 @@ exports.create = (req, res, next) => {
 
 exports.update = (req, res) => {
   let { eventId } = req.params
-  let { description } = req.body
+  let { description, startAt } = req.body
 
-  run(
-    `UPDATE events
-     SET description = :description
-     WHERE id = :eventId`,
-    { description, eventId }
-  )
+  if (startAt) {
+    try {
+      if (new Date(startAt) == 'Invalid Date') {
+        throw new Error('Invalid Date')
+      }
 
-  return res.sendStatus(204)
+      run(
+        `UPDATE events
+        SET start_at = :start_at
+        WHERE id = :id`,
+        { start_at: startAt, id: eventId }
+      )
+      return res.sendStatus(204)
+    } catch (err) {
+      console.error(err)
+      return res.status(422).send('Invalid Date')
+    }
+  }
+
+  if (description) {
+    run(
+      `UPDATE events
+      SET description = :description
+      WHERE id = :eventId`,
+      { description, eventId }
+    )
+    return res.sendStatus(204)
+  }
 }
 
 exports.destroy = (req, res) => {

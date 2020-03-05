@@ -7,6 +7,9 @@
   data-schedule-event-rank="<%= day.rank %>"
   data-schedule-event-project-id="<%= day.project_id %>"
   data-schedule-event-event-type="<%= day.event_type %>"
+  <% if (day.start_at) { %>
+    data-schedule-event-start-at="<%= day.start_at.toISOString() %>"
+  <% } %>
 
   style="height: 125px"
 >
@@ -24,8 +27,18 @@
     </h3>
   </div>
   <div class="w-20">
-    <% if (day.start_at) { %>
-      Start: <%= format(day.start_at, 'h:mm a') %>
+    <% if (day.day_number == 1) { %>
+      Start: <a
+        class="dib bb bt-0 br-0 bl-0 b--dashed link"
+        href="#"
+        data-action="click->schedule-event#editStartAt"
+        >
+        <% if (day.start_at) { %>
+          <%= format(day.start_at, 'h:mm a') %>
+        <% } else { %>
+          Edit Time
+        <% } %>
+      </a>
     <% } %>
   </div>
   <div class="flex child w-20">

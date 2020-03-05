@@ -19,6 +19,16 @@ async function handler (response) {
 
 const closestScheduleEvent = el => el.closest('[data-controller="schedule-event"]')
 
+const as12Hour = date => {
+  let h = date.getHours()
+  let m = date.getMinutes()
+
+  let a = h < 12 ? 'am' : 'pm'
+  h = h % 12 || 12
+
+  return `${h}:${m.toString().padStart(2, '0')} ${a.toUpperCase()}`
+}
+
 // very basic turbolinks-style HTML reloader
 function reload () {
   document.body.style.cursor = 'wait'
@@ -195,6 +205,44 @@ application.register('schedule-event', class extends Stimulus.Controller {
     } else {
       this.element.draggable = true
     }
+  }
+
+  editStartAt (event) {
+    event.preventDefault()
+
+    let date = new Date(this.data.get('startAt'))
+
+    let placeholder = as12Hour(date)
+
+    let input = prompt('When should this day start? (e.g. 9:00 AM)', placeholder)
+
+    try {
+      let [t, h, m, a] = input.match(/(\d+):(\d+)(.+)/)
+      h = parseInt(h, 10)
+      m = parseInt(m, 10)
+      a = a.trim().toLowerCase()
+      if (a == 'pm' && h <  12) h = h + 12
+      if (a == 'am' && h == 12) h = 0
+      date.setHours(h)
+      date.setMinutes(m)
+      date.setSeconds(0)
+    } catch (err) {
+      alert('Could not understand time input.')
+      return
+    }
+
+    let body = {
+      startAt: date.toISOString()
+    }
+
+    fetch(`/projects/${this.data.get('project-id')}/events/${this.data.get('id')}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    .then(handler)
+    .then(reload)
+    .catch(err => alert(err))
   }
 
   addDay (event) {
