@@ -220,10 +220,10 @@ application.register('schedule-event', class extends Stimulus.Controller {
       let [t, h, m, a] = input.match(/(\d+):(\d+)(.+)/)
       h = parseInt(h, 10)
       m = parseInt(m, 10)
+      if (h > 12 || m > 59) throw new Error('Invalid Date')
       a = a.trim().toLowerCase()
       if (a == 'pm' && h <  12) h = h + 12
       if (a == 'am' && h == 12) h = 0
-      if (h > 12 || m > 59) throw new Error('Invalid Date')
       date.setHours(h)
       date.setMinutes(m)
       date.setSeconds(0)
