@@ -277,7 +277,7 @@ application.register('schedule-event', class extends Stimulus.Controller {
   }
 })
 
-application.register('schedule-note', class extends Stimulus.Controller {
+class InlineEditor extends Stimulus.Controller {
   static targets = [ 'form', 'label', 'input', 'hint' ]
   state = 'idle' // idle, edit
 
@@ -292,7 +292,7 @@ application.register('schedule-note', class extends Stimulus.Controller {
     this.hintTarget.style.display = state == 'idle' ? 'none' : 'block'
 
     if (this.state == 'edit') {
-      this.inputTarget.value = this.data.get('current-description')
+      this.inputTarget.value = this.data.get('value')
       this.inputTarget.focus()
       this.inputTarget.select()
     }
@@ -325,12 +325,31 @@ application.register('schedule-note', class extends Stimulus.Controller {
 
   update () {
     if (this.state != 'edit') return
+    if (this.valid()) {
+      this.save()
+    }
+  }
 
+  valid () {
+    return true
+  }
+
+  save () {
+    //
+  }
+}
+
+application.register('schedule-note', class extends InlineEditor {
+  valid () {
     let description = this.inputTarget.value
-    let uri = this.formTarget.action
-    let body = { description }
+    if (description.length == 0 || description.length == '') return false
+    return true
+  }
 
-    if (description.length == 0) return
+  save () {
+    let uri = this.formTarget.action
+    let description = this.inputTarget.value
+    let body = { description }
 
     fetch(
       uri,
