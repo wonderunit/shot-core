@@ -4,6 +4,8 @@ const { format } = require('date-fns-tz')
 const { get, all, run } = require('../db')
 const { imagesPath } = require('../helpers')
 
+const { PerspectiveCamera } = require('three')
+
 const q = arr => arr.map(() => '?').join(',')
 
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
@@ -123,8 +125,20 @@ exports.show = (req, res) => {
       let scene = scenes.find(scene => scene.id == event.scene_id)
       let shot = shots.find(shot => shot.id == event.shot_id)
       let boards = JSON.parse(shot.boards_json)
-      let board = boards.find(board => board.dialogue != null) || boards[0]
-      event.thumbnail = `${imagesPath(scene)}/board-${board.number}-${board.uid}-thumbnail.png`
+
+      let { number, uid } = boards.find(board => board.dialogue != null) || boards[0]
+      let { aspectRatio } = JSON.parse(scene.metadata_json)
+
+      event.thumbnail = `${imagesPath(scene)}/board-${number}-${uid}-thumbnail.png`
+
+      let sgBoard = boards.find(board => board.sg)
+      if (sgBoard) {
+        let { sg } = sgBoard
+        let camera = sg.data.sceneObjects[sg.data.activeCamera]
+        let camera3d = new PerspectiveCamera(camera.fov, aspectRatio)
+        event.sg = sg
+        event.sgCameraFocalLength = Math.floor(camera3d.getFocalLength()) + 'mm'
+      }
     }
   })
 

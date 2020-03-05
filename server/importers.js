@@ -18,6 +18,20 @@ function durationOr (value, defaultValue) {
   return value == null ? defaultValue : value
 }
 
+function transformSg (sg) {
+  return {
+    // include the sg version
+    version: sg.version,
+    data: {
+      // include the active camera (we need it for FOV)
+      activeCamera: sg.data.activeCamera,
+      sceneObjects: {
+        [sg.data.activeCamera]: sg.data.sceneObjects[sg.data.activeCamera]
+      }
+    }
+  }
+}
+
 function insertProject ({ name, scriptPath }) {
   return scriptPath
     ? ['INSERT INTO projects (name, script_path) VALUES (?, ?)', name, scriptPath]
@@ -86,7 +100,7 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
     } = board
 
     let sg = board.sg
-      ? { version: board.sg.version }
+      ? transformSg(board.sg)
       : undefined
 
     return {
