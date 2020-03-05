@@ -23,7 +23,15 @@
   </div>
   <div class="flex justify-end w-40">
     <h3 class="f3 ma0 lh-solid">
-      <%= day.text %>
+      <% if (day.day_number == 1) { %>
+        <a
+          class="dib bb bt-0 br-0 bl-0 b--dashed link"
+          href="#"
+          data-action="click->schedule-event#editDate"
+        >
+          <%= day.text %>
+        </a>
+      <% } %>
     </h3>
   </div>
   <div class="w-20">

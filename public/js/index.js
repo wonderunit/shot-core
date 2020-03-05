@@ -207,6 +207,28 @@ application.register('schedule-event', class extends Stimulus.Controller {
     }
   }
 
+  editDate (event) {
+    event.preventDefault()
+
+    let startAt = new Date(this.data.get('startAt'))
+
+    let placeholder = startAt.toLocaleDateString()
+    let input = prompt('What date?', placeholder)
+
+    let time = as12Hour(startAt)
+    let string = input + ' ' + time
+
+    let date = (new Date(Date.parse(string)))
+    fetch(`/projects/${this.data.get('project-id')}/events/${this.data.get('id')}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ startAt: date.toISOString() })
+    })
+    .then(handler)
+    .then(reload)
+    .catch(err => alert(err))
+  }
+
   editStartAt (event) {
     event.preventDefault()
 
