@@ -48,8 +48,9 @@ exports.show = (req, res) => {
   let project = get('SELECT * FROM projects WHERE id = ?', projectId)
 
   let slater
-  if (project.slater_shot_id) {
-    let shot = get('SELECT * FROM shots WHERE id = ?', project.slater_shot_id)
+  if (project.slater_event_id) {
+    let event = get('SELECT * FROM events WHERE id = ?', project.slater_event_id)
+    let shot = get('SELECT * FROM shots WHERE id = ?', event.shot_id)
     let scene = get('SELECT * FROM scenes WHERE id = ?', shot.scene_id)
     let takes = all('SELECT * FROM takes WHERE shot_id = ?', shot.id)
 

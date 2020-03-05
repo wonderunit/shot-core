@@ -2,7 +2,7 @@ CREATE TABLE projects (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   script_path TEXT,
-  slater_shot_id INTEGER
+  slater_event_id INTEGER
 );
 
 CREATE TABLE scenes(

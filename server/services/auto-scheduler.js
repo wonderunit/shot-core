@@ -64,18 +64,18 @@ module.exports = function ({ projectId }) {
   }
 
   // initialize slater for the schedule of the project
-  let earliest_scheduled_event_shot_id = get(
+  let earliest_scheduled_shot_event_id = get(
     `SELECT id, shot_id, MIN(rank) FROM events
      WHERE shot_id IS NOT NULL
      AND event_type = 'shot'
      AND project_id = ?`,
     project.id
-  ).shot_id
+  ).id
   run(
     `UPDATE projects
-        SET slater_shot_id = ?
+        SET slater_event_id = ?
         WHERE id = ?`,
-    earliest_scheduled_event_shot_id,
+    earliest_scheduled_shot_event_id,
     project.id
   )
 }
