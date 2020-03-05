@@ -91,13 +91,23 @@
 
           <form
             class="mv3 mr3"
+            data-remote="true"
+            method="POST"
+            action="<%= `/projects/${project.id}/slater.json` %>"
           >
-            <button disabled title="Next Scheduled Shot">Next Shot</button>
+            <input type="hidden" name="_method" value="PATCH">
+            <input name="transition" value="next" type="hidden" />
+            <button>Next Shot →</button>
           </form>
           <form
             class="mv3 mr3"
+            data-remote="true"
+            method="POST"
+            action="<%= `/projects/${project.id}/slater.json` %>"
           >
-            <button disabled title="Previous Scheduled Shot">Previous Shot</button>
+            <input type="hidden" name="_method" value="PATCH">
+            <input name="transition" value="previous" type="hidden" />
+            <button>Previous Shot</button>
           </form>
           <form
             class="mv3 mr3"

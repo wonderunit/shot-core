@@ -5,23 +5,26 @@ for (let form of forms) {
     event.preventDefault()
 
     let inputs = form.querySelectorAll('input')
-    let object = [...inputs].reduce((acc, { name, value }) => {
+    let body = [...inputs].reduce((acc, { name, value }) => {
       acc[name] = value
       return acc
     }, {})
 
-    object.at = (new Date()).toISOString()
+    body.at = (new Date()).toISOString()
 
-    await fetch(
-      form.action,
-      {
-        method: form.method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(object)
-      }
-    )
+    let method
+    if (body._method) {
+      method = body._method
+      delete body._method
+    } else {
+      method = form.method
+    }
+
+    await fetch(form.action, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
     window.location = window.location
   }
 }

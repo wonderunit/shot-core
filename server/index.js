@@ -64,6 +64,7 @@ app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId/actio
 app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId/cut.json', jsonParser, takes.cut)
 
 app.get('/projects/:projectId/slater', slater.show)
+app.patch('/projects/:projectId/slater.json', jsonParser, slater.update)
 app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)

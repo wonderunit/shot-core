@@ -1,4 +1,4 @@
-const { get, all } = require('../db')
+const { run, get, all } = require('../db')
 const slaterCanvas = require('../slater-canvas')
 
 const takeState = take => {
@@ -39,6 +39,46 @@ const display = take => {
         : status,
     button,
     status
+  }
+}
+
+exports.update = (req, res) => {
+  let { projectId } = req.params
+  let { transition } = req.body
+
+  let { slater_event_id } = get(
+    `SELECT slater_event_id FROM projects WHERE id = ?`,
+    projectId)
+
+  let events = all(`
+  SELECT
+    id, rank
+  FROM
+    events
+  WHERE project_id = ?
+  AND shot_id IS NOT NULL
+  AND event_type = 'shot'
+  ORDER BY rank
+  `, projectId)
+
+  let curr = events.find(e => e.id == slater_event_id)
+
+  let next = events.find(e => e.rank > curr.rank ) || events[events.length - 1]
+  let prev = [...events].reverse().find(e => e.rank < curr.rank ) || events[0]
+
+  switch (transition) {
+    case 'next':
+      run(
+        `UPDATE projects SET slater_event_id = ? WHERE id = ?`,
+        next.id, projectId)
+      return res.sendStatus(204)
+    case 'previous':
+      run(
+        `UPDATE projects SET slater_event_id = ? WHERE id = ?`,
+        prev.id, projectId)
+      return res.sendStatus(204)
+    default:
+      return res.status(422).send()
   }
 }
 
