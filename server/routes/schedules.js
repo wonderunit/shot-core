@@ -170,7 +170,7 @@ exports.show = (req, res) => {
       days_total: arr.length,
       event_ids: dayEvents.map(event => event.id),
       shot_count: dayEvents.filter(event => event.shot_id != null).length,
-      text: displayDate ? format(displayDate, 'EEEE, dd MMM yyyy') : null,
+      text: displayDate ? format(displayDate, 'EEEE, dd MMM yyyy') : null
     }
   })
 
