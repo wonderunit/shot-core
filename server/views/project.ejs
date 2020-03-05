@@ -42,11 +42,9 @@
         <% for (let shot of shots) { %>
         <tr>
           <td>
-            <a
-              href="<%= `/projects/${shot.project_id}/scenes/${shot.scene_id}` %>"
-            >
+            <span>
               <%= scenes.find(scene => scene.id == shot.scene_id).scene_number %>
-            </a>
+            </span>
           </td>
           <td>
             <a
