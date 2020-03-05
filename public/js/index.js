@@ -223,6 +223,7 @@ application.register('schedule-event', class extends Stimulus.Controller {
       a = a.trim().toLowerCase()
       if (a == 'pm' && h <  12) h = h + 12
       if (a == 'am' && h == 12) h = 0
+      if (h > 12 || m > 59) throw new Error('Invalid Date')
       date.setHours(h)
       date.setMinutes(m)
       date.setSeconds(0)
