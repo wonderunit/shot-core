@@ -79,7 +79,7 @@ const cycle = (() => {
               }) %>
           <% } else if (type == 'note') { %>
             <%- include('schedule/_note-event', {
-                event: { ...eventsById[id], text: 'LUNCH' },
+                event: { ...eventsById[id] },
 
                 zebra: cycle()
               }) %>

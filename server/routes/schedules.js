@@ -171,7 +171,6 @@ exports.show = (req, res) => {
       event_ids: dayEvents.map(event => event.id),
       shot_count: dayEvents.filter(event => event.shot_id != null).length,
       text: displayDate ? format(displayDate, 'EEEE, dd MMM yyyy') : null,
-      lunch: '12am'
     }
   })
 
