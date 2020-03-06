@@ -4,7 +4,7 @@ const { format } = require('date-fns-tz')
 const { get, all, run } = require('../db')
 const { imagesPath } = require('../helpers')
 
-const { PerspectiveCamera } = require('three')
+const getFocalLength = require('../../lib/getFocalLength')
 
 const q = arr => arr.map(() => '?').join(',')
 
@@ -135,9 +135,9 @@ exports.show = (req, res) => {
       if (sgBoard) {
         let { sg } = sgBoard
         let camera = sg.data.sceneObjects[sg.data.activeCamera]
-        let camera3d = new PerspectiveCamera(camera.fov, aspectRatio)
+        let focalLength = getFocalLength(camera.fov, aspectRatio)
         event.sg = sg
-        event.sgCameraFocalLength = Math.floor(camera3d.getFocalLength()) + 'mm'
+        event.sgCameraFocalLength = Math.floor(focalLength) + 'mm'
       }
     }
   })
