@@ -223,7 +223,7 @@ exports.show = (req, res) => {
 
   // for tree debugging
   // res.set('Content-Type', 'text/plain')
-  // res.send(JSON.stringify(tree, null, 2))
+  // return res.send(JSON.stringify({ events }, null, 2))
 
   res.render('schedule', {
     project, scenesById, shotsById, eventsById, daysById, tree,
