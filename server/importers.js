@@ -1,6 +1,8 @@
 const fs = require('fs-extra')
 const path = require('path')
 
+const getScenesFromFilesystem = require('../lib/getScenesFromFilesystem')
+
 const groupBy = (fn) => (groups, item) => {
   if (fn(item) || groups.length == 0) {
     groups.push([])
@@ -150,81 +152,23 @@ function sql ({ table, insert }) {
   ]
 }
 
-const fountain = require('../vendor/fountain')
-const { parse } = require('../lib/fountain/fountain-data-parser')
-
-const filenameify = string =>
-  string
-    .substring(0, 50)
-    .replace(/\|&;\$%@"<>\(\)\+,/g, '')
-    .replace(/\./g, '')
-    .replace(/ - /g, ' ')
-    .replace(/ /g, '-')
-    .replace(/[|&;/:$%@"{}?|<>()+,]/g, '-')
-
-const getSceneFolderName = node => {
-  let desc = node.synopsis
-    ? node.synopsis
-    : node.slugline
-
-  return `Scene-${node.scene_number}-${filenameify(desc)}-${node.scene_id}`
-}
-
-function getSceneListFromFountain ({ script }) {
-  let { tokens } = fountain.parse(script)
-  let parsed = parse(tokens)
-
-  return Object.values(parsed)
-    .filter(node => node.type === 'scene')
-    .map(node => {
-      let name = getSceneFolderName(node)
-
-      return {
-        name,
-        storyboarderFilePath: path.join('storyboards', name, `${name}.storyboarder`),
-        node
-      }
-    })
-}
-
 function importScript (run, { projectId, script, scriptPath, pathToFountainFile }) {
-  const sourcePath = path.dirname(scriptPath)
-
-  let scenes = getSceneListFromFountain({ script })
-  .filter(folder => fs.existsSync(path.join(sourcePath, folder.storyboarderFilePath)))
-  .map(folder => {
-    let scene = JSON.parse(fs.readFileSync(path.join(sourcePath, folder.storyboarderFilePath)))
-
-    return {
-      folder,
-      scene,
-      storyboarderPath: path.join(
-        path.dirname(pathToFountainFile),
-        folder.storyboarderFilePath
-      )
-    }
-  })
+  let scenes = getScenesFromFilesystem({ script, scriptPath })
 
   let results = []
-  for (let { folder, scene, storyboarderPath } of scenes) {
-    let sceneNumber = folder.node.scene_number
-    let slugline = folder.node.slugline
-
-    // let id = folder.node.scene_id
-    // let synopsis = folder.node.synopsis
-    // let time = folder.node.time
-    // let duration = folder.node.duration
-
-    let scriptData = {
-      slugline
-    }
+  for (let { scene, sceneNumber, storyboarderPath, scriptData } of scenes) {
     results.push(
       importScene(run, {
         scene,
         sceneNumber,
-        storyboarderPath,
-        projectId,
-        scriptData })
+        storyboarderPath: path.join(
+          path.dirname(pathToFountainFile),
+          storyboarderPath
+        ),
+        scriptData,
+        
+        projectId
+      })
     )
   }
   return results
@@ -248,7 +192,13 @@ function importScene (run, {
   let shotIds = []
   for (let shot of shots) {
     let shotNumber = shotIds.length + 1
-    let shotId = run(...insertShot({ shot, shotNumber, scene, projectId, sceneId })).lastInsertRowid
+    let shotId = run(...insertShot({
+      shot,
+      shotNumber,
+      scene,
+      projectId,
+      sceneId
+    })).lastInsertRowid
     shotIds.push(shotId)
   }
 
