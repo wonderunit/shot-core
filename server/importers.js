@@ -55,7 +55,7 @@ function insertScene ({ scene, sceneNumber, projectId, storyboarderPath, scriptD
     defaultBoardTiming
   })
 
-  let { slugline } = scriptData
+  let { slugline, description, synopsis } = scriptData
 
   return sql({
     table: 'scenes',
@@ -64,7 +64,9 @@ function insertScene ({ scene, sceneNumber, projectId, storyboarderPath, scriptD
       scene_number: sceneNumber,
       metadata_json: metadataJson,
       storyboarder_path: storyboarderPath,
-      slugline
+      slugline,
+      description,
+      synopsis
     }
   })
 }

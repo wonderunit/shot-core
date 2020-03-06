@@ -11,7 +11,9 @@ CREATE TABLE scenes(
   scene_number INTEGER,
   metadata_json JSON,
   storyboarder_path TEXT,
-  slugline TEXT
+  slugline TEXT,
+  description TEXT,
+  synopsis TEXT
 );
 
 CREATE TABLE shots(

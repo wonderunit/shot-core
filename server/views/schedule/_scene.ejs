@@ -8,8 +8,8 @@
     <div><%= scene.shots_count %></div>
   </div>
   <div class="schedule-scene__description flex flex-column">
-    <h3 class="ma0">Scene description and stuff</h3>
-    <p class="ma0">This is the synopsis of a scene and other stuff like that.</p>
+    <h3 class="ma0"><%= scene.description || '---' %></h3>
+    <p class="ma0"><%= scene.synopsis || '---' %></p>
   </div>
   <div class="schedule-scene__slugline flex flex-column">
     <%= scene.slugline %>
