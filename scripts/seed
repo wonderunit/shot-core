@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
+echo "Preparing ZIP …"
+mkdir -p tmp
+pushd test/fixtures/multi-scene > /dev/null
+zip -q -r ../../../tmp/multi-scene.zip *
+popd > /dev/null
 echo "Uploading …"
 curl \
+  --silent \
+  --output /dev/null \
+  --show-error \
+  --fail \
   -X POST \
   -F "name=multi-part" \
-  -F "file=@test/fixtures/zip/multi-scene.zip" \
+  -F "file=@tmp/multi-scene.zip" \
   http://localhost:3000/projects
-echo ""
 echo "Done"

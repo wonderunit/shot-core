@@ -1,0 +1,30 @@
+{
+  "version": "1.18.0",
+  "aspectRatio": "1.7777777777777777",
+  "fps": 24,
+  "defaultBoardTiming": 2000,
+  "boards": [
+    {
+      "uid": "E3XMX",
+      "url": "board-1-E3XMX.png",
+      "newShot": false,
+      "lastEdited": 1507651682455,
+      "layers": {
+        "reference": {
+          "url": "board-1-E3XMX-reference.png",
+          "opacity": 0.75
+        },
+        "fill": {
+          "url": "board-1-E3XMX-fill.png"
+        },
+        "ink": {
+          "url": "board-1-E3XMX-ink.png"
+        }
+      },
+      "number": 1,
+      "shot": "1A",
+      "time": 0,
+      "lineMileage": 1219.6882958087233
+    }
+  ]
+}
