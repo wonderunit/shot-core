@@ -19,12 +19,67 @@
         },
         "ink": {
           "url": "board-1-MMN03-ink.png"
+        },
+        "shot-generator": {
+          "url": "board-1-MMN03-shot-generator.png",
+          "opacity": 0.75
+        },
+        "tone": {
+          "url": "board-1-MMN03-tone.png"
+        },
+        "pencil": {
+          "url": "board-1-MMN03-pencil.png"
+        },
+        "notes": {
+          "url": "board-1-MMN03-notes.png"
         }
       },
       "number": 1,
       "shot": "1A",
       "time": 0,
-      "lineMileage": 1103.6896318648269
+      "lineMileage": 5409.032662204185,
+      "duration": "10000",
+      "notes": ""
+    },
+    {
+      "uid": "36OYD",
+      "url": "board-2-36OYD.png",
+      "newShot": false,
+      "lastEdited": 1583520534539,
+      "layers": {
+        "reference": {
+          "url": "board-2-36OYD-reference.png",
+          "opacity": 0.75
+        },
+        "fill": {
+          "url": "board-2-36OYD-fill.png"
+        },
+        "ink": {
+          "url": "board-2-36OYD-ink.png"
+        },
+        "shot-generator": {
+          "url": "board-2-36OYD-shot-generator.png",
+          "opacity": 0.75
+        },
+        "tone": {
+          "url": "board-2-36OYD-tone.png"
+        },
+        "pencil": {
+          "url": "board-2-36OYD-pencil.png"
+        },
+        "notes": {
+          "url": "board-2-36OYD-notes.png"
+        }
+      },
+      "number": 2,
+      "shot": "2A",
+      "time": 10000,
+      "lineMileage": 5867.340185058551,
+      "duration": "10000",
+      "audio": null,
+      "dialogue": "",
+      "action": "",
+      "notes": "OR IS IT?"
     }
   ]
 }
