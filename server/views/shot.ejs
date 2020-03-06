@@ -13,7 +13,7 @@
       <% for (let board of shot.boards_json) { %>
         <div class="flex">
           <div class="nested-img w-50">
-            <img src="<%= `${imagesPath}/board-${board.number}-${board.uid}-posterframe.jpg` %>" />
+            <img src="<%= `${imagesPath}/${board.url.replace(/.png$/, '-posterframe.jpg')}` %>" />
           </div>
           <div class="w-50">
             <div class="f7 ma3">
