@@ -126,10 +126,10 @@ exports.show = (req, res) => {
       let shot = shots.find(shot => shot.id == event.shot_id)
       let boards = JSON.parse(shot.boards_json)
 
-      let { number, uid } = boards.find(board => board.dialogue != null) || boards[0]
+      let { url } = boards.find(board => board.dialogue != null) || boards[0]
       let { aspectRatio } = JSON.parse(scene.metadata_json)
 
-      event.thumbnail = `${imagesPath(scene)}/board-${number}-${uid}-thumbnail.png`
+      event.thumbnail = `${imagesPath(scene)}/${url.replace(/.png$/, '-thumbnail.png')}`
 
       let sgBoard = boards.find(board => board.sg)
       if (sgBoard) {

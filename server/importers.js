@@ -90,6 +90,7 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
     // }
     let {
       uid,
+      url,
       duration,
       number,
       shot,
@@ -105,6 +106,7 @@ function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
 
     return {
       uid,
+      url,
       duration,
       number,
       shot,
