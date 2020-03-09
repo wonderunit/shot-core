@@ -354,12 +354,13 @@ class InlineEditor extends Stimulus.Controller {
 
   initialize () {
     this.transition(this.state)
+    this.labelTargetDisplay = this.labelTarget.style.display
   }
 
   transition (state) {
     this.state = state
     this.inputTarget.style.display = state == 'idle' ? 'none' : 'block'
-    this.labelTarget.style.display = state == 'idle' ? 'inline-block' : 'none'
+    this.labelTarget.style.display = state == 'idle' ? this.labelTargetDisplay : 'none'
     this.hintTarget.style.display = state == 'idle' ? 'none' : 'block'
 
     if (this.state == 'edit') {
