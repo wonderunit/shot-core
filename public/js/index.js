@@ -116,30 +116,30 @@ application.register('schedule', class extends Stimulus.Controller {
 
     if (scheduleEvent) {
       if (scheduleEvent != this.dragState.source) {
+        let { clientY } = event
+        let { top, height } = scheduleEvent.element.getBoundingClientRect()
+        let after = (clientY - top) / height > .5
+
         let head = scheduleEvent.data.get('event-type') == 'day'
-
-        let rect = scheduleEvent.element.getBoundingClientRect()
-        let before = (event.clientY - rect.top) / rect.height > .5
-
-        if (head) before = false
+        if (head) after = true
 
         let oldRank = parseInt(this.dragState.source.data.get('rank'))
         let newRank = parseInt(scheduleEvent.data.get('rank'))
 
-        if (before) {
-          scheduleEvent.element.parentNode.insertBefore(
-            this.placeholder,
-            scheduleEvent.element
-          )
-          // before
-          this.dragState.rank = newRank + ((newRank > oldRank) ? -1 : 0)
-        } else {
+        if (after) {
           scheduleEvent.element.parentNode.insertBefore(
             this.placeholder,
             scheduleEvent.element.nextSibling
           )
           // after 
           this.dragState.rank = newRank + ((newRank > oldRank) ? 0 : +1)
+        } else {
+          scheduleEvent.element.parentNode.insertBefore(
+            this.placeholder,
+            scheduleEvent.element
+          )
+          // before
+          this.dragState.rank = newRank + ((newRank > oldRank) ? -1 : 0)
         }
       }
     }
