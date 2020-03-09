@@ -1,19 +1,13 @@
-const { addDays } = require('date-fns')
-const { format } = require('date-fns-tz')
-
 const { get, all, run } = require('../db')
-const { imagesPath } = require('../helpers')
 
-const getFocalLength = require('../../lib/getFocalLength')
+const Event = require('../decorators/event')
+const Day = require('../decorators/day')
+const Shot = require('../decorators/shot')
+const Scene = require('../decorators/scene')
 
 const q = arr => arr.map(() => '?').join(',')
 
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
-
-const asDateOrNull = dateISOString => 
-  dateISOString
-    ? new Date(dateISOString)
-    : null
 
 exports.update = (req, res) => {
   let { projectId } = req.params
@@ -117,62 +111,11 @@ exports.show = (req, res) => {
     projectId
   )
 
-  // process events
-  events.forEach(event => {
-    event.start_at = asDateOrNull(event.start_at)
-
-    if (event.shot_id) {
-      let scene = scenes.find(scene => scene.id == event.scene_id)
-      let shot = shots.find(shot => shot.id == event.shot_id)
-      let boards = JSON.parse(shot.boards_json)
-
-      let { url } = boards.find(board => board.dialogue != null) || boards[0]
-      let { aspectRatio } = JSON.parse(scene.metadata_json)
-
-      event.thumbnail = `${imagesPath(scene)}/${url.replace(/.png$/, '-thumbnail.png')}`
-
-      let sgBoard = boards.find(board => board.sg)
-      if (sgBoard) {
-        let { sg } = sgBoard
-        let camera = sg.data.sceneObjects[sg.data.activeCamera]
-        let focalLength = getFocalLength(camera.fov, aspectRatio)
-        event.sg = sg
-        event.sgCameraFocalLength = Math.floor(focalLength) + 'mm'
-      }
-    }
-  })
-
-  let lastStartAt = asDateOrNull(days[0].start_at)
-  days = days.map((curr, n, arr) => {
-    let next = arr[n + 1]
-
-    let dayEvents = events.filter(
-      event => event.rank > curr.rank && (next ? event.rank < next.rank : true)
-    )
-
-    curr.start_at = asDateOrNull(curr.start_at)
-    if (curr.start_at) {
-      lastStartAt = curr.start_at
-    } else {
-      lastStartAt = addDays(lastStartAt, 1)
-    }
-
-    let displayDate = asDateOrNull(curr.start_at || lastStartAt)
-
-    return {
-      id: curr.id,
-      start_at: curr.start_at,
-      project_id: curr.project_id,
-      rank: curr.rank,
-      event_type: curr.event_type,
-
-      day_number: n + 1,
-      days_total: arr.length,
-      event_ids: dayEvents.map(event => event.id),
-      shot_count: dayEvents.filter(event => event.shot_id != null).length,
-      displayDate: displayDate ? format(displayDate, 'EEEE, dd MMM yyyy') : null
-    }
-  })
+  // decorate events
+  scenes = Scene.decorateCollection(scenes)
+  shots = Shot.decorateCollection(shots)
+  events = Event.decorateCollection(events)
+  days = Day.decorateCollection(days, { events })
 
   // map
   let eventsById = events.reduce(keyById, {})
@@ -227,6 +170,6 @@ exports.show = (req, res) => {
 
   res.render('schedule', {
     project, scenesById, shotsById, eventsById, daysById, tree,
-    aspectRatio: JSON.parse(scenes[0].metadata_json).aspectRatio
+    aspectRatio: scenes[0].metadata_json.aspectRatio
   })
 }

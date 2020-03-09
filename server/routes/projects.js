@@ -4,6 +4,8 @@ const { get, all } = require('../db')
 const importer = require('../services/importer')
 const projectDestroyer = require('../services/project-destroyer')
 
+const Shot = require('../decorators/shot')
+
 exports.new = (req, res) => {
   res.render('project/new')
 }
@@ -38,7 +40,7 @@ exports.show = (req, res) => {
   let scenes = all('SELECT * FROM scenes WHERE project_id = ?', projectId)
 
   let shots = all('SELECT * FROM shots WHERE project_id = ?', projectId)
-  shots.forEach(shot => (shot.boards_json = JSON.parse(shot.boards_json)))
+  shots = Shot.decorateCollection(shots)
 
   res.render('project', { project, scenes, shots })
 }

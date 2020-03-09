@@ -10,10 +10,10 @@
 
     <h2 class="f4 mv3">Boards</h2>
     <div style="display:grid; grid-gap: 0.5rem; grid-template-columns: 1fr 1fr;">
-      <% for (let board of shot.boards_json) { %>
+      <% for (let board of shot.boards) { %>
         <div class="flex">
           <div class="nested-img w-50">
-            <img src="<%= `${imagesPath}/${board.url.replace(/.png$/, '-posterframe.jpg')}` %>" />
+            <img src="<%= `${scene.imagesPath}/${board.url.replace(/.png$/, '-posterframe.jpg')}` %>" />
           </div>
           <div class="w-50">
             <div class="f7 ma3">
@@ -21,7 +21,10 @@
               notes: <%= board.notes %><br />
               dialogue: <%= board.dialogue %><br />
               action: <%= board.action %><br />
-              SG camera settings<br />
+
+              <br />
+              <b>camera</b><br />
+              <%= board.getCameraFocalLength(scene.metadata_json.aspectRatio) || '---' %>
             </div>
           </div>
         </div>

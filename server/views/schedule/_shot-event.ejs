@@ -28,33 +28,19 @@
         height="56"
         loading="lazy"
         class="aspect-ratio--object bg-black"
-        src="<%= event.thumbnail %>" />
+        src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
     </div>
   </div>
   <div class="schedule-event__notes flex flex-column w-40">
-    <%
-      let boards = JSON.parse(shot.boards_json)
-
-      let combinedAction = boards
-        .map(board => board.action)
-        .filter(Boolean)
-        .join(' ')
-
-      let combinedDialogue = boards
-        .map(board => board.dialogue)
-        .filter(Boolean)
-        .join(' ')
-    %>
-
-    <% if (combinedAction) { %>
-      <div title="<%= combinedAction %>">
-        <%= truncate(combinedAction) %>
+    <% if (shot.combinedAction) { %>
+      <div title="<%= shot.combinedAction %>">
+        <%= truncate(shot.combinedAction) %>
       </div>
     <% } %>
 
-    <% if (combinedDialogue) { %>
-      <div class="pl3" title="<%= combinedDialogue %>">
-        <i>“<%= truncate(combinedDialogue) %>”</i>
+    <% if (shot.combinedDialogue) { %>
+      <div class="pl3" title="<%= shot.combinedDialogue %>">
+        <i>“<%= truncate(shot.combinedDialogue) %>”</i>
       </div>
     <% } %>
   </div>
@@ -93,7 +79,7 @@
     </div>
   </div>
   <div class="flex flex-column">
-    <div><%= event.sgCameraFocalLength %></div>
+    <div><%= shot.getCameraFocalLength(scene.metadata_json.aspectRatio) %></div>
     <div
       class="f7"
       data-controller="inline-editor"

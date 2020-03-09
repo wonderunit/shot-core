@@ -54,10 +54,10 @@
             </a>
           </td>
           <td>
-            <%= shot.boards_json[0].notes %>
+            <%= shot.boards[0].notes %>
           </td>
           <td>
-            <% for (let board of shot.boards_json) { %>
+            <% for (let board of shot.boards) { %>
               <%= board.shot %>
             <% } %>
           </td>
