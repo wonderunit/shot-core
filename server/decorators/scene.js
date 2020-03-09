@@ -10,7 +10,7 @@ class Scene {
       this[property] = scene[property]
     }
 
-    this.metadata_json = JSON.parse(this.metadata_json)
+    this.metadata = JSON.parse(this.metadata_json)
   }
 
   get imagesPath () {

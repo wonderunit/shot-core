@@ -170,6 +170,6 @@ exports.show = (req, res) => {
 
   res.render('schedule', {
     project, scenesById, shotsById, eventsById, daysById, tree,
-    aspectRatio: scenes[0].metadata_json.aspectRatio
+    aspectRatio: scenes[0].metadata.aspectRatio
   })
 }
