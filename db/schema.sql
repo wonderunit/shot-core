@@ -22,6 +22,7 @@ CREATE TABLE shots(
   scene_id INTEGER NOT NULL,
   shot_number INTEGER,
   duration INTEGER,
+  shotType TEXT,
   fStop TEXT,
   boards_json JSON
 );

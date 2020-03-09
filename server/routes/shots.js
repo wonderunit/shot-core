@@ -30,5 +30,17 @@ exports.update = (req, res) => {
     return res.sendStatus(204)
   }
 
+  if (req.body.hasOwnProperty('shotType')) {
+    let { shotType } = req.body
+    if (shotType == '') shotType = null
+    run(
+      `UPDATE shots
+      SET shotType = :shotType
+      WHERE id = :shotId`,
+      { shotType, shotId }
+    )
+    return res.sendStatus(204)
+  }
+
   return res.sendStatus(422)
 }

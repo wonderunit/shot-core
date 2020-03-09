@@ -59,13 +59,42 @@
     <% } %>
   </div>
   <div class="flex flex-column">
-    <div>Medium, Low Angle</div>
+    <div
+      data-controller="inline-editor"
+      data-inline-editor-value="<%= shot.shotType %>"
+      data-inline-editor-key="shotType"
+    >
+      <form
+        action="/projects/<%= event.project_id %>/scenes/<%= event.scene_id %>/shots/<%= shot.id %>"
+        method="PATCH"
+        data-action="submit->inline-editor#submit"
+        data-target="inline-editor.form"
+        >
+        <label
+          class="dib bb bt-0 br-0 bl-0 b--dashed center pointer"
+          data-action="click->inline-editor#edit"
+          data-target="inline-editor.label"
+        >
+          <%= shot.shotType || 'Shot Type' %>
+        </label>
+        <input
+          class="w-100 pa2 dn"
+          data-action="
+            change->inline-editor#change
+            blur->inline-editor#blur
+            keyup->inline-editor#keyUp
+          "
+          data-target="inline-editor.input"
+          value="<%= shot.shotType %>" />
+          <small data-target="inline-editor.hint" class="black-60 dn pt1">
+            Esc to cancel
+          </small>
+      </form>
+    </div>
   </div>
   <div class="flex flex-column">
     <div><%= event.sgCameraFocalLength %></div>
-
-
-  <div
+    <div
       class="f7"
       data-controller="inline-editor"
       data-inline-editor-value="<%= shot.fStop %>"
