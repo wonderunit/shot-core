@@ -28,6 +28,15 @@ class Shot {
     return board.thumbnail
   }
 
+  get posterframe () {
+    let board = this.firstBoardWithDialogue || this.boards[0]
+    return board.posterframe
+  }
+
+  get cameraPlot () {
+    return this.firstBoardWithSg ? this.firstBoardWithSg.cameraPlot : null
+  }
+
   getCameraFocalLength (aspectRatio) {
     if (this.firstBoardWithSg) {
       Math.floor(

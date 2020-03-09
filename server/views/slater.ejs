@@ -8,12 +8,20 @@
 </head>
 <body>
 
+<style>
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+</style>
+
 <div class="helvetica ph3 pa4-ns mv3 ma0-ns">
   <div class="lh-copy">
 
     <% if (project.slater_event_id) { %>
     <div class="flex">
-      <div class="w-70 pa2">
+      <div class="w-100 pa2">
         <h1 class="f3 ma0"><%= project.name %></h1>
 
         <div class="flex w-100">
@@ -55,6 +63,21 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="flex items-start">
+          <img class="w-50" src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
+
+          <div class="w-25">
+            <div class="image-grid">
+              <% for (let board of shot.boards) { %>
+                <img src="<%= scene.imagesPath %>/<%= board.thumbnail %>" />
+              <% } %>
+            </div>
+          </div>
+
+          <% if (shot.cameraPlot) { %>
+            <img class="w-25" src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
+          <% } %>
         </div>
         <div class="flex">
           <% if (button == 'ready') { %>
@@ -116,6 +139,7 @@
           </form>
         </div>
       </div>
+      <!--
       <div class="pa2">
         <div class="f7">
           <h3 class="f4 ma0 mb4">All Takes for Shot <%= shot.shot_number %></h3>
@@ -132,10 +156,11 @@
           <% } %>
         </div>
       </div>
+      -->
     </div>
     <% } else { %>
       <div class="flex">
-        <div class="w-70 pa2">
+        <div class="w-100 pa2">
           <h1 class="f3 ma0"><%= project.name %></h1>
           <p>
             Slater hasn’t started yet.

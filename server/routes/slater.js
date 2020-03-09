@@ -1,6 +1,9 @@
 const { run, get, all } = require('../db')
 const slaterCanvas = require('../slater-canvas')
 
+const Scene = require('../decorators/scene')
+const Shot = require('../decorators/shot')
+
 const takeState = take => {
   if (take == null) return 'init'
 
@@ -99,6 +102,9 @@ exports.show = (req, res) => {
       let max = takes.reduce((acc, take) => Math.max(acc, take.take_number), -Infinity)
       take = takes.find(take => take.take_number == max)
     }
+
+    scene = new Scene(scene)
+    shot = new Shot(shot)
 
     slater = {
       scene,

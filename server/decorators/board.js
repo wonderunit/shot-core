@@ -15,6 +15,14 @@ class Board {
     return `${this.url.replace(/.png$/, '-thumbnail.png')}`
   }
 
+  get cameraPlot () {
+    return `${this.url.replace(/.png$/, '-camera-plot.png')}`
+  }
+
+  get posterframe () {
+    return `${this.url.replace(/.png$/, '-posterframe.jpg')}`
+  }
+
   get cameraFov () {
     let { sg } = this
     if (sg) {
@@ -27,9 +35,6 @@ class Board {
     return this.cameraFov == null
       ? undefined
       : Math.floor(getFocalLength(this.cameraFov, aspectRatio)) + 'mm'
-  }
-
-
   }
 }
 
