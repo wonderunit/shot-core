@@ -38,20 +38,6 @@ class Shot {
       ) + 'mm'
     }
   }
-
-  get combinedDialogue () {
-    this.boards
-      .map(board => board.dialogue)
-      .filter(Boolean)
-      .join(' ')
-  }
-
-  get combinedAction () {
-    this.boards
-      .map(board => board.action)
-      .filter(Boolean)
-      .join(' ')
-  }
 }
 
 module.exports = Shot
