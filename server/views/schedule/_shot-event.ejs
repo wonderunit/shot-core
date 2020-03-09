@@ -32,15 +32,27 @@
     </div>
   </div>
   <div class="schedule-event__notes flex flex-column w-40">
-    <% if (shot.combinedAction) { %>
-      <div title="<%= shot.combinedAction %>">
-        <%= truncate(shot.combinedAction) %>
+    <%
+    let combinedAction = shot.boards
+      .map(board => board.action)
+      .filter(Boolean)
+      .join(' ')
+    %>
+    <% if (combinedAction) { %>
+      <div title="<%= combinedAction %>">
+        <%= truncate(combinedAction) %>
       </div>
     <% } %>
 
-    <% if (shot.combinedDialogue) { %>
-      <div class="pl3" title="<%= shot.combinedDialogue %>">
-        <i>“<%= truncate(shot.combinedDialogue) %>”</i>
+    <%
+    let combinedDialogue = shot.boards
+      .map(board => board.dialogue)
+      .filter(Boolean)
+      .join(' ')
+    %>
+    <% if (combinedDialogue) { %>
+      <div class="pl3" title="<%= combinedDialogue %>">
+        <i>“<%= truncate(combinedDialogue) %>”</i>
       </div>
     <% } %>
   </div>
