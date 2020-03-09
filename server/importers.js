@@ -74,7 +74,7 @@ function insertScene ({ scene, sceneNumber, projectId, storyboarderPath, scriptD
 function insertShot ({ shot, shotNumber, scene, projectId, sceneId }) {
   // total duration in msecs
   let duration = shot
-    .map(board => durationOr(board.duration, scene.defaultBoardTiming))
+    .map(board => parseInt(durationOr(board.duration, scene.defaultBoardTiming)))
     .reduce(sum)
 
   let boards = shot.map((board, boardIndex) => {
