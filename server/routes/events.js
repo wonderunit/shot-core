@@ -72,6 +72,8 @@ exports.update = (req, res) => {
     )
     return res.sendStatus(204)
   }
+
+  return res.sendStatus(422)
 }
 
 exports.destroy = (req, res) => {

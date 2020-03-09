@@ -410,6 +410,33 @@ class InlineEditor extends Stimulus.Controller {
   }
 }
 
+application.register('inline-editor', class extends InlineEditor {
+  valid () {
+    // let { value } = this.inputTarget
+    // if (value.length == 0 || value.length == '') return false
+    return true
+  }
+
+  save () {
+    let uri = this.formTarget.action
+    let { value } = this.inputTarget
+    let body = {
+      [this.data.get('key')]: value
+    }
+    fetch(
+      uri,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    )
+    .then(handler)
+    .then(reload)
+    .catch(err => alert(err))    
+  }
+})
+
 application.register('schedule-note', class extends InlineEditor {
   valid () {
     let description = this.inputTarget.value

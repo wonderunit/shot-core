@@ -1,6 +1,6 @@
 const path = require('path')
 
-const { get, all } = require('../db')
+const { run, get, all } = require('../db')
 
 const { imagesPath } = require('../helpers')
 
@@ -13,4 +13,22 @@ exports.show = (req, res) => {
   let takes = all('SELECT * FROM takes WHERE shot_id = ?', shotId)
 
   res.render('shot', { project, scene, shot, takes, imagesPath: imagesPath(scene) })
+}
+
+exports.update = (req, res) => {
+  let { shotId } = req.params
+
+  if (req.body.hasOwnProperty('fStop')) {
+    let { fStop } = req.body
+    if (fStop == '') fStop = null
+    run(
+      `UPDATE shots
+      SET fStop = :fStop
+      WHERE id = :shotId`,
+      { fStop, shotId }
+    )
+    return res.sendStatus(204)
+  }
+
+  return res.sendStatus(422)
 }
