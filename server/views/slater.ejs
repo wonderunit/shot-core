@@ -79,6 +79,44 @@
             <img class="w-25" src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
           <% } %>
         </div>
+        <div class="flex items-center justify-between w-100 f6 pv3">
+          <div class="w-30">
+            <% for (let board of shot.boards) { %>
+              <% if (board.dialogue) { %>
+                <b>Dialogue:</b> <%= board.dialogue %><br />
+              <% } %>
+              <% if (board.action) { %>
+                <b>Action:</b> <%= board.action %><br />
+              <% } %>
+              <% if (board.notes) { %>
+                <b>Notes:</b> <%= board.notes %><br />
+              <% } %>
+            <% } %>
+          </div>
+          <div>
+            <%= shot.shotType %>
+          </div>
+          <div>
+            <%= shot.getCameraFocalLength(scene.metadata.aspectRatio) %><br />
+            <%= shot.fStop %><br />
+          </div>
+          <div>
+            <%
+              const friendlyDuration = msecs => {
+                let t = msecs / 1000
+                let h = Math.floor(t / (60 * 60)) % 24
+                let m = Math.floor(t / 60) % 60
+                let s = Math.floor(t % 60)
+                return h > 0
+                  ? `${h}h${m}m${s}s`
+                  : m > 0
+                    ? `${m}m${s}s`
+                    : `${s}s`
+              }
+            %>
+            Duration <%= friendlyDuration(shot.duration) %>
+          </div>
+        </div>
         <div class="flex">
           <% if (button == 'ready') { %>
           <form
