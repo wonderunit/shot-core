@@ -39,7 +39,7 @@ class Shot {
 
   getCameraFocalLength (aspectRatio) {
     if (this.firstBoardWithSg) {
-      Math.floor(
+      return Math.floor(
         getFocalLength(
           this.firstBoardWithSg.cameraFov,
           aspectRatio
