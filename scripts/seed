@@ -14,4 +14,26 @@ curl \
   -F "name=multi-part" \
   -F "file=@tmp/multi-scene.zip" \
   http://localhost:3000/projects
+
+echo "Setting an f-stop and Shot Type for Shot 1 …"
+curl \
+  --silent \
+  --output /dev/null \
+  --show-error \
+  --fail \
+  -H "Content-Type: application/json" \
+  -X PATCH \
+  -d '{ "fStop": "f/5.6"}' \
+  http://localhost:3000/projects/1/scenes/1/shots/1
+
+curl \
+  --silent \
+  --output /dev/null \
+  --show-error \
+  --fail \
+  -H "Content-Type: application/json" \
+  -X PATCH \
+  -d '{ "shotType": "Medium, Low Angle" }' \
+  http://localhost:3000/projects/1/scenes/1/shots/1
+
 echo "Done"
