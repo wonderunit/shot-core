@@ -60,8 +60,8 @@ Single Scene:
 
 To clear the uploads folder(s):
 
-    rm -f public/uploads/projects/*
-    rm -f public/uploads/scenes/*
+    rm -rf public/uploads/projects/*
+    rm -rf public/uploads/scenes/*
 
 ### Style
 
