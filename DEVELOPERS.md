@@ -25,12 +25,23 @@ We use `date-fns` and `date-fns-tz` for simple date calculations and formatting.
 Shot durations are stored in milliseconds, as they are in board data for `.storyboarder` files.
 
 ### Schedules and Events
+A Project has one Schedule which has many Events.  
+An Event can either belong to a Shot, or not (`shot_id` = `NULL`).  
+An Event can be of type `day`, `shot`, or `note`.
+When a Project is created, a Schedule is also created. All the Project’s Shots are automatically added as Events on a single day.
 
-A schedule presents a list of events to a user.  
-A schedule has a start date.  
+#### Sorting
+Events are ordered by rank for their Day, and we use the ranking when displaying Events to a User.  
+Users can re-arrange Events within a Day, or move an Event between Days.  
 
-An event can be for a shot or for some other task.  
-An event has a rank within its day which determines the sort order.  
+#### Adding Days
+A User can insert Day "breaks". Any events further in ranking on the list than the inserted Day, up until the next Day, will be assigned to the new Day.  
+
+#### Adding Events
+Users can add Non-Shot Events to the Schedule. Currently the only Non-Shot Event type is `event_type` of `note`, which can have a `description`.
+
+#### Scope Exclusions
+No batch/group editing yet
 
 ### Projects and Scenes
 
