@@ -1,3 +1,3 @@
-exports.show = async (req, res) => {
+exports.show = (req, res) => {
   res.render('monitor')
 }
