@@ -1,9 +1,92 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
-    <h1 class="f3 ma0 mb4">
-      Monitor
-    </h1>
+
+<!-- monitor: schedule -->
+<div class="helvetica pa0 ma0 bg-black white h-100 lh-copy flex w-100 f5">
+  <div class="flex flex-column w-50 h-100 justify-between">
+
+    <div class="flex justify-between">
+      <div class="flex flex-column items-center">
+        <div class="ttu tracked f7">Scene</div>
+        <div class="f1 b ma0 lh-solid">1</div>
+      </div>
+      <div class="flex flex-column items-center">
+        <div class="ttu tracked f7">Shot</div>
+        <div class="f1 b ma0 lh-solid">20</div>
+      </div>
+      <div class="flex flex-column items-center">
+        <div class="ttu tracked f7">Take</div>
+        <div class="f1 b ma0 lh-solid">3</div>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <div class="flex flex-column">
+        <div class="ttu tracked f7 dark-gray">Storyboard</div>
+        <figure>
+          <img src="" />
+        </figure>
+      </div>
+      <div class="flex flex-column">
+        <div class="h-50">
+          <div class="ttu tracked f7 dark-gray">Previous Shot</div>
+          <figure>
+            <img src="" />
+          </figure>
+        </div>
+        <div class="h-50">
+          <div class="ttu tracked f7 dark-gray">Next Shot</div>
+          <figure>
+            <img src="" />
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <div>
+        <span class="ttu tracked f7 dark-gray">Live Camera</span>
+      </div>
+      <div>
+        <span class="ttu tracked f7 dark-gray">Shot Diagram</span>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <div>
+        <span class="ttu">ACTION:</span> Looks towards the camera.<br />
+        <span class="ttu">DIALOGUE:</span> Oh hey I didn’t see you there.
+      </div>
+      <div>
+        Medium, Low Angle
+      </div>
+      <div>
+        50mm<br />
+        f/5.6<br />
+      </div>
+      <div class="flex flex-column">
+        <div class="ttu tracked f7 dark-gray">Duration</div>
+        <div>1m30s</div>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <div class="flex flex-column">
+        <div class="ttu tracked f7 dark-gray">Audio Status</div>
+      </div>
+      <div class="flex flex-column">
+        <div class="ttu tracked f7 dark-gray">Camera Status</div>
+        <div></div>
+      </div>
+      <div class="flex flex-column">
+        <div class="ttu tracked f7 dark-gray">Track Status</div>
+        <div></div>
+      </div>
+    </div>
+
   </div>
 </div>
-<%- include('footer') -%>
+
+<script src="/js/stimulus.umd.js"></script>
+<script src="/js/index.js"></script>
+</body>
+</html>
