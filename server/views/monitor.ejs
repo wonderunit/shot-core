@@ -1,21 +1,21 @@
 <%- include('header') %>
 
 <!-- monitor: schedule -->
-<div class="helvetica pa0 ma0 bg-black white h-100 lh-solid flex w-100 f5 pa4">
-  <div class="flex flex-column w-50 h-100 justify-between pr2">
+<div class="helvetica pa0 ma0 bg-black white h-100 lh-solid flex w-100 f5 ph4 pb4">
+  <div class="flex flex-column w-50 h-100 justify-between pr2 pt4">
 
-    <div class="flex justify-between">
+    <div class="flex justify-around items-center h4">
       <div class="flex flex-column items-center">
         <div class="ttu tracked f7">Scene</div>
-        <div class="f1 ma0"><b>1</b></div>
+        <div class="f-headline ma0"><b>1</b></div>
       </div>
       <div class="flex flex-column items-center">
         <div class="ttu tracked f7">Shot</div>
-        <div class="f1 ma0"><b>20</b></div>
+        <div class="f-headline ma0"><b>20</b></div>
       </div>
       <div class="flex flex-column items-center">
         <div class="ttu tracked f7">Take</div>
-        <div class="f1 ma0"><b>3</b></div>
+        <div class="f-headline ma0"><b>3</b></div>
       </div>
     </div>
 
@@ -85,28 +85,30 @@
 
   </div>
 
-  <div class="flex flex-column w-50 h-100 justify-between pl2">
-    <div class="flex justify-end pb4">
+  <div class="flex flex-column w-50 h-100 pl5 pt4 relative">
+    <div class="absolute" style="right: 0">
       <div class="ttu tracked f7 dark-gray">
         Shot Core Monitor / Schedule
       </div>
     </div>
 
-    <div class="pb4">
-      <div class="f7 mb2">
-        Thursday, March 1, 2020
-      </div>
-      <div class="flex justify-between pb4">
-        <div class="flex items-baseline">
-          <div class="f1 fw9 ttu">
-            Day 1
-          </div>
-          <div class="f4 dark-gray ml2">
-            / 24
-          </div>
+    <div class="flex flex-column justify-center h4">
+      <div class="w-100">
+        <div class="f7 mb1">
+          Thursday, March 1, 2020
         </div>
-        <div class="f1 b">
-          1:45
+        <div class="flex justify-between">
+          <div class="flex items-baseline">
+            <div class="f1 fw9 ttu">
+              Day 1
+            </div>
+            <div class="f4 dark-gray ml2">
+              / 24
+            </div>
+          </div>
+          <div class="f1 b">
+            1:45
+          </div>
         </div>
       </div>
     </div>
@@ -172,7 +174,10 @@
       </div>
     </div>
 
-    <div class="flex justify-between h-100 pb4">
+    <div class="flex justify-between items-center relative">
+      <div class="absolute w2 tr" style="left: -3rem;">
+        <div class="ttu tracked f7 dark-gray"><b>+1</b></div>
+      </div>
       <div class="flex flex-column items-center">
         <div class="ttu tracked f7">Scene</div>
         <div class=""><b>1</b></div>
@@ -184,11 +189,11 @@
       <div>
         Thumbnail
       </div>
-      <div class="lh-copy">
-        Action<br/>
-        Dialogue<br/>
+      <div class="f6 lh-copy">
+        <span class="ttu">Action:</span><br/>
+        <span class="ttu">Dialogue:</span><br/>
       </div>
-      <div class="lh-copy">
+      <div class="f6 lh-copy">
         Medium, Low Angle
       </div>
       <div>
