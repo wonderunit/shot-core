@@ -1,8 +1,28 @@
 const { get, all, run } = require('../db')
 
+const { friendlyDuration } = require('../helpers')
+
+const Event = require('../decorators/event')
+const Day = require('../decorators/day')
 const Shot = require('../decorators/shot')
 const Scene = require('../decorators/scene')
-const Day = require('../decorators/day')
+
+const q = arr => arr.map(() => '?').join(',')
+
+const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
+
+function getEventsBetween ({ minRank, maxRank, projectId }) {
+  return all(`
+    SELECT * FROM events
+    WHERE rank > ?
+    AND rank <= ?
+    AND events.project_id = ?
+    ORDER BY rank`,
+    minRank,
+    maxRank,
+    projectId
+  )
+}
 
 exports.show = (req, res, next) => {
   let { projectId } = req.params
@@ -65,6 +85,61 @@ exports.show = (req, res, next) => {
   let nextShot = nextEvent && new Shot(get('SELECT * FROM shots WHERE id = ?', nextEvent.shot_id))
   let nextScene = nextEvent && new Scene(get('SELECT * FROM scenes WHERE id = ?', nextEvent.scene_id))
 
+  let nextDay = get(`
+    SELECT * FROM events
+    WHERE rank > ?
+    AND event_type = 'day'
+    AND project_id = ?
+    `,
+    event.rank, projectId
+  )
+
+  let lastEvent = get(`
+    SELECT * FROM events
+    WHERE project_id = ?
+    ORDER BY rank DESC
+    LIMIT 1
+    `,
+    projectId
+  )
+
+  // TODO extract, copied from schedule.js
+  let events = getEventsBetween({
+    minRank: event.rank,
+    maxRank: nextDay ? nextDay.rank : lastEvent.rank,
+    projectId
+  })
+  // shots by event
+  let shotIds = events
+    .filter(event => event.shot_id != null)
+    .map(event => event.shot_id)
+  let shots = all(
+    `SELECT * FROM shots WHERE id IN (${q(shotIds)})`, shotIds
+  )
+  let sceneIds = shots.map(shot => shot.scene_id)
+  let scenes = all(`
+    SELECT
+      scenes.*,
+      COUNT(shots.id) AS shots_count,
+      SUM(shots.duration) AS shots_duration
+    FROM
+      scenes
+      INNER JOIN shots ON shots.scene_id = scenes.id
+    WHERE scenes.id IN (${q(sceneIds)})
+    GROUP BY 1
+    `,
+    sceneIds
+  )
+
+  // decorate events
+  events = Event.decorateCollection(events)
+  shots = Shot.decorateCollection(shots)
+  scenes = Scene.decorateCollection(scenes)
+
+  // map
+  let shotsById = shots.reduce(keyById, {})
+  let scenesById = scenes.reduce(keyById, {})
+
   let takeNumber = takes.length + 1
 
   let aspectRatio = scene.metadata.aspectRatio
@@ -84,5 +159,27 @@ exports.show = (req, res, next) => {
     nextScene,
 
     aspectRatio,
+
+    remaining: {
+      events,
+      shotsById,
+      scenesById
+    },
+
+    // TODO calculate stats
+    timeRemaining: -1.59e7,
+    timePercent: 36,
+    timeDistance: '+15m ahead of schedule',
+
+    shotsComplete: 6,
+    shotsRemaining: 23,
+    shotsEstRemaining: 1.5e7,
+
+    avgTakeSetup: 123e3,
+    avgTakeSetupDistance: '-23s',
+    avgShotSetup: 312e7,
+    avgShotSetupDistance: '-33s',
+    avgTakeCount: 5,
+    avgTakeCountDistance: '-2'
   })
 }

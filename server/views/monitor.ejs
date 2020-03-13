@@ -49,7 +49,7 @@ html, body {
             <div class="aspect-ratio aspect-ratio--board">
               <div
                 class="aspect-ratio--object cover"
-                style="background:url(<%= prevScene.imagesPath %>/<%= prevShot.posterframe %>) center;"
+                style="background:url(<%= prevScene.imagesPath %>/<%= prevShot.thumbnail %>) center;"
               >
             </div>
             </div>
@@ -61,7 +61,7 @@ html, body {
             <div class="aspect-ratio aspect-ratio--board">
               <div
                 class="aspect-ratio--object cover"
-                style="background:url(<%= nextScene.imagesPath %>/<%= nextShot.posterframe %>) center;"
+                style="background:url(<%= nextScene.imagesPath %>/<%= nextShot.thumbnail %>) center;"
                 >
               </div>
             </div>
@@ -171,13 +171,13 @@ html, body {
         Time
       </div>
       <div class="bg-dark-gray w-100 overflow-hidden h2 br4 mb2">
-        <div class="inner h2 bg-blue" style="width:50%"></div>
+        <div class="inner h2 bg-blue" style="width: <%= timePercent %>%"></div>
       </div>
       <div class="flex justify-end items-center relative ph1">
         <div class="absolute" style="left: 50%; top: 50%; transform: translate(-50%,-50%)">
-          +15m ahead of schedule
+          <%= timeDistance %>
         </div>
-        <span class="f4">-4h25m</span>
+        <span class="f4"><%= Math.sign(timeRemaining) < 0 ? '-': '+' %><%= friendlyDuration(Math.abs(timeRemaining)) %></span>
       </div>
     </div>
 
@@ -190,14 +190,14 @@ html, body {
       </div>
       <div class="flex justify-between ph1">
         <div class="flex">
-          6 shots complete
+          <%= shotsComplete %> shots complete
         </div>
         <div class="flex flex-row f4">
           <div class="mr2">
-            <b>23 shots left</b>
+            <b><%= shotsRemaining %> shots left</b>
           </div>
           <div class="dark-gray">
-            est. 4h10m
+            est. <%= friendlyDuration(shotsEstRemaining) %>
           </div>
         </div>
       </div>
@@ -207,61 +207,92 @@ html, body {
       <div class="flex flex-column items-center">
         <div class="tc ttu mb2 f6">Average Take Setup</div>
         <div class="relative">
-          <b class="f4">2m03s</b>
-          <span class="absolute dark-gray" style="margin-left: 0.25rem; left: 100%; line-height: 1.25rem">-23s</span>
+          <b class="f4"><%= friendlyDuration(avgTakeSetup) %></b>
+          <span class="absolute dark-gray" style="margin-left: 0.25rem; left: 100%; line-height: 1.25rem"><%= avgTakeSetupDistance %></span>
         </div>
       </div>
       <div class="flex flex-column items-center">
         <div class="tc ttu mb2 f6">Average Shot Setup</div>
         <div class="relative">
-          <b class="f4">5m12s</b>
-          <span class="absolute dark-gray" style="margin-left: 0.25rem; left: 100%; line-height: 1.25rem">-33s</span>
+          <b class="f4"><%= friendlyDuration(avgShotSetup) %></b>
+          <span class="absolute dark-gray" style="margin-left: 0.25rem; left: 100%; line-height: 1.25rem"><%= avgShotSetupDistance %></span>
         </div>
       </div>
       <div class="flex flex-column items-center">
         <div class="tc ttu mb2 f6">Average Take Count</div>
         <div class="relative">
-          <b class="f4">5</b>
-          <span class="absolute dark-gray" style="margin-left: 0.25rem; left: 100%; line-height: 1.25rem">-2</span>
+          <b class="f4"><%= avgTakeCount %></b>
+          <span class="absolute dark-gray" style="margin-left: 0.25rem; left: 100%; line-height: 1.25rem"><%= avgTakeCountDistance %></span>
         </div>
       </div>
     </div>
 
-    <div class="flex justify-between items-center relative">
-      <div class="absolute w2 tr" style="left: -3rem;">
-        <div class="ttu tracked f7 dark-gray"><b>+1</b></div>
-      </div>
-      <div class="flex flex-column items-center">
-        <div class="ttu tracked f7 mb2">Scene</div>
-        <div class="f4"><b>1</b></div>
-      </div>
-      <div class="flex flex-column items-center">
-        <div class="ttu tracked f7 mb2">Shot</div>
-        <div class="f4"><b>2</b></div>
-      </div>
-      <div class="self-start">
-        Thumbnail
-      </div>
-      <div class="f6 lh-copy">
-        <span class="ttu">Action:</span><br/>
-        <span class="ttu">Dialogue:</span><br/>
-      </div>
-      <div class="f6 lh-copy">
-        Medium, Low Angle
-      </div>
-      <div class="lh-copy">
-        50mm<br />
-        f/5.6
-      </div>
-      <div class="flex flex-column items-center">
-        <div class="ttu tracked f7 mb1">Duration</div>
-        <div class="f4"><b>1m30s</b></div>
-      </div>
-      <div class="flex flex-column items-center">
-        <div class="ttu tracked f7 dark-gray">1:50 +9m</div>
-      </div>
+    <div>
+      <% for (let [n, event] of remaining.events.entries()) { %>
+      <% if (event.event_type == 'note') { %>
+
+        <div class="flex justify-between items-center relative pv1 mb1">
+          <div class="absolute w2 tr" style="left: -3rem;">
+            <div class="ttu tracked f7 dark-gray"><b>+<%= n + 1 %></b></div>
+          </div>
+          <div class="tc">
+            <span class="ttu tracked f6 dark-gray pr2"><%= event.event_type %></span> <%= event.description %>
+          </div>
+        </div>
+
+      <% } else if (event.event_type == 'shot') { %>
+        <% let scene = remaining.scenesById[event.scene_id] %>
+        <% let shot = remaining.shotsById[event.shot_id] %>
+        <div class="flex justify-between items-center relative pv1 mb1">
+          <div class="absolute w2 tr" style="left: -3rem;">
+            <div class="ttu tracked f7 dark-gray"><b>+<%= n + 1 %></b></div>
+          </div>
+          <div class="flex flex-column items-center pr2">
+            <div class="ttu tracked f7 mb2">Scene</div>
+            <div class="f4"><b><%= scene.scene_number %></b></div>
+          </div>
+          <div class="flex flex-column items-center pr2">
+            <div class="ttu tracked f7 mb2">Shot</div>
+            <div class="f4"><b><%= shot.shot_number %></b></div>
+          </div>
+
+          <img class="db h3 pr2" src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
+
+          <div class="f6 lh-copy pr2">
+            <span class="ttu">Action:</span><br/>
+            <span class="ttu">Dialogue:</span><br/>
+          </div>
+          <div class="f6 lh-copy pr2">
+            <div class="w3">
+              <%= shot.shotType || '---' %>
+            </div>
+          </div>
+          <div class="lh-copy pr2">
+            <div class="w3">
+              <% if (shot.getCameraFocalLength(scene.metadata.aspectRatio) || shot.fStop) { %>
+                <%= shot.getCameraFocalLength(scene.metadata.aspectRatio) %><br />
+                <%= shot.fStop %>
+              <% } else { %>
+                ---
+              <% } %>
+            </div>
+          </div>
+          <div class="flex flex-column items-center pr2">
+            <div class="ttu tracked f7 mb1">Duration</div>
+            <div class="f4">
+              <%= durationMsecsToString(event.duration) %>
+            </div>
+          </div>
+          <div class="flex flex-column items-center">
+            <div class="ttu tracked f7 dark-gray">-:-- +nm<!-- TODO: 1:50 +9m --></div>
+          </div>
+        </div>
+        <% } %>
+
+      <% } %>
     </div>
   </div>
+
 </div>
 
 <script src="/js/stimulus.umd.js"></script>
