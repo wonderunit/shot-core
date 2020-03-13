@@ -78,12 +78,12 @@ function plural (v) {
 
     <div class="flex justify-between mb3">
       <div class="flex flex-column w-70 pr3">
-        <div class="ttu tracked f7 dark-gray mb2">Live Camera</div>
+        <div class="ttu tracked f7 dark-gray mb1">Live Camera</div>
         <img src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
       </div>
       <div class="flex flex-column w-30">
         <% if (shot.cameraPlot) { %>
-          <div class="ttu tracked f7 dark-gray mb2">Shot Diagram</div>
+          <div class="ttu tracked f7 dark-gray mb1">Shot Diagram</div>
           <img class="db mw-100" src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
         <% } %>
       </div>
