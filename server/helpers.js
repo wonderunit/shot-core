@@ -29,7 +29,9 @@ module.exports = {
     let m = Math.floor(t / 60) % 60
     let s = Math.floor(t % 60)
     return h > 0
-      ? `${h}h${m}m${s}s`
+      ? s > 0
+        ? `${h}h${m}m${s}s`
+        : `${h}h${m}m`
       : m > 0
         ? `${m}m${s}s`
         : `${s}s`
