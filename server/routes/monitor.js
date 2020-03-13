@@ -1,7 +1,5 @@
 const { get, all, run } = require('../db')
 
-const { friendlyDuration } = require('../helpers')
-
 const Event = require('../decorators/event')
 const Day = require('../decorators/day')
 const Shot = require('../decorators/shot')
