@@ -29,10 +29,10 @@
           href="#"
           data-action="click->schedule-event#editDate"
         >
-          <%= day.displayDate %>
+          <%= format(day.start_at, 'EEEE, dd MMM yyyy') %>
         </a>
       <% } else { %>
-        <%= day.displayDate %>
+        <%= format(day.start_at, 'EEEE, dd MMM yyyy') %>
       <% } %>
     </h3>
   </div>
