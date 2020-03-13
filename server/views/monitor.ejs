@@ -1,16 +1,25 @@
 <%- include('header') %>
 
 <style>
+html, body {
+  background-color: black;
+}
 .aspect-ratio--board {
   padding-bottom: <%= `${ 1 / aspectRatio * 100 }%` %>;
 }
 .aspect-ratio--w {
   width: <%= `${ (1 / aspectRatio * 100) }%` %>;
 }
+.dark-gray {
+  color: #393939;
+}
+.bg-dark-gray {
+  background-color: #393939;
+}
 </style>
 
 <!-- monitor: schedule -->
-<div class="helvetica pa0 ma0 bg-black white h-100 lh-solid flex w-100 f5 ph4 pb4">
+<div class="helvetica pa0 ma0 bg-black white h-100 lh-solid flex w-100 f5 ph4 pb4" style="max-width:1428px; margin: 0 auto;">
   <div class="flex flex-column w-50 h-100 pr2 pt4">
 
     <div class="flex justify-around items-center h4 mb4">
@@ -67,7 +76,7 @@
     </div>
 
     <div class="flex justify-between mb3">
-      <div class="lh-copy">
+      <div class="lh-copy pr2">
         <% for (let board of shot.boards) { %>
           <% if (board.dialogue) { %>
             <span class="ttu">Dialogue:</span> <%= board.dialogue %><br />
@@ -80,16 +89,16 @@
           <% } %>
         <% } %>
       </div>
-      <div class="lh-copy">
+      <div class="lh-copy pr2">
         <%= shot.shotType %>
       </div>
-      <div>
+      <div class="pr2">
         <%= shot.getCameraFocalLength(scene.metadata.aspectRatio) %><br />
         <%= shot.fStop %><br />
       </div>
-      <div class="flex flex-column">
-        <div class="ttu tracked f7 dark-gray">Duration</div>
-        <%= friendlyDuration(shot.duration) %>
+      <div class="flex flex-column items-center">
+        <div class="ttu tracked f7 mb1 dark-gray">Duration</div>
+        <div class="f4"><b><%= friendlyDuration(shot.duration) %></b></div>
       </div>
     </div>
 
@@ -138,36 +147,36 @@
     </div>
 
     <div class="w-100 pb4">
-      <div class="tc">
+      <div class="ttu b tc mb2">
         Time
       </div>
-      <div class="bg-blue">
-        Chart
+      <div class="bg-dark-gray w-100 overflow-hidden h2 br4 mb2">
+        <div class="inner h2 bg-blue" style="width:50%"></div>
       </div>
-      <div class="flex justify-end items-center relative">
+      <div class="flex justify-end items-center relative ph1">
         <div class="absolute" style="left: 50%; top: 50%; transform: translate(-50%,-50%)">
           +15m ahead of schedule
         </div>
-        -4h25m
+        <span class="f4">-4h25m</span>
       </div>
     </div>
 
     <div class="w-100 pb4">
-      <div class="tc">
+      <div class="ttu b tc mb2">
         Shots
       </div>
-      <div class="bg-blue">
-        Chart
+      <div class="bg-dark-gray w-100 overflow-hidden h2 br4 mb2">
+        <div class="inner h2 bg-blue" style="width:50%"></div>
       </div>
-      <div class="flex justify-between">
+      <div class="flex justify-between ph1">
         <div class="flex">
           6 shots complete
         </div>
-        <div class="flex flex-row">
-          <div>
+        <div class="flex flex-row f4">
+          <div class="mr2">
             <b>23 shots left</b>
           </div>
-          <div>
+          <div class="dark-gray">
             est. 4h10m
           </div>
         </div>
@@ -176,23 +185,23 @@
 
     <div class="flex justify-around pb4">
       <div class="flex flex-column items-center">
-        <div class="tc">Average Take Setup</div>
+        <div class="tc ttu mb2 f6">Average Take Setup</div>
         <div class="relative">
-          2m03s
+          <b class="f4">2m03s</b>
           <div class="absolute dark-gray" style="top: 0; left: 100%">-23s</div>
         </div>
       </div>
       <div class="flex flex-column items-center">
-        <div class="tc">Average Shot Setup</div>
+        <div class="tc ttu mb2 f6">Average Shot Setup</div>
         <div class="relative">
-          5m12s
+          <b class="f4">5m12s</b>
           <div class="absolute dark-gray" style="top: 0; left: 100%">-33s</div>
         </div>
       </div>
       <div class="flex flex-column items-center">
-        <div class="tc">Average Take Count</div>
+        <div class="tc ttu mb2 f6">Average Take Count</div>
         <div class="relative">
-          5
+          <b class="f4">5</b>
           <div class="absolute dark-gray" style="top: 0; left: 100%">-2</div>
         </div>
       </div>
@@ -203,14 +212,14 @@
         <div class="ttu tracked f7 dark-gray"><b>+1</b></div>
       </div>
       <div class="flex flex-column items-center">
-        <div class="ttu tracked f7">Scene</div>
-        <div class=""><b>1</b></div>
+        <div class="ttu tracked f7 mb2">Scene</div>
+        <div class="f4"><b>1</b></div>
       </div>
       <div class="flex flex-column items-center">
-        <div class="ttu tracked f7">Shot</div>
-        <div class=""><b>2</b></div>
+        <div class="ttu tracked f7 mb2">Shot</div>
+        <div class="f4"><b>2</b></div>
       </div>
-      <div>
+      <div class="self-start">
         Thumbnail
       </div>
       <div class="f6 lh-copy">
@@ -220,13 +229,13 @@
       <div class="f6 lh-copy">
         Medium, Low Angle
       </div>
-      <div>
+      <div class="lh-copy">
         50mm<br />
-        f/5.6<br />
+        f/5.6
       </div>
       <div class="flex flex-column items-center">
-        <div class="ttu tracked f7">Duration</div>
-        <div class=""><b>1m30s</b></div>
+        <div class="ttu tracked f7 mb1">Duration</div>
+        <div class="f4"><b>1m30s</b></div>
       </div>
       <div class="flex flex-column items-center">
         <div class="ttu tracked f7 dark-gray">1:50 +9m</div>
