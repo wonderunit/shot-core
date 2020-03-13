@@ -18,6 +18,12 @@ html, body {
 }
 </style>
 
+<% 
+function plural (v) {
+  return v > 1 ? 's' : ''
+}
+%> 
+
 <!-- monitor: schedule -->
 <div class="helvetica pa0 ma0 bg-black white h-100 lh-solid flex w-100 f5 ph4 pb4" style="max-width:1428px; margin: 0 auto;">
   <div class="flex flex-column w-50 h-100 pr2 pt4">
@@ -171,7 +177,7 @@ html, body {
         Time
       </div>
       <div class="bg-dark-gray w-100 overflow-hidden h2 br4 mb2">
-        <div class="inner h2 bg-blue" style="width: <%= timePercent %>%"></div>
+        <div class="inner h2 bg-blue" style="width:<%= timePercent %>%"></div>
       </div>
       <div class="flex justify-end items-center relative ph1">
         <div class="absolute" style="left: 50%; top: 50%; transform: translate(-50%,-50%)">
@@ -186,17 +192,17 @@ html, body {
         Shots
       </div>
       <div class="bg-dark-gray w-100 overflow-hidden h2 br4 mb2">
-        <div class="inner h2 bg-blue" style="width:50%"></div>
+        <div class="inner h2 bg-blue" style="width:<%= shotsPercent %>%"></div>
       </div>
       <div class="flex justify-between ph1">
         <div class="flex">
-          <%= shotsComplete %> shots complete
+          <%= shotsComplete %> shot<%= plural(shotsComplete) %> complete
         </div>
         <div class="flex flex-row f4">
           <div class="mr2">
-            <b><%= shotsRemaining %> shots left</b>
+            <b><%= shotsRemaining %> shot<%= plural(shotsRemaining) %> left</b>
           </div>
-          <div class="dark-gray">
+          <div class="dark-gray nowrap">
             est. <%= friendlyDuration(shotsEstRemaining) %>
           </div>
         </div>

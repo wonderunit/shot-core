@@ -144,6 +144,15 @@ exports.show = (req, res, next) => {
 
   let aspectRatio = scene.metadata.aspectRatio
 
+  // TODO count in SQL instead, for better performance
+  let shotsComplete = getEventsBetween({ minRank: day.rank, maxRank: event.rank, projectId })
+      .filter(e => e.event_type == 'shot')
+      .length - 1
+  let shotsRemaining = events
+      .filter(e => e.event_type == 'shot')
+      .length
+  let shotsPercent = Math.floor(shotsRemaining / (shotsComplete + shotsRemaining) * 100)
+
   res.render('monitor', {
     project,
     event,
@@ -171,8 +180,9 @@ exports.show = (req, res, next) => {
     timePercent: 36,
     timeDistance: '+15m ahead of schedule',
 
-    shotsComplete: 6,
-    shotsRemaining: 23,
+    shotsRemaining,
+    shotsComplete,
+    shotsPercent,
     shotsEstRemaining: 1.5e7,
 
     avgTakeSetup: 123e3,
