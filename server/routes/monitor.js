@@ -2,6 +2,7 @@ const { get, all, run } = require('../db')
 
 const Shot = require('../decorators/shot')
 const Scene = require('../decorators/scene')
+const Day = require('../decorators/day')
 
 exports.show = (req, res, next) => {
   let { projectId } = req.params
@@ -13,8 +14,32 @@ exports.show = (req, res, next) => {
   let scene = get('SELECT * FROM scenes WHERE id = ?', shot.scene_id)
   let takes = all('SELECT * FROM takes WHERE shot_id = ?', shot.id)
 
+  let dates = Day.decorateCollection(all(`
+    SELECT id, rank, start_at FROM events
+    WHERE event_type = 'day'
+    AND project_id = ?
+    ORDER BY rank
+  `, project.id
+  ), { events: [] })
+
+  let day = get(`
+    SELECT * FROM events
+    WHERE rank < ?
+    AND event_type = 'day'
+    AND project_id = ?
+    ORDER BY rank DESC
+    LIMIT 1
+  `, event.rank, project.id
+  )
+
   scene = new Scene(scene)
   shot = new Shot(shot)
+  day = new Day({
+    // single day properties
+    ...day,
+    // fill in calculated properties from collection
+    ...dates.find(event => event.id == day.id),
+  })
 
   let prevEvent = get(`
     SELECT * FROM events
@@ -49,6 +74,7 @@ exports.show = (req, res, next) => {
     event,
     shot,
     scene,
+    day,
     
     takeNumber,
 

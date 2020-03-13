@@ -83,7 +83,7 @@ html, body {
       </div>
     </div>
 
-    <div class="flex justify-between mb3">
+    <div class="flex justify-between items-center mb3">
       <div class="lh-copy pr4 f6">
         <% for (let board of shot.boards) { %>
           <% if (board.dialogue) { %>
@@ -136,7 +136,7 @@ html, body {
     <div class="flex flex-column justify-center h4">
       <div class="w-100">
         <div class="f7 mb1">
-          Thursday, March 1, 2020
+          <%= format(day.start_at, 'EEEE, dd MMM yyyy') %>
         </div>
         <div class="flex justify-between">
           <div class="flex items-baseline">
@@ -148,7 +148,19 @@ html, body {
             </div>
           </div>
           <div class="f1 b">
-            1:45
+            <span id="clock"></span>
+            <script>
+              function update () {
+                let el = document.getElementById('clock')
+                el.innerHTML = new Intl.DateTimeFormat('en-US', {
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  hour12: false
+                }).format(new Date())
+              }
+              setInterval(update, Math.floor(1000 / 3))
+              update()
+            </script>
           </div>
         </div>
       </div>
