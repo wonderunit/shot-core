@@ -16,11 +16,29 @@ exports.show = (req, res, next) => {
   scene = new Scene(scene)
   shot = new Shot(shot)
 
-  // TODO
-  let prevShot = shot
-  let prevScene = scene
-  let nextShot = shot
-  let nextScene = scene
+  let prevEvent = get(`
+    SELECT * FROM events
+    WHERE rank < ?
+    AND shot_id IS NOT NULL
+    AND event_type = 'shot'
+    AND project_id = ?
+    ORDER BY rank
+    LIMIT 1
+  `, event.rank, project.id)
+  let prevShot = prevEvent && new Shot(get('SELECT * FROM shots WHERE id = ?', prevEvent.shot_id))
+  let prevScene = prevEvent && new Scene(get('SELECT * FROM scenes WHERE id = ?', prevEvent.scene_id))
+
+  let nextEvent = get(`
+    SELECT * FROM events
+    WHERE rank > ?
+    AND shot_id IS NOT NULL
+    AND event_type = 'shot'
+    AND project_id = ?
+    ORDER BY rank
+    LIMIT 1
+  `, event.rank, project.id)
+  let nextShot = nextEvent && new Shot(get('SELECT * FROM shots WHERE id = ?', nextEvent.shot_id))
+  let nextScene = nextEvent && new Scene(get('SELECT * FROM scenes WHERE id = ?', nextEvent.scene_id))
 
   let takeNumber = takes.length + 1
 
@@ -33,10 +51,12 @@ exports.show = (req, res, next) => {
     scene,
     
     takeNumber,
+
     prevShot,
     nextShot,
     prevScene,
     nextScene,
 
-    aspectRatio })
+    aspectRatio,
+  })
 }
