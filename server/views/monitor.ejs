@@ -1,71 +1,108 @@
 <%- include('header') %>
 
+<style>
+.aspect-ratio--board {
+  padding-bottom: <%= `${ 1 / aspectRatio * 100 }%` %>;
+}
+.aspect-ratio--w {
+  width: <%= `${ (1 / aspectRatio * 100) }%` %>;
+}
+</style>
+
 <!-- monitor: schedule -->
 <div class="helvetica pa0 ma0 bg-black white h-100 lh-solid flex w-100 f5 ph4 pb4">
-  <div class="flex flex-column w-50 h-100 justify-between pr2 pt4">
+  <div class="flex flex-column w-50 h-100 pr2 pt4">
 
-    <div class="flex justify-around items-center h4">
+    <div class="flex justify-around items-center h4 mb4">
       <div class="flex flex-column items-center">
         <div class="ttu tracked f7">Scene</div>
-        <div class="f-headline ma0"><b>1</b></div>
+        <div class="f-headline ma0"><b><%= scene.scene_number %></b></div>
       </div>
       <div class="flex flex-column items-center">
         <div class="ttu tracked f7">Shot</div>
-        <div class="f-headline ma0"><b>20</b></div>
+        <div class="f-headline ma0"><b><%= shot.shot_number %></b></div>
       </div>
       <div class="flex flex-column items-center">
         <div class="ttu tracked f7">Take</div>
-        <div class="f-headline ma0"><b>3</b></div>
+        <div class="f-headline ma0"><b><%= takeNumber %></b></div>
       </div>
     </div>
 
-    <div class="flex justify-between">
-      <div class="flex flex-column">
-        <div class="ttu tracked f7 dark-gray">Storyboard</div>
-        <figure>
-          <img src="" />
-        </figure>
+    <div class="flex mb3">
+      <div class="flex flex-column w-70 pr3">
+        <div class="ttu tracked f7 dark-gray mb1">Storyboard</div>
+        <img src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
       </div>
-      <div class="flex flex-column">
-        <div class="h-50">
-          <div class="ttu tracked f7 dark-gray">Previous Shot</div>
-          <figure>
-            <img src="" />
-          </figure>
+      <div class="flex flex-column justify-between flex-grow-1">
+        <div>
+          <div class="ttu tracked f7 dark-gray mb1">Previous Shot</div>
+          <div class="aspect-ratio aspect-ratio--board">
+            <div
+              class="aspect-ratio--object cover"
+              style="background:url(<%= prevScene.imagesPath %>/<%= prevShot.posterframe %>) center;">
+            </div>
+          </div>
         </div>
-        <div class="h-50">
-          <div class="ttu tracked f7 dark-gray">Next Shot</div>
-          <figure>
-            <img src="" />
-          </figure>
+        <div>
+          <div class="ttu tracked f7 dark-gray pv1">Next Shot</div>
+          <div class="aspect-ratio aspect-ratio--board">
+            <div
+              class="aspect-ratio--object cover"
+              style="background:url(<%= nextScene.imagesPath %>/<%= nextShot.posterframe %>) center;">
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="flex justify-between">
-      <div>
-        <span class="ttu tracked f7 dark-gray">Live Camera</span>
+    <div class="flex justify-between mb3">
+      <div class="flex flex-column w-70 pr3">
+        <div class="ttu tracked f7 dark-gray mb2">Live Camera</div>
+        <img src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
       </div>
-      <div>
-        <span class="ttu tracked f7 dark-gray">Shot Diagram</span>
+      <div class="flex flex-column w-30">
+        <div class="ttu tracked f7 dark-gray mb2">Shot Diagram</div>
+        <img class="db mw-100" src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
       </div>
     </div>
 
-    <div class="flex justify-between">
+    <div class="flex justify-between mb3">
       <div class="lh-copy">
-        <span class="ttu">ACTION:</span> Looks towards the camera.<br />
-        <span class="ttu">DIALOGUE:</span> Oh hey I didn’t see you there.
+        <% for (let board of shot.boards) { %>
+          <% if (board.dialogue) { %>
+            <span class="ttu">Dialogue:</span> <%= board.dialogue %><br />
+          <% } %>
+          <% if (board.action) { %>
+            <span class="ttu">Action:</span> <%= board.action %><br />
+          <% } %>
+          <% if (board.notes) { %>
+            <span class="ttu">Notes:</span> <%= board.notes %><br />
+          <% } %>
+        <% } %>
       </div>
       <div class="lh-copy">
-        Medium, Low Angle
+        <%= shot.shotType %>
       </div>
       <div>
-        50mm<br />
-        f/5.6<br />
+        <%= shot.getCameraFocalLength(scene.metadata.aspectRatio) %><br />
+        <%= shot.fStop %><br />
       </div>
       <div class="flex flex-column">
         <div class="ttu tracked f7 dark-gray">Duration</div>
-        <div>1m30s</div>
+        <%
+          const friendlyDuration = msecs => {
+            let t = msecs / 1000
+            let h = Math.floor(t / (60 * 60)) % 24
+            let m = Math.floor(t / 60) % 60
+            let s = Math.floor(t % 60)
+            return h > 0
+              ? `${h}h${m}m${s}s`
+              : m > 0
+                ? `${m}m${s}s`
+                : `${s}s`
+          }
+        %>
+        <%= friendlyDuration(shot.duration) %>
       </div>
     </div>
 
