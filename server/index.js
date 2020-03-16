@@ -1,6 +1,10 @@
 const express = require('express')
 const methodOverride = require('method-override')
 const responseTime = require('response-time')
+const http = require('http')
+const WebSocket = require('ws')
+const EventEmitter = require('events').EventEmitter
+
 const path = require('path')
 
 const parse = require('date-fns/parse')
@@ -17,12 +21,15 @@ const monitor = require('./routes/monitor')
 
 const { truncate, durationMsecsToString, friendlyDuration } = require('./helpers')
 
+const bus = new EventEmitter()
+
 const jsonParser = express.json()
 
 const app = express()
 app.set('port', process.env.PORT || 8000)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
+app.set('bus', bus)
 app.use(express.static('public'))
 
 app.use(express.urlencoded({ extended: false }))
@@ -71,7 +78,39 @@ app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)
 
-app.listen(app.get('port'), () => {
+const server = http.createServer(app)
+const wss = new WebSocket.Server({ clientTracking: true, noServer: true })
+server.on('upgrade', function (request, socket, head) {
+  wss.handleUpgrade(request, socket, head, function (ws) {
+    wss.emit('connection', ws, request)
+  })
+})
+wss.on('connection', function (ws, request) {
+  console.log('ws: connection')
+
+  ws.on('message', function (message) {
+    console.log('ws: message')
+  })
+
+  ws.on('close', function() {
+    console.log('ws: close')
+  })
+})
+const broadcast = data => {
+  wss.clients.forEach(function (client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data))
+    }
+  })
+}
+const broadcastReload = () => broadcast({ reload: true })
+app.get('bus')
+  .on('takes/create', broadcastReload)
+  .on('takes/action', broadcastReload)
+  .on('takes/cut', broadcastReload)
+  .on('slater/updated', broadcastReload)
+
+server.listen(app.get('port'), () => {
   if (app.get('env') == 'development') {
     const http = require('http')
     http.get('http://localhost:3000/__browser_sync__?method=reload')

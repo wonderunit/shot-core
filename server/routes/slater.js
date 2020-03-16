@@ -74,11 +74,13 @@ exports.update = (req, res) => {
       run(
         `UPDATE projects SET slater_event_id = ? WHERE id = ?`,
         next.id, projectId)
+      req.app.get('bus').emit('slater/updated')
       return res.sendStatus(204)
     case 'previous':
       run(
         `UPDATE projects SET slater_event_id = ? WHERE id = ?`,
         prev.id, projectId)
+      req.app.get('bus').emit('slater/updated')
       return res.sendStatus(204)
     default:
       return res.status(422).send()

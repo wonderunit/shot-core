@@ -25,6 +25,7 @@ exports.create = (req, res) => {
     at
   ).lastInsertRowid
 
+  req.app.get('bus').emit('takes/create')
   res.status(201).send({ id })
 }
 
@@ -40,6 +41,7 @@ exports.action = (req, res) => {
      takeId
   )
 
+  req.app.get('bus').emit('takes/action')
   res.sendStatus(200)
 }
 
@@ -55,6 +57,7 @@ exports.cut = (req, res) => {
     takeId
   )
 
+  req.app.get('bus').emit('takes/cut')
   res.sendStatus(200)
 }
 

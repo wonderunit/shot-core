@@ -27,6 +27,25 @@ application.register('monitor', class extends Stimulus.Controller {
   initialize () {
     console.log('new Monitor')
 
+    let ws = new WebSocket(`ws://${location.hostname}:8000`)
+    ws.onerror = function () {
+      console.error('WebSocket error')
+    }
+    ws.onopen = function () {
+      console.log('WebSocket connection established')
+    }
+    ws.onmessage = function (event) {
+      let data = JSON.parse(event.data)
+      console.log('WebSocket message', data)
+      if (data.reload) {
+        window.location = window.location
+      }
+    }
+    ws.close = function () {
+      console.log('WebSocket connection closed')
+      ws = null
+    }
+
     let el = this.clockTarget
     function update () {
       el.innerHTML = new Intl.DateTimeFormat('en-US', {
