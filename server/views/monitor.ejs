@@ -25,7 +25,10 @@ function plural (v) {
 %> 
 
 <!-- monitor: schedule -->
-<div class="helvetica pa0 ma0 bg-black white h-100 lh-solid flex w-100 f5 ph4 pb4" style="max-width:1428px; margin: 0 auto;">
+<div
+  data-controller="monitor"
+  class="helvetica pa0 ma0 bg-black white h-100 lh-solid flex w-100 f5 ph4 pb4" style="max-width:1428px; margin: 0 auto;"
+  >
   <div class="flex flex-column w-50 h-100 pr2 pt4">
 
     <div class="flex justify-around items-center h4 mb4">
@@ -154,19 +157,7 @@ function plural (v) {
             </div>
           </div>
           <div class="f1 b">
-            <span id="clock"></span>
-            <script>
-              function update () {
-                let el = document.getElementById('clock')
-                el.innerHTML = new Intl.DateTimeFormat('en-US', {
-                  hour: 'numeric',
-                  minute: 'numeric',
-                  hour12: false
-                }).format(new Date())
-              }
-              setInterval(update, Math.floor(1000 / 3))
-              update()
-            </script>
+            <span data-target="monitor.clock"></span>
           </div>
         </div>
       </div>
@@ -302,6 +293,6 @@ function plural (v) {
 </div>
 
 <script src="/js/stimulus.umd.js"></script>
-<script src="/js/index.js"></script>
+<script src="/js/monitor.js"></script>
 </body>
 </html>
