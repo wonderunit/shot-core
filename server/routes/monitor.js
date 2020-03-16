@@ -138,7 +138,8 @@ exports.show = (req, res, next) => {
   let shotsById = shots.reduce(keyById, {})
   let scenesById = scenes.reduce(keyById, {})
 
-  let takeNumber = takes.length + 1
+  let completedTake = take => take.cut_at != null
+  let takeNumber = takes.filter(completedTake).length + 1
 
   let aspectRatio = scene.metadata.aspectRatio
 
@@ -173,9 +174,19 @@ exports.show = (req, res, next) => {
       scenesById
     },
 
-    // TODO calculate stats
+    // time remaining: end - now
+    // where:
+    // now = current browser clock time
+    // end = end of day (11:59 PM)
     timeRemaining: -1.59e7,
+    // time remaining in percent: Math.floor((now - start) / (end - start)) * 100
+    // where:
+    // now = current browser clock time
+    // start = start_at time of current day
+    // end = end of day (11:59 PM)
     timePercent: 36,
+    // remaining "shooting duration" of days' shots vs estimated "shooting duration" of day's shots
+    // where "shooting duration" for a shot is based on the shot's actual duration + some concept of setup/teardown time
     timeDistance: '+15m ahead of schedule',
 
     shotsRemaining,
