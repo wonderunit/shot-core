@@ -1,7 +1,28 @@
 const application = Stimulus.Application.start()
 
 application.register('monitor', class extends Stimulus.Controller {
-  static targets = ['clock']
+  static targets = [
+    'clock',
+
+    'audioStatus0',
+    'audioStatus1',
+    'audioStatus2',
+    'audioStatus3',
+    'audioStatus4',
+    'audioStatus5',
+    'audioStatus6',
+    'audioStatus7',
+
+    'cameraStatusBatt',
+    'cameraStatusDisk',
+    'cameraStatusIso',
+    'cameraStatusIris',
+    'cameraStatusFocus',
+    'cameraStatusRes',
+
+    'trackStatusBatt',
+    'trackStatusTracking'
+  ]
 
   initialize () {
     console.log('new Monitor')

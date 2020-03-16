@@ -125,26 +125,26 @@ function plural (v) {
 
         <div class="flex flex-row">
           <%
-          let audioStatus = {
-            1: { value: 30 },
-            2: { value: 50 },
-            3: { value: 10 },
-            4: { value: 15 },
-            5: { value: 40 },
-            6: { value: 10, color: 'red' },
-            7: { value: 10, color: 'red' },
-            'Director': { value: 30 }
-          }
+          let audioStatuses = [
+            { label: '1', value: 30 },
+            { label: '2', value: 50 },
+            { label: '3', value: 10 },
+            { label: '4', value: 15 },
+            { label: '5', value: 40 },
+            { label: '6', value: 10, color: 'red' },
+            { label: '7', value: 10, color: 'red' },
+            { label: 'Director', value: 30 }
+          ]
           %> 
-          <% Object.entries(audioStatus).forEach(([key, { value, color }], n) => { %>
-            <div class="flex flex-column items-center pr2">
+          <% audioStatuses.forEach(({ label, value, color }, n) => { %>
+            <div data-target="monitor.audioStatus<%= n %>" class="flex flex-column items-center pr2">
               <div class="flex flex-column justify-end overflow-hidden w2 h3 br3 bg-dark-gray">
                 <div
                   class="w-100"
                   style="height: <%= value %>%; background-color: <%= color || '#39FF4D' %>;"
                 ></div>
               </div>
-              <div class="h1 f7 pt1"><%= key %></div>
+              <div class="h1 f7 pt1"><%= label %></div>
             </div>
           <% }) %>
         </div>
@@ -155,20 +155,20 @@ function plural (v) {
 
         <div class="flex flex-row">
           <%
-          let cameraStatus = {
-            'Batt': { value: 70 },
-            'Disk': { value: 20 }
-          }
+          let cameraStatuses = [
+            { label: 'Batt', value: 70 },
+            { label: 'Disk', value: 20 }
+          ]
           %> 
-          <% Object.entries(cameraStatus).forEach(([key, { value, color }], n) => { %>
-            <div class="flex flex-column items-center pr2">
+          <% cameraStatuses.forEach(({ label, value }, n) => { %>
+            <div data-target="monitor.cameraStatus<%= label %>" class="flex flex-column items-center pr2">
               <div class="flex flex-column justify-end overflow-hidden w2 h3 br3 bg-dark-gray">
                 <div
                   class="w-100 bg-gray"
                   style="height: <%= value %>%; %>;"
                 ></div>
               </div>
-              <div class="h1 f7 pt1"><%= key %></div>
+              <div class="h1 f7 pt1"><%= label %></div>
             </div>
           <% }) %>
 
@@ -178,11 +178,11 @@ function plural (v) {
           >
             <div class="flex flex-column items-center">
               <div class="ttu">ISO</div>
-              <div>200</div>
+              <div data-target="monitor.cameraStatusIso">200</div>
             </div>
             <div class="flex flex-column items-center">
               <div class="ttu">Iris</div>
-              <div>f/5.6</div>
+              <div data-target="monitor.cameraStatusIris">f/5.6</div>
             </div>
           </div>
 
@@ -192,11 +192,11 @@ function plural (v) {
           >
             <div class="flex flex-column items-center">
               <div class="ttu">Focus</div>
-              <div>24</div>
+              <div data-target="monitor.cameraStatusFocus">24</div>
             </div>
             <div class="flex flex-column items-center">
               <div class="ttu">Res</div>
-              <div>6k</div>
+              <div data-target="monitor.cameraStatusRes">6k</div>
             </div>
           </div>
 
@@ -206,7 +206,7 @@ function plural (v) {
         <div class="ttu tracked f7 dark-gray mb2 pre">Track Status</div>
 
         <div class="flex flex-row">
-          <div class="flex flex-column items-center pr2">
+          <div data-target="monitor.trackStatusBatt" class="flex flex-column items-center pr2">
             <div class="flex flex-column justify-end overflow-hidden w2 h3 br3 bg-dark-gray">
               <div
                 class="w-100 bg-gray"
@@ -220,7 +220,7 @@ function plural (v) {
             class="flex flex-column justify-around f7 b ph1"
             style="padding-bottom: 1rem"
           >
-            <div class="flex flex-column items-center">
+            <div data-target="monitor.trackStatusTracking" class="flex flex-column items-center">
               x: 1m<br />
               y: 1.3m<br />
               z: 1.5m<br />
