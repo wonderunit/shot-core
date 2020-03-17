@@ -1,5 +1,7 @@
 const application = Stimulus.Application.start()
 
+let ws
+
 application.register('monitor', class extends Stimulus.Controller {
   static targets = [
     'clock',
@@ -27,7 +29,14 @@ application.register('monitor', class extends Stimulus.Controller {
   initialize () {
     console.log('new Monitor')
 
-    let ws = new WebSocket(`ws://${location.hostname}:8000`)
+    if (ws) {
+      ws.onerror = ws.onopen = ws.onmessage = null
+      ws.close()
+      ws = null
+    }
+
+    ws = new WebSocket(`ws://${location.hostname}:8000`)
+
     ws.onerror = function () {
       console.error('WebSocket error')
     }
