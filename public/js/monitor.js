@@ -15,8 +15,12 @@ application.register('monitor', class extends Stimulus.Controller {
     'audioStatus6',
     'audioStatus7',
 
+    'cameraStatus',
+    'cameraStatusOverlay',
     'cameraStatusBatt',
+    'cameraStatusBattValue',
     'cameraStatusDisk',
+    'cameraStatusDiskValue',
     'cameraStatusIso',
     'cameraStatusIris',
     'cameraStatusFocus',
@@ -65,5 +69,16 @@ application.register('monitor', class extends Stimulus.Controller {
     }
     setInterval(update, Math.floor(1000 / 3))
     update()
+
+    this.cameraStatusOverlayTarget.innerHTML = ''
+    this.cameraStatusOverlayTarget.style.display = 'none'
+
+    this.cameraStatusBattValueTarget.style.height = '0%'
+    this.cameraStatusDiskValueTarget.style.height = '0%'
+
+    this.cameraStatusIsoTarget.innerHTML = '200'
+    this.cameraStatusIrisTarget.innerHTML = 'f/5.6'
+    this.cameraStatusFocusTarget.innerHTML = '24'
+    this.cameraStatusResTarget.innerHTML = '6k'
   }
 })

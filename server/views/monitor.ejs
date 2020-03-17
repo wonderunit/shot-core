@@ -153,17 +153,24 @@ function plural (v) {
       <div class="flex flex-column mb2 mr3">
         <div class="ttu tracked f7 dark-gray mb2 pre">Camera Status</div>
 
-        <div class="flex flex-row">
+        <div data-target="monitor.cameraStatus" class="flex flex-row relative">
+          <div
+            data-target="monitor.cameraStatusOverlay"
+            class="absolute w-100 h-100 pa2 flex justify-center items-center tc lh-title"
+            style="background-color: rgba(0, 0, 0, 0.9);"
+          >
+          </div>
           <%
           let cameraStatuses = [
-            { label: 'Batt', value: 70 },
-            { label: 'Disk', value: 20 }
+            { label: 'Batt', value: 0 },
+            { label: 'Disk', value: 0 }
           ]
           %> 
           <% cameraStatuses.forEach(({ label, value }, n) => { %>
             <div data-target="monitor.cameraStatus<%= label %>" class="flex flex-column items-center pr2">
               <div class="flex flex-column justify-end overflow-hidden w2 h3 br3 bg-dark-gray">
                 <div
+                  data-target="monitor.cameraStatus<%= label %>Value"
                   class="w-100 bg-gray"
                   style="height: <%= value %>%; %>;"
                 ></div>
@@ -178,11 +185,11 @@ function plural (v) {
           >
             <div class="flex flex-column items-center">
               <div class="ttu">ISO</div>
-              <div data-target="monitor.cameraStatusIso">200</div>
+              <div data-target="monitor.cameraStatusIso">---</div>
             </div>
             <div class="flex flex-column items-center">
               <div class="ttu">Iris</div>
-              <div data-target="monitor.cameraStatusIris">f/5.6</div>
+              <div data-target="monitor.cameraStatusIris">---</div>
             </div>
           </div>
 
@@ -192,11 +199,11 @@ function plural (v) {
           >
             <div class="flex flex-column items-center">
               <div class="ttu">Focus</div>
-              <div data-target="monitor.cameraStatusFocus">24</div>
+              <div data-target="monitor.cameraStatusFocus">---</div>
             </div>
             <div class="flex flex-column items-center">
               <div class="ttu">Res</div>
-              <div data-target="monitor.cameraStatusRes">6k</div>
+              <div data-target="monitor.cameraStatusRes">---</div>
             </div>
           </div>
 
