@@ -113,7 +113,13 @@ app.get('bus')
 server.listen(app.get('port'), () => {
   if (app.get('env') == 'development') {
     const http = require('http')
-    http.get('http://localhost:3000/__browser_sync__?method=reload')
-    console.log(`Listening on :3000`)
+    http
+      .get(
+        'http://localhost:3000/__browser_sync__?method=reload',
+        () => console.log(`Listening on :3000`))
+      .on('error', err =>
+        console.error('Could not connect to browser sync server. Is it running?'))
+  } else {
+    console.log(`Listening on :${app.get('port')}`)
   }
 })
