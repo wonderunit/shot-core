@@ -10,6 +10,9 @@ const path = require('path')
 const parse = require('date-fns/parse')
 const { format } = require('date-fns-tz')
 
+const ZcamClient = require('../lib/zcam/client')
+const Heartbeat = require('../lib/zcam/client/heartbeat')
+
 const home = require('./routes/home')
 const projects = require('./routes/projects')
 const schedules = require('./routes/schedules')
@@ -25,11 +28,14 @@ const bus = new EventEmitter()
 
 const jsonParser = express.json()
 
+const { PORT, ZCAM_URL } = process.env
+
 const app = express()
-app.set('port', process.env.PORT || 8000)
+app.set('port', PORT || 8000)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
 app.set('bus', bus)
+app.set('zcam', new ZcamClient({ uri: ZCAM_URL || 'http://localhost:8080' }))
 app.use(express.static('public'))
 
 app.use(express.urlencoded({ extended: false }))
@@ -79,6 +85,7 @@ app.get('/projects/:projectId/slater.png', slater.png)
 app.get('/projects/:projectId/monitor', monitor.show)
 
 const server = http.createServer(app)
+const zcamHeartbeat = new Heartbeat(app.get('zcam'))
 const wss = new WebSocket.Server({ clientTracking: true, noServer: true })
 server.on('upgrade', function (request, socket, head) {
   wss.handleUpgrade(request, socket, head, function (ws) {
@@ -87,6 +94,14 @@ server.on('upgrade', function (request, socket, head) {
 })
 wss.on('connection', function (ws, request) {
   console.log('ws: connection')
+  ws.send(JSON.stringify({
+    action: 'camera/update',
+    payload: {
+      connected: zcamHeartbeat.deref() === 'connected'
+        ? true
+        : false
+    }
+  }))
 
   ws.on('message', function (message) {
     console.log('ws: message')
@@ -103,13 +118,18 @@ const broadcast = data => {
     }
   })
 }
-const broadcastReload = () => broadcast({ reload: true })
+const broadcastReload = () => broadcast({ action: 'reload' })
 app.get('bus')
   .on('takes/create', broadcastReload)
   .on('takes/action', broadcastReload)
   .on('takes/cut', broadcastReload)
   .on('slater/updated', broadcastReload)
 
+const broadcastConnected = () => broadcast({ action: 'camera/update', payload: { connected: true } })
+const broadcastDisconnected = () => broadcast({ action: 'camera/update', payload: { connected: false } })
+zcamHeartbeat
+  .on('connected', broadcastConnected)
+  .on('disconnected', broadcastDisconnected)
 server.listen(app.get('port'), () => {
   if (app.get('env') == 'development') {
     const http = require('http')

@@ -38,23 +38,26 @@ application.register('monitor', class extends Stimulus.Controller {
       ws.close()
       ws = null
     }
-
     ws = new WebSocket(`ws://${location.hostname}:8000`)
-
-    ws.onerror = function () {
-      console.error('WebSocket error')
+    ws.onerror = function (event) {
+      console.error('WebSocket error', event)
     }
     ws.onopen = function () {
       console.log('WebSocket connection established')
     }
-    ws.onmessage = function (event) {
-      let data = JSON.parse(event.data)
-      console.log('WebSocket message', data)
-      if (data.reload) {
-        window.location = window.location
+    ws.onmessage = event => {
+      let { action, payload } = JSON.parse(event.data)
+      console.log('WebSocket message', action, payload)
+      switch (action) {
+        case 'reload':
+          window.location = window.location
+          break
+        case 'camera/update':
+          this.updateCameraStatus(payload)
+          break
       }
     }
-    ws.close = function () {
+    ws.onclose = function () {
       console.log('WebSocket connection closed')
       ws = null
     }
@@ -70,8 +73,18 @@ application.register('monitor', class extends Stimulus.Controller {
     setInterval(update, Math.floor(1000 / 3))
     update()
 
-    this.cameraStatusOverlayTarget.innerHTML = ''
-    this.cameraStatusOverlayTarget.style.display = 'none'
+    this.updateCameraStatus({ connected: false })
+  }
+
+  updateCameraStatus ({ connected }) {
+    if (connected) {
+      this.cameraStatusOverlayTarget.innerHTML = ''
+      this.cameraStatusOverlayTarget.style.display = 'none'
+    } else {
+      this.cameraStatusOverlayTarget.innerHTML = 'Camera Disconnected'
+      this.cameraStatusOverlayTarget.style.color = 'red'
+      this.cameraStatusOverlayTarget.style.display = 'flex'
+    }
 
     this.cameraStatusBattValueTarget.style.height = '0%'
     this.cameraStatusDiskValueTarget.style.height = '0%'
