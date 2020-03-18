@@ -97,7 +97,7 @@ wss.on('connection', function (ws, request) {
   ws.send(JSON.stringify({
     action: 'camera/update',
     payload: {
-      connected: zcamHeartbeat.deref() === 'connected'
+      connected: zcamHeartbeat.deref() != null
         ? true
         : false
     }
