@@ -1,6 +1,9 @@
 const browserSync = require('browser-sync')
 browserSync.create().init({
-  proxy: 'localhost:8000',
+  proxy: {
+    target: 'localhost:8000',
+    ws: true
+  },
   port: 3000,
   files: ['public/**/*'],
   ignore: ['node_modules'],
@@ -10,5 +13,8 @@ browserSync.create().init({
   open: false,
   reloadOnRestart: true,
   online: false,
-  logLevel: 'silent'
+  logLevel: 'silent',
+  socket: {
+    port: 3001
+  }
 })
