@@ -10,12 +10,14 @@ module.exports = function create ({ app, server }) {
   const wss = new WebSocket.Server({ clientTracking: true, noServer: true })
 
   server.on('upgrade', function (request, socket, head) {
+    console.log('server: upgrade')
     wss.handleUpgrade(request, socket, head, function (ws) {
       wss.emit('connection', ws, request)
     })
   })
 
   wss.on('connection', function (ws, request) {
+    console.log('wss: connection')
     ws.send(JSON.stringify({
       action: 'camera/update',
       payload: {
