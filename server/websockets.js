@@ -26,6 +26,7 @@ module.exports = function create ({ app, server }) {
           : false
       }
     }))
+    reportCameraStatus()
 
     ws.on('message', function (message) {
       console.log('ws: message', message)
@@ -53,9 +54,41 @@ module.exports = function create ({ app, server }) {
     .on('takes/cut', broadcastReload)
     .on('slater/updated', broadcastReload)
 
-  const broadcastConnected = () => broadcast({ action: 'camera/update', payload: { connected: true } })
-  const broadcastDisconnected = () => broadcast({ action: 'camera/update', payload: { connected: false } })
+  const broadcastConnected = () => broadcast({
+    action: 'camera/update', payload: { connected: true }
+  })
+  const broadcastDisconnected = () => broadcast({
+    action: 'camera/update', payload: { connected: false }
+  })
   zcamHeartbeat
     .on('connected', broadcastConnected)
     .on('disconnected', broadcastDisconnected)
+
+  const reportCameraStatus = async () => {
+    try {
+      let query_free = (await zcam.get('/ctrl/card?action=query_free')).data.msg
+      let query_total = (await zcam.get('/ctrl/card?action=query_total')).data.msg
+      let battery = (await zcam.get('/ctrl/get?k=battery')).data.value
+
+      let iso = (await zcam.get('/ctrl/get?k=iso')).data.value
+      let iris = (await zcam.get('/ctrl/get?k=iris')).data.value
+
+      broadcast({
+        action: 'camera/update',
+        payload: {
+          query_free,
+          query_total,
+          battery,
+          iso,
+          iris
+        }
+      })
+    } catch (err) {
+      if (err.code !== 'ECONNREFUSED') {
+        console.error(err)
+      }
+    }
+  }
+
+  setInterval(reportCameraStatus, 15 * 1000)
 }

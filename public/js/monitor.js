@@ -96,22 +96,38 @@ application.register('monitor', class extends Stimulus.Controller {
     this.updateCameraStatus({ connected: false })
   }
 
-  updateCameraStatus ({ connected }) {
-    if (connected) {
-      this.cameraStatusOverlayTarget.innerHTML = ''
-      this.cameraStatusOverlayTarget.style.display = 'none'
-    } else {
-      this.cameraStatusOverlayTarget.innerHTML = 'Camera Disconnected'
-      this.cameraStatusOverlayTarget.style.color = 'red'
-      this.cameraStatusOverlayTarget.style.display = 'flex'
+  updateCameraStatus (options) {
+    let { connected, query_free, query_total, battery, iso, iris } = options
+
+    if (options.hasOwnProperty('connected')) {
+      if (connected) {
+        this.cameraStatusOverlayTarget.innerHTML = ''
+        this.cameraStatusOverlayTarget.style.display = 'none'
+      } else {
+        this.cameraStatusOverlayTarget.innerHTML = 'Camera Disconnected'
+        this.cameraStatusOverlayTarget.style.color = 'red'
+        this.cameraStatusOverlayTarget.style.display = 'flex'
+      }
     }
 
-    this.cameraStatusBattValueTarget.style.height = '0%'
-    this.cameraStatusDiskValueTarget.style.height = '0%'
+    if (options.hasOwnProperty('battery')) {
+      this.cameraStatusBattValueTarget.style.height = battery + '%'
+    }
 
-    this.cameraStatusIsoTarget.innerHTML = '200'
-    this.cameraStatusIrisTarget.innerHTML = 'f/5.6'
-    this.cameraStatusFocusTarget.innerHTML = '24'
-    this.cameraStatusResTarget.innerHTML = '6k'
+    if (options.hasOwnProperty('query_free') && options.hasOwnProperty('query_total')) {
+      let h = Math.floor(query_free / query_total * 100)
+      this.cameraStatusDiskValueTarget.style.height = h + '%'
+    }
+
+    if (options.hasOwnProperty('iso')) {
+      this.cameraStatusIsoTarget.innerHTML = iso
+    }
+
+    if (options.hasOwnProperty('iris')) {
+      this.cameraStatusIrisTarget.innerHTML = 'f/' + iris
+    }
+
+    // this.cameraStatusFocusTarget.innerHTML = '24'
+    // this.cameraStatusResTarget.innerHTML = '6k'
   }
 })
