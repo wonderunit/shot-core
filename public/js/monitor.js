@@ -1,7 +1,5 @@
 const application = Stimulus.Application.start()
 
-let ws
-
 application.register('monitor', class extends Stimulus.Controller {
   static targets = [
     'clock',
@@ -30,22 +28,36 @@ application.register('monitor', class extends Stimulus.Controller {
     'trackStatusTracking'
   ]
 
-  initialize () {
-    console.log('new Monitor')
+  webSocketScheduleReconnect () {
+    let delay = 5000
+    console.log('Attempting to reconnect in', delay, 'msec …')
+    setTimeout(() => {
+      if (!this.ws) {
+        this.webSocketConnect()
+      }
+    }, delay)
+  }
 
-    if (ws) {
-      ws.onerror = ws.onopen = ws.onmessage = null
-      ws.close()
-      ws = null
+  webSocketConnect () {
+    console.log('webSocketConnect')
+    if (this.ws) {
+      this.ws.onerror = this.ws.onopen = this.ws.onmessage = null
+      this.ws.close()
+      this.ws = null
     }
-    ws = new WebSocket(`ws://${location.hostname}:8000`)
-    ws.onerror = function (event) {
+
+    this.ws = new WebSocket(`ws://${location.host}`)
+
+    this.ws.onerror = event => {
       console.error('WebSocket error', event)
+      this.webSocketScheduleReconnect()
     }
-    ws.onopen = function () {
+
+    this.ws.onopen = () => {
       console.log('WebSocket connection established')
     }
-    ws.onmessage = event => {
+
+    this.ws.onmessage = event => {
       let { action, payload } = JSON.parse(event.data)
       console.log('WebSocket message', action, payload)
       switch (action) {
@@ -57,10 +69,18 @@ application.register('monitor', class extends Stimulus.Controller {
           break
       }
     }
-    ws.onclose = function () {
+
+    this.ws.onclose = () => {
       console.log('WebSocket connection closed')
-      ws = null
+      this.ws = null
+      this.webSocketScheduleReconnect()
     }
+  }
+
+  initialize () {
+    console.log('new Monitor')
+
+    this.webSocketConnect()
 
     let el = this.clockTarget
     function update () {
