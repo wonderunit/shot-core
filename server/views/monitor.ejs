@@ -82,7 +82,7 @@ function plural (v) {
     <div class="flex justify-between mb3">
       <div class="flex flex-column w-70 pr3">
         <div class="ttu tracked f7 dark-gray mb1">Live Camera</div>
-        <img src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
+        <img src="<%= `/projects/${project.id}/monitor/mjpeg_stream` %>" />
       </div>
       <div class="flex flex-column w-30">
         <% if (shot.cameraPlot) { %>

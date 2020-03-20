@@ -10,6 +10,7 @@ const parse = require('date-fns/parse')
 const { format } = require('date-fns-tz')
 
 const ZcamClient = require('../lib/zcam/client')
+const { MjpegProxy } = require('../lib/mjpeg-proxy')
 
 const createWebSocketServer = require('./websockets')
 
@@ -28,14 +29,15 @@ const bus = new EventEmitter()
 
 const jsonParser = express.json()
 
-const { PORT, ZCAM_URL } = process.env
+const { PORT } = process.env
+const ZCAM_URL = process.env.ZCAM_URL || 'http://localhost:8080'
 
 const app = express()
 app.set('port', PORT || 8000)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
 app.set('bus', bus)
-app.set('zcam', new ZcamClient({ uri: ZCAM_URL || 'http://localhost:8080' }))
+app.set('zcam', new ZcamClient({ uri: ZCAM_URL }))
 app.use(express.static('public'))
 
 app.use(express.urlencoded({ extended: false }))
@@ -83,6 +85,11 @@ app.patch('/projects/:projectId/slater.json', jsonParser, slater.update)
 app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)
+
+app.get(
+  '/projects/:projectId/monitor/mjpeg_stream',
+  new MjpegProxy(ZCAM_URL + '/mjpeg_stream').proxyRequest
+)
 
 const server = http.createServer(app)
 
