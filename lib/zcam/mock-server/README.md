@@ -4,7 +4,7 @@ No Z Cam? Run this mock server to do basic testing locally.
 
 `npm run zcam-mock-server`
 
-Listens to :8080 for HTTP and :8081 for WebSockets.
+By default, listens to :8080 for HTTP and :8081 for WebSockets. Can configure with `PORT` env var.
 
 Testing HTTP:
 
