@@ -6,4 +6,15 @@ ffmpeg -f lavfi \
   -f rawvideo \
   -vcodec rawvideo \
   -pix_fmt rgb24 \
-  pipe:1 | ~/Applications/VLC.app/Contents/MacOS/VLC stream:///dev/stdin --no-audio --sout "#transcode{vcodec=MJPG,vb=800}:standard{access=http,mux=mpjpeg,dst=:18223/}" --sout-http-mime="multipart/x-mixed-replace;boundary=--7b3cc56e5f51db803f790dad720ed50a" --demux rawvid --rawvid-width=1280 --rawvid-height=720 --rawvid-fps=24 --rawvid-chroma RV24 --no-drop-late-frames 2> /dev/null
+  pipe:1 | ~/Applications/VLC.app/Contents/MacOS/VLC \
+  -Idummy \
+  stream:///dev/stdin \
+  --no-audio \
+  --sout "#transcode{vcodec=MJPG,vb=800}:standard{access=http{mime=multipart/x-mixed-replace;boundary=--7b3cc56e5f51db803f790dad720ed50a},mux=mpjpeg,dst=:18223}" \
+  --demux rawvid \
+  --rawvid-width=1280 \
+  --rawvid-height=720 \
+  --rawvid-fps=24 \
+  --rawvid-chroma RV24 \
+  --no-drop-late-frames \
+  2> /dev/null
