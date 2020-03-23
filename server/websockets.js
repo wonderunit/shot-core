@@ -91,4 +91,28 @@ module.exports = function create ({ app, server }) {
   }
 
   setInterval(reportCameraStatus, 15 * 1000)
+
+  // publish Z Cam data to monitors
+  bus
+    .on(
+      'zcam-ws/data',
+      data => broadcast(
+        {
+          action: 'zcam-ws/data',
+          payload: { data }
+        }
+      )
+    )
+    .on(
+      'zcam-ws/closed',
+      () => broadcast({ action: 'zcam-ws/closed', payload: {} })
+    )
+    .on(
+      'zcam-ws/error',
+      code => broadcast({ action: 'zcam-ws/error', payload: { code } })
+    )
+    .on(
+      'zcam-ws/open',
+      () => broadcast({ action: 'zcam-ws/open', payload: {} })
+    )
 }
