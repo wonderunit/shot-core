@@ -10,7 +10,7 @@ const parse = require('date-fns/parse')
 const { format } = require('date-fns-tz')
 
 const ZcamClient = require('../lib/zcam/client')
-const { MjpegProxy } = require('../lib/mjpeg-proxy')
+const createMjpegProxy = require('../lib/mjpeg-proxy')
 
 const createWebSocketServer = require('./websockets')
 
@@ -86,10 +86,8 @@ app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)
 
-app.get(
-  '/projects/:projectId/monitor/mjpeg_stream',
-  new MjpegProxy(ZCAM_URL + '/mjpeg_stream').proxyRequest
-)
+const mjpegProxy = createMjpegProxy(ZCAM_URL + '/mjpeg_stream')
+app.get('/projects/:projectId/monitor/mjpeg_stream', mjpegProxy.get)
 
 const server = http.createServer(app)
 
