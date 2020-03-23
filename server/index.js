@@ -1,3 +1,4 @@
+const url = require('url')
 const express = require('express')
 const methodOverride = require('method-override')
 const responseTime = require('response-time')
@@ -13,6 +14,7 @@ const ZcamHttpClient = require('../lib/zcam/client')
 const createMjpegProxy = require('../lib/mjpeg-proxy')
 
 const createWebSocketServer = require('./websockets')
+const zcamWsRelay = require('./zcam-ws-relay')
 
 const home = require('./routes/home')
 const projects = require('./routes/projects')
@@ -31,6 +33,9 @@ const jsonParser = express.json()
 
 const { PORT } = process.env
 const ZCAM_URL = process.env.ZCAM_URL || 'http://localhost:8080'
+
+const ZCAM_WS_URL = 
+  `ws://${url.parse(ZCAM_URL).hostname}:${parseInt(url.parse(ZCAM_URL).port) + 1}`
 
 const app = express()
 app.set('port', PORT || 8000)
@@ -87,6 +92,9 @@ app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)
 
+// Z Cam connections
+console.log('Connecting to Z Cam WebSocket at', ZCAM_WS_URL)
+zcamWsRelay(ZCAM_WS_URL, app.get('bus'))
 const mjpegProxy = createMjpegProxy(ZCAM_URL + '/mjpeg_stream')
 app.get('/projects/:projectId/monitor/mjpeg_stream', mjpegProxy.get)
 
