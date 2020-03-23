@@ -1,13 +1,13 @@
 const t = require('tap')
 
-const ZcamClient = require('../lib/zcam/client')
+const ZcamHTTPClient = require('../lib/zcam/client')
 
-const client = new ZcamClient({
+const client = new ZcamHTTPClient({
   uri: 'http://localhost:8080',
   timeout: 500
 })
 
-const disconnectedClient = new ZcamClient({
+const disconnectedClient = new ZcamHTTPClient({
   uri: 'http://localhost:666'
 })
 
