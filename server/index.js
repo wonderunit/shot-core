@@ -37,6 +37,7 @@ app.set('port', PORT || 8000)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
 app.set('bus', bus)
+console.log('Connecting to Z Cam at', ZCAM_URL)
 app.set('zcam', new ZcamClient({ uri: ZCAM_URL }))
 app.use(express.static('public'))
 
