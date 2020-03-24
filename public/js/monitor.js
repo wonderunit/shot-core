@@ -25,7 +25,9 @@ application.register('monitor', class extends Stimulus.Controller {
     'cameraStatusRes',
 
     'trackStatusBatt',
-    'trackStatusTracking'
+    'trackStatusTracking',
+
+    'liveCameraStream'
   ]
 
   webSocketScheduleReconnect () {
@@ -67,6 +69,12 @@ application.register('monitor', class extends Stimulus.Controller {
         case 'camera/update':
           this.updateCameraStatus(payload)
           break
+        case 'zcam-ws/open':
+          this.updateLiveCamera({ connected: true })
+          break
+        case 'zcam-ws/closed':
+          this.updateLiveCamera({ connected: false })
+          break
       }
     }
 
@@ -94,6 +102,35 @@ application.register('monitor', class extends Stimulus.Controller {
     update()
 
     this.updateCameraStatus({ connected: false })
+    this.attachLiveCameraImage()
+  }
+
+  attachLiveCameraImage () {
+    let src = this.liveCameraStreamTarget.dataset.src
+    let el = this.liveCameraStreamTarget
+
+    let image = new Image()
+
+    el.innerHTML = 'Camera Disconnected'
+
+    image.onload = event => {
+      console.log('image: loaded')
+      el.innerHTML = ''
+      el.append(image)
+    }
+
+    image.onerror = event => {
+      console.error('image: could not load live camera image', event)
+    }
+
+    console.log('image: loading')
+    image.src = src
+  }
+
+  reconnectLiveCameraImage () {
+    let el = this.liveCameraStreamTarget
+    el.innerHTML = 'Connecting …'
+    setTimeout(() => this.attachLiveCameraImage(), 5000)
   }
 
   updateCameraStatus (options) {
@@ -129,5 +166,24 @@ application.register('monitor', class extends Stimulus.Controller {
 
     // this.cameraStatusFocusTarget.innerHTML = '24'
     // this.cameraStatusResTarget.innerHTML = '6k'
+  }
+
+  isConnected = null
+  updateLiveCamera (options) {
+    if (options.hasOwnProperty('connected')) {
+      let { connected } = options
+
+      if (this.isConnected === connected) return
+
+      if (connected) {
+        this.isConnected = connected
+        console.log('connected!')
+        this.attachLiveCameraImage()
+      } else {
+        this.isConnected = connected
+        console.log('disconnected!')
+        this.reconnectLiveCameraImage()
+      }
+    }
   }
 })
