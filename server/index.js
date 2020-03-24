@@ -116,3 +116,8 @@ server.listen(app.get('port'), () => {
     console.log(`Listening on :${app.get('port')}`)
   }
 })
+
+process.on('exit', () => {
+  bus.removeAllListeners()
+  bus = null
+})
