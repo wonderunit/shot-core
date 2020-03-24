@@ -67,7 +67,9 @@ application.register('monitor', class extends Stimulus.Controller {
           break
         case 'camera/update':
           this.updateCameraStatus(payload)
-          this.updateLiveCamera({ connected: payload.connected })
+          if (payload.hasOwnProperty('connected')) {
+            this.updateLiveCamera({ connected: payload.connected })
+          }
           break
         case 'zcam-ws/open':
           this.updateLiveCamera({ connected: true })
