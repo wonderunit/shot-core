@@ -41,7 +41,6 @@ application.register('monitor', class extends Stimulus.Controller {
   }
 
   webSocketConnect () {
-    console.log('webSocketConnect')
     if (this.ws) {
       this.ws.onerror = this.ws.onopen = this.ws.onmessage = null
       this.ws.close()
@@ -68,6 +67,7 @@ application.register('monitor', class extends Stimulus.Controller {
           break
         case 'camera/update':
           this.updateCameraStatus(payload)
+          this.updateLiveCamera({ connected: payload.connected })
           break
         case 'zcam-ws/open':
           this.updateLiveCamera({ connected: true })
@@ -102,35 +102,6 @@ application.register('monitor', class extends Stimulus.Controller {
     update()
 
     this.updateCameraStatus({ connected: false })
-    this.attachLiveCameraImage()
-  }
-
-  attachLiveCameraImage () {
-    let src = this.liveCameraStreamTarget.dataset.src
-    let el = this.liveCameraStreamTarget
-
-    let image = new Image()
-
-    el.innerHTML = 'Camera Disconnected'
-
-    image.onload = event => {
-      console.log('image: loaded')
-      el.innerHTML = ''
-      el.append(image)
-    }
-
-    image.onerror = event => {
-      console.error('image: could not load live camera image', event)
-    }
-
-    console.log('image: loading')
-    image.src = src
-  }
-
-  reconnectLiveCameraImage () {
-    let el = this.liveCameraStreamTarget
-    el.innerHTML = 'Connecting …'
-    setTimeout(() => this.attachLiveCameraImage(), 5000)
   }
 
   updateCameraStatus (options) {
@@ -175,14 +146,37 @@ application.register('monitor', class extends Stimulus.Controller {
 
       if (this.isConnected === connected) return
 
+
+      let src = this.liveCameraStreamTarget.dataset.src
+      let el = this.liveCameraStreamTarget
+
       if (connected) {
         this.isConnected = connected
         console.log('connected!')
-        this.attachLiveCameraImage()
+
+        let image = new Image()
+
+        console.log('image: clear')
+        el.innerHTML = ''
+
+        image.onload = event => {
+          console.log('image: loaded')
+        }
+
+        image.onerror = event => {
+          console.error('image: error')
+          console.log('could not load live camera image', event)
+        }
+
+        console.log('image: loading ', src)
+        image.src = src
+        el.append(image)
+
       } else {
         this.isConnected = connected
         console.log('disconnected!')
-        this.reconnectLiveCameraImage()
+
+        el.innerHTML = 'Camera Disconnected'
       }
     }
   }
