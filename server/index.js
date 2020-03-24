@@ -117,7 +117,9 @@ server.listen(app.get('port'), () => {
   }
 })
 
-process.on('exit', () => {
+function bye () {
   bus.removeAllListeners()
-  bus = null
-})
+  process.exit()
+}
+process.on('SIGTERM', bye)
+process.on('SIGINT', bye)
