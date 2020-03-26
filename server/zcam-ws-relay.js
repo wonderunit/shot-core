@@ -37,50 +37,55 @@ module.exports = function (url, bus) {
     // })
 
     ws.on('message', function incoming (message) {
-      // console.log('[zcam-ws] data')
-      let data = JSON.parse(message)
+      try {
+        // console.log('[zcam-ws] data')
+        let data = JSON.parse(message)
 
-      // raw data
-      bus.emit('zcam-ws/data', data)
+        // raw data
+        bus.emit('zcam-ws/data', data)
 
-      // as action
-      const { what, value } = data
-      bus.emit(`zcam/${what}`, value)
+        // as action
+        const { what, value } = data
+        bus.emit(`zcam/${what}`, value)
 
-      switch (what) {
-        case 'ConfigChanged':
-          break;
+        switch (what) {
+          case 'ConfigChanged':
+            break;
 
-        case 'CardMounted':
-          break;
-        case 'CardUnmounted':
-          break;
+          case 'CardMounted':
+            break;
+          case 'CardUnmounted':
+            break;
 
-        case 'RecStarted':
-          break;
-        case 'RecStoped':
-          break;
-        case 'RecUpdateDur':
-          break;
-        case 'RecUpdateRemain':
-          break;
+          case 'RecStarted':
+            break;
+          case 'RecStoped':
+            break;
+          case 'RecUpdateDur':
+            break;
+          case 'RecUpdateRemain':
+            break;
 
-        case 'TempUpdate':
-          break;
+          case 'TempUpdate':
+            break;
 
-        case 'AiDetection':
-          break;
+          case 'AiDetection':
+            break;
 
-        case 'ModeChanged':
-          break;
+          case 'ModeChanged':
+            break;
 
-        case 'HeadphonePlug':
-          break;
+          case 'HeadphonePlug':
+            break;
 
-        case 'LtcPlug':
-          break;
-        case 'UsbPlug':
-          break;
+          case 'LtcPlug':
+            break;
+          case 'UsbPlug':
+            break;
+        }
+      } catch (err) {
+        console.error(err)
+        console.log({ message })
       }
     })
 
