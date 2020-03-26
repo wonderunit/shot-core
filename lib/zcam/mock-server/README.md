@@ -17,7 +17,7 @@ Testing WebSockets:
 
 ```
 npm install -g wscat
-wscat -c ws://localhost:8081
+wscat -P -c ws://localhost:8081
 ```
 
 Shot Core will try to use the mock server by default, which is the same behavior as setting the `ZCAM_URL` to `http://localhost:8080`, e.g.:
