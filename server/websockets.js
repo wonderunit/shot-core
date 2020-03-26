@@ -2,6 +2,12 @@ const WebSocket = require('ws')
 
 const Heartbeat = require('../lib/zcam/client/heartbeat')
 
+function noop () {}
+
+function heartbeat () {
+  this.isAlive = true
+}
+
 module.exports = function create ({ app, server }) {
   const zcam = app.get('zcam')
   const bus = app.get('bus')
@@ -18,6 +24,7 @@ module.exports = function create ({ app, server }) {
 
   wss.on('connection', function (ws, request) {
     console.log('wss: connection')
+    ws.isAlive = true
     ws.send(JSON.stringify({
       action: 'camera/update',
       payload: {
@@ -32,12 +39,29 @@ module.exports = function create ({ app, server }) {
       console.log('ws: message', message)
     })
 
+    ws.on('pong', heartbeat)
+
     ws.on('close', function () {
       console.log('ws: close')
     })
   })
 
-  // wss.on('close', function close () { })
+  const interval = setInterval(function ping () {
+    wss.clients.forEach(function each (ws) {
+      if (ws.isAlive === false) {
+        console.log('ws: client unreachable. terminating')
+        ws.terminate()
+        return
+      }
+
+      ws.isAlive = false
+      ws.ping(noop)
+    })
+  }, 30000)
+
+  wss.on('close', function close () {
+    clearInterval(interval)
+  })
 
   const broadcast = data => {
     wss.clients.forEach(function (ws) {
