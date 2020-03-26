@@ -4,7 +4,8 @@ module.exports = function (url, bus) {
   let msecs = 5000
   let timeoutId
   function reconnect () {
-    timeoutId = setTimeout(function () {
+    timeoutId = clearTimeout(timeoutId)
+    setTimeout(function () {
       console.log('[zcam-ws] attempting to reconnect …')
       open(url, bus)
     }, msecs)
@@ -15,8 +16,11 @@ module.exports = function (url, bus) {
 
     let pingTimeout
     function heartbeat () {
-      clearTimeout(pingTimeout)
-      pingTimeout = setTimeout(() => ws.terminate(), 30000 + 1000)
+      timeoutId = clearTimeout(timeoutId)
+      pingTimeout = setTimeout(() => {
+        console.log('[zcam-ws] timed out! terminating')
+        ws.terminate()
+      }, 30000 + 1000)
     }
 
     ws.on('open', function open () {
@@ -88,6 +92,7 @@ module.exports = function (url, bus) {
 
     ws.on('error', function error (err) {
       console.error('[zcam-ws] error connecting to', url)
+      timeoutId = clearTimeout(timeoutId)
       bus.emit('zcam-ws/error', err.code)
       reconnect()
     })
