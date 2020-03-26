@@ -14,27 +14,27 @@ module.exports = function (url, bus) {
 
   function open (url, bus) {
     const ws = new WebSocket(url)
-    let pingTimeoutId
+    // let pingTimeoutId
 
-    function heartbeat () {
-      console.log('[zcam-ws] heartbeat')
-      clearTimeout(pingTimeoutId)
-      pingTimeoutId = setTimeout(() => {
-        console.log('[zcam-ws] timed out! terminating')
-        ws.terminate()
-      }, 30000 + 1000)
-    }
+    // function heartbeat () {
+    //   console.log('[zcam-ws] heartbeat')
+    //   clearTimeout(pingTimeoutId)
+    //   pingTimeoutId = setTimeout(() => {
+    //     console.log('[zcam-ws] timed out! terminating')
+    //     ws.terminate()
+    //   }, 30000 + 1000)
+    // }
 
     ws.on('open', function open () {
-      heartbeat()
+      // heartbeat()
       bus.emit('zcam-ws/open')
       console.log('[zcam-ws] connected')
     })
 
-    ws.on('ping', function ping () {
-      heartbeat()
-      console.log('[zcam-ws] ping!')
-    })
+    // ws.on('ping', function ping () {
+    //   heartbeat()
+    //   console.log('[zcam-ws] ping!')
+    // })
 
     ws.on('message', function incoming (message) {
       // console.log('[zcam-ws] data')
@@ -86,7 +86,7 @@ module.exports = function (url, bus) {
 
     ws.on('close', function close() {
       console.log('[zcam-ws] disconnected')
-      pingTimeoutId = clearTimeout(pingTimeoutId)
+      // pingTimeoutId = clearTimeout(pingTimeoutId)
       reconnectTimeoutId = clearTimeout(reconnectTimeoutId)
       bus.emit('zcam-ws/closed')
       reconnect()
@@ -94,7 +94,7 @@ module.exports = function (url, bus) {
 
     ws.on('error', function error (err) {
       console.error('[zcam-ws] error connecting to', url)
-      pingTimeoutId = clearTimeout(pingTimeoutId)
+      // pingTimeoutId = clearTimeout(pingTimeoutId)
       reconnectTimeoutId = clearTimeout(reconnectTimeoutId)
       bus.emit('zcam-ws/error', err.code)
       reconnect()
