@@ -34,7 +34,7 @@ const jsonParser = express.json()
 const { PORT } = process.env
 const ZCAM_URL = process.env.ZCAM_URL || 'http://localhost:8080'
 
-const ZCAM_WS_URL = 
+const ZCAM_WS_URL = process.env.ZCAM_WS_URL ||
   `ws://${url.parse(ZCAM_URL).hostname}:${parseInt(url.parse(ZCAM_URL).port) + 1}`
 
 const app = express()
