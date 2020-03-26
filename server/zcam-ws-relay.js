@@ -3,6 +3,7 @@ const WebSocket = require('ws')
 module.exports = function (url, bus) {
   let msecs = 5000
   let timeoutId
+
   function reconnect () {
     timeoutId = clearTimeout(timeoutId)
     setTimeout(function () {
