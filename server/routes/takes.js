@@ -8,13 +8,17 @@ exports.create = async (req, res) => {
   let { projectId, sceneId, shotId } = req.params
   let { at } = req.body
 
-  try {
-    req.app.get('bus').emit('camera-listener/disable')
-    await req.app.get('zcam').get('/ctrl/rec?action=start')
-    const id = create({ projectId, sceneId, shotId, at })
-    req.app.get('bus').emit('takes/create')
+  let bus = req.app.get('bus')
+  let zcam = req.app.get('zcam')
 
-    res.status(201).send({ id })
+  try {
+    bus.emit('camera-listener/disable')
+    await zcam.get('/ctrl/rec?action=start')
+    let takeId = create({ projectId, sceneId, shotId, at })
+    bus.emit('takes/create', { id: takeId })
+
+
+    res.status(201).send({ id: takeId })
   } catch (err) {
     console.error(err)
     res.sendStatus(500)
