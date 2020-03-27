@@ -1,64 +1,47 @@
-const { run, get } = require('../db')
+const { get } = require('../db')
 
-exports.create = (req, res) => {
+const create = require('../services/takes/create')
+const action = require('../services/takes/action')
+const cut = require('../services/takes/cut')
+
+exports.create = async (req, res) => {
   let { projectId, sceneId, shotId } = req.params
   let { at } = req.body
 
-  // determine the next take number given the shot id
-  let { take_number } = get(
-    `SELECT COUNT(id) + 1 as take_number FROM takes WHERE shot_id = ?`,
-    shotId
-  )
+  try {
+    const id = create({ projectId, sceneId, shotId, at })
+    req.app.get('bus').emit('takes/create')
 
-  let id = run(
-    `INSERT INTO takes
-    (project_id, scene_id, shot_id,
-      take_number,
-      ready_at)
-    VALUES
-    (?, ?, ?,
-      ?,
-      ?
-    )`,
-    projectId, sceneId, shotId,
-    take_number,
-    at
-  ).lastInsertRowid
-
-  req.app.get('bus').emit('takes/create')
-  res.status(201).send({ id })
+    res.status(201).send({ id })
+  } catch (err) {
+    console.error(err)
+    res.sendStatus(500)
+  }
 }
 
-exports.action = (req, res) => {
+exports.action = async (req, res) => {
   let { takeId } = req.params
   let { at } = req.body
 
-  run(
-    `UPDATE takes
-     SET action_at = ?
-     WHERE id = ?`,
-     at,
-     takeId
-  )
-
+  action({ takeId, at })
   req.app.get('bus').emit('takes/action')
+
   res.sendStatus(200)
 }
 
-exports.cut = (req, res) => {
+exports.cut = async (req, res) => {
   let { takeId } = req.params
   let { at } = req.body
 
-  run(
-    `UPDATE takes
-     SET cut_at = ?
-     WHERE id = ?`,
-    at,
-    takeId
-  )
+  try {
+    cut({ takeId, at })
+    req.app.get('bus').emit('takes/cut')
 
-  req.app.get('bus').emit('takes/cut')
-  res.sendStatus(200)
+    res.sendStatus(200)
+  } catch (err) {
+    console.error(err)
+    res.sendStatus(500)
+  }
 }
 
 exports.show = (req, res) => {
