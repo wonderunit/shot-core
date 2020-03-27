@@ -16,7 +16,7 @@ module.exports = function (url, bus, zcam) {
   }
   bus.on('camera-listener/enable', () => (state.cameraListener = true))
   bus.on('camera-listener/disable', () => (state.cameraListener = false))
-  function onRecStart ({ projectId, at }) {
+  async function onRecStart ({ projectId, at }) {
     // SEE: slater.show
     let project = get('SELECT * FROM projects WHERE id = ?', projectId)
 
@@ -95,7 +95,7 @@ module.exports = function (url, bus, zcam) {
     //   console.log('[zcam-ws] ping!')
     // })
 
-    ws.on('message', function incoming (message) {
+    ws.on('message', async function incoming (message) {
       try {
         // console.log('[zcam-ws] data')
         let data = JSON.parse(message)
@@ -119,7 +119,7 @@ module.exports = function (url, bus, zcam) {
           case 'RecStarted':
             console.log('[zcam-ws] got RecStarted', state.cameraListener ? '…' : '(ignored)')
             if (state.cameraListener) {
-              onRecStart({
+              await onRecStart({
                 projectId: state.projectId,
                 at: new Date().toISOString()
               })
