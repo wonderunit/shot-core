@@ -27,7 +27,7 @@ module.exports = function (url, bus, zcam) {
       let shotId = event.shot_id
 
       let takeId = create({ projectId, sceneId, shotId, at })
-      bus.emit('takes/create')
+      bus.emit('takes/create', { id: takeId })
 
       action({ takeId, at })
       bus.emit('takes/action')
