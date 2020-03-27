@@ -5,6 +5,7 @@ const { get } = require('./db')
 const create = require('./services/takes/create')
 const action = require('./services/takes/action')
 const cut = require('./services/takes/cut')
+const updateFilepath = require('./services/takes/update-filepath')
 
 module.exports = function (url, bus, zcam) {
   let msecs = 5000
@@ -28,6 +29,9 @@ module.exports = function (url, bus, zcam) {
 
       let takeId = create({ projectId, sceneId, shotId, at })
       bus.emit('takes/create', { id: takeId })
+
+      let filepath = (await zcam.get('/ctrl/get?k=last_file_name')).data.value
+      updateFilepath({ takeId, filepath })
 
       action({ takeId, at })
       bus.emit('takes/action')

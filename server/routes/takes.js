@@ -3,6 +3,7 @@ const { get } = require('../db')
 const create = require('../services/takes/create')
 const action = require('../services/takes/action')
 const cut = require('../services/takes/cut')
+const updateFilepath = require('../services/takes/update-filepath')
 
 exports.create = async (req, res) => {
   let { projectId, sceneId, shotId } = req.params
@@ -17,6 +18,8 @@ exports.create = async (req, res) => {
     let takeId = create({ projectId, sceneId, shotId, at })
     bus.emit('takes/create', { id: takeId })
 
+    let filepath = (await zcam.get('/ctrl/get?k=last_file_name')).data.value
+    updateFilepath({ takeId, filepath })
 
     res.status(201).send({ id: takeId })
   } catch (err) {
