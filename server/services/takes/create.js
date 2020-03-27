@@ -11,11 +11,13 @@ module.exports = function create ({ projectId, sceneId, shotId, at }) {
     `INSERT INTO takes
     (project_id, scene_id, shot_id,
       take_number,
-      ready_at)
+      ready_at,
+      downloaded)
     VALUES
     (?, ?, ?,
       ?,
-      ?
+      ?,
+      0
     )`,
     projectId, sceneId, shotId,
     take_number,
