@@ -20,12 +20,16 @@ for (let form of forms) {
       method = form.method
     }
 
-    await fetch(form.action, {
+    let { ok, statusText } = await fetch(form.action, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     })
-    window.location = window.location
+    if (ok) {
+      window.location = window.location
+    } else {
+      alert(statusText)
+    }
   }
 }
 
