@@ -129,10 +129,6 @@ module.exports = function (url, bus, zcam) {
               })
             }
             break
-          case 'RecordingFile':
-            console.log('[zcam-ws] got RecordingFile', value)
-            console.log(data)
-            break
           case 'RecStoped':
             console.log('[zcam-ws] got RecStoped', state.cameraListener ? '…' : '(ignored)')
             if (state.cameraListener) {
