@@ -48,5 +48,7 @@ CREATE TABLE takes(
   take_number INTEGER NOT NULL,
   ready_at TEXT,
   action_at TEXT,
-  cut_at TEXT
+  cut_at TEXT,
+  filepath TEXT,
+  downloaded BOOLEAN NOT NULL CHECK (downloaded IN (0,1))
 );
