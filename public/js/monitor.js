@@ -62,6 +62,12 @@ application.register('monitor', class extends Stimulus.Controller {
     this.ws.onmessage = event => {
       let { action, payload } = JSON.parse(event.data)
       console.log('WebSocket message', action, payload)
+
+      // if (action == 'zcam-ws/data') {
+      //   let { data } = payload
+      //   console.log('got zcam-ws data', data)
+      // }
+
       switch (action) {
         case 'reload':
           window.location = window.location
