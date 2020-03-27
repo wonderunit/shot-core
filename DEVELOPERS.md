@@ -82,6 +82,30 @@ Generally we’re writing SQL variables `with_underscores` and JavaScript variab
 
 For simplicity we currently use the database id for a resource in the URL, and NOT any resource-representitive number. For example, if a URL path was `/projects/53/scenes/31/shots/5/takes/29`, it would NOT be referring to the 31st scene, 5th shot, and 29th take. Those numbers are just database ids, NOT scene number, shot number, take number.
 
+## Mock Z Cam Server
+
+If you don’t have access to a Z Cam, you can run the mock server:
+
+    PORT=8080 npm start zcam-mock-server
+
+If `PORT` is not set, default HTTP port is `8080`
+Default WebSocket port is `PORT+1`, so `8081`
+
+### Simulating Z Cam WebSocket messages
+
+To simulate WebSocket messages from the camera, globally install `wscat` from npm. Then you can run a simple server on a new port, e.g. `8082`:
+
+    $ wscat -l 8082
+
+... and override the `ZCAM_WS_URL` of the shot list server:
+
+    $ ZCAM_WS_URL=http://localhost:8082 npm start
+
+Then shot list server will connect to `http://localhost:8082` via ws, and you can send it commands from the `wscat` session, e.g.:
+
+    > {"what":"RecStarted"}
+    > {"what":"RecStoped"}
+
 ## Security
 
 There is none! Shot List Server is not a secure web service, and is not meant to be hosted on an internet-accessible IP. It does a bunch of stuff for simplicity-sake (e.g.: hand-rolled SQL queries) that makes it a security risk.
