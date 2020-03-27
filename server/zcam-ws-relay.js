@@ -50,38 +50,38 @@ module.exports = function (url, bus) {
 
         switch (what) {
           case 'ConfigChanged':
-            break;
+            break
 
           case 'CardMounted':
-            break;
+            break
           case 'CardUnmounted':
-            break;
+            break
 
           case 'RecStarted':
-            break;
+            break
           case 'RecStoped':
-            break;
+            break
           case 'RecUpdateDur':
-            break;
+            break
           case 'RecUpdateRemain':
-            break;
+            break
 
           case 'TempUpdate':
-            break;
+            break
 
           case 'AiDetection':
-            break;
+            break
 
           case 'ModeChanged':
-            break;
+            break
 
           case 'HeadphonePlug':
-            break;
+            break
 
           case 'LtcPlug':
-            break;
+            break
           case 'UsbPlug':
-            break;
+            break
         }
       } catch (err) {
         console.error(err)
