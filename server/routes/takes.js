@@ -9,8 +9,9 @@ exports.create = async (req, res) => {
   let { at } = req.body
 
   try {
-    const id = create({ projectId, sceneId, shotId, at })
+    req.app.get('bus').emit('camera-listener/disable')
     await req.app.get('zcam').get('/ctrl/rec?action=start')
+    const id = create({ projectId, sceneId, shotId, at })
     req.app.get('bus').emit('takes/create')
 
     res.status(201).send({ id })
@@ -35,9 +36,10 @@ exports.cut = async (req, res) => {
   let { at } = req.body
 
   try {
-    cut({ takeId, at })
     await req.app.get('zcam').get('/ctrl/rec?action=stop')
+    cut({ takeId, at })
     req.app.get('bus').emit('takes/cut')
+    req.app.get('bus').emit('camera-listener/enable')
 
     res.sendStatus(200)
   } catch (err) {

@@ -1,9 +1,68 @@
 const WebSocket = require('ws')
 
+const { get } = require('./db')
+
+const create = require('./services/takes/create')
+const action = require('./services/takes/action')
+const cut = require('./services/takes/cut')
+
 module.exports = function (url, bus) {
   let msecs = 5000
   let reconnectTimeoutId
-  
+
+  let state = {
+    projectId: 1,
+    cameraListener: true
+  }
+  bus.on('camera-listener/enable', () => (state.cameraListener = true))
+  bus.on('camera-listener/disable', () => (state.cameraListener = false))
+  function onRecStart ({ projectId, at }) {
+    // SEE: slater.show
+    let project = get('SELECT * FROM projects WHERE id = ?', projectId)
+
+    if (project && project.slater_event_id) {
+      let event = get('SELECT * FROM events WHERE id = ?', project.slater_event_id)
+
+      let sceneId = event.scene_id
+      let shotId = event.shot_id
+
+      let takeId = create({ projectId, sceneId, shotId, at })
+      bus.emit('takes/create')
+
+      action({ takeId, at })
+      bus.emit('takes/action')
+    }
+  }
+  function onRecStop ({ projectId, at }) {
+    // SEE: slater.show
+    let project = get('SELECT * FROM projects WHERE id = ?', projectId)
+
+    if (project && project.slater_event_id) {
+      let event = get('SELECT * FROM events WHERE id = ?', project.slater_event_id)
+
+      // find active take for this shot
+      // active means:
+      // - highest take_number
+      // - empty cut_at timestamp
+      let take = get(
+        `
+        SELECT * FROM takes
+        WHERE shot_id = ?
+        AND cut_at IS NULL
+        ORDER BY take_number DESC
+        LIMIT 1
+        `,
+        event.shot_id
+      )
+
+      if (take) {
+        let takeId = take.id
+        cut({ takeId, at })
+        bus.emit('takes/cut')
+      }
+    }
+  }
+
   function reconnect () {
     clearTimeout(reconnectTimeoutId)
     reconnectTimeoutId = setTimeout(function () {
@@ -58,9 +117,24 @@ module.exports = function (url, bus) {
             break
 
           case 'RecStarted':
+            console.log('[zcam-ws] got RecStarted', state.cameraListener ? '…' : '(ignored)')
+            if (state.cameraListener) {
+              onRecStart({
+                projectId: state.projectId,
+                at: new Date().toISOString()
+              })
+            }
             break
           case 'RecStoped':
+            console.log('[zcam-ws] got RecStoped', state.cameraListener ? '…' : '(ignored)')
+            if (state.cameraListener) {
+              onRecStop({
+                projectId: state.projectId,
+                at: new Date().toISOString()
+              })
+            }
             break
+
           case 'RecUpdateDur':
             break
           case 'RecUpdateRemain':
