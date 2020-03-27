@@ -6,7 +6,7 @@ const create = require('./services/takes/create')
 const action = require('./services/takes/action')
 const cut = require('./services/takes/cut')
 
-module.exports = function (url, bus) {
+module.exports = function (url, bus, zcam) {
   let msecs = 5000
   let reconnectTimeoutId
 
