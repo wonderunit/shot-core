@@ -99,11 +99,16 @@ exports.show = (req, res) => {
     let scene = get('SELECT * FROM scenes WHERE id = ?', shot.scene_id)
     let takes = all('SELECT * FROM takes WHERE shot_id = ?', shot.id)
 
-    let take
-    if (takes.length) {
-      let max = takes.reduce((acc, take) => Math.max(acc, take.take_number), -Infinity)
-      take = takes.find(take => take.take_number == max)
-    }
+    // for this shot, find the take with highest take number
+    let take = get(
+      `
+      SELECT * FROM takes
+      WHERE shot_id = ?
+      ORDER BY take_number DESC
+      LIMIT 1
+      `,
+      shot.id
+    )
 
     scene = new Scene(scene)
     shot = new Shot(shot)
