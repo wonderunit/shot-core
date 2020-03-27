@@ -97,6 +97,8 @@ module.exports = function create ({ app, server }) {
       let iso = (await zcam.get('/ctrl/get?k=iso')).data.value
       let iris = (await zcam.get('/ctrl/get?k=iris')).data.value
 
+      let mode = (await zcam.get('/ctrl/mode?action=query')).data.msg
+
       broadcast({
         action: 'camera/update',
         payload: {
@@ -104,7 +106,8 @@ module.exports = function create ({ app, server }) {
           query_total,
           battery,
           iso,
-          iris
+          iris,
+          mode
         }
       })
     } catch (err) {

@@ -27,7 +27,8 @@ application.register('monitor', class extends Stimulus.Controller {
     'trackStatusBatt',
     'trackStatusTracking',
 
-    'liveCameraStream'
+    'liveCameraStream',
+    'onAir'
   ]
 
   webSocketScheduleReconnect () {
@@ -135,6 +136,15 @@ application.register('monitor', class extends Stimulus.Controller {
 
     if (options.hasOwnProperty('iris')) {
       this.cameraStatusIrisTarget.innerHTML = 'f/' + iris
+    }
+
+    if (options.hasOwnProperty('mode')) {
+      let { mode } = options
+      if (mode === 'rec_ing') {
+        this.onAirTarget.style.backgroundColor = 'red'
+      } else {
+        this.onAirTarget.style.backgroundColor = 'grey'
+      }
     }
 
     // this.cameraStatusFocusTarget.innerHTML = '24'

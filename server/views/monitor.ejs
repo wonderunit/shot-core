@@ -81,7 +81,14 @@ function plural (v) {
 
     <div class="flex justify-between mb3">
       <div class="flex flex-column w-70 pr3">
-        <div class="ttu tracked f7 dark-gray mb1">Live Camera</div>
+        <div class="ttu tracked f7 dark-gray mb1 flex flex-row items-center">
+          <span class="db mr1">Live Camera</span>
+          <span
+            data-target="monitor.onAir"
+            class="br4 db"
+            style="width: 0.5rem; height: 0.5rem; margin-top: -1px"
+          ></span>
+        </div>
         <div
           class="f7"
           style="color: red"
