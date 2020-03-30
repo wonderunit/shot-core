@@ -16,6 +16,8 @@ const createMjpegProxy = require('../lib/mjpeg-proxy')
 const createWebSocketServer = require('./websockets')
 const zcamWsRelay = require('./zcam-ws-relay')
 
+const downloader = require('./services/downloader')
+
 const home = require('./routes/home')
 const projects = require('./routes/projects')
 const schedules = require('./routes/schedules')
@@ -92,6 +94,13 @@ app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)
 
+// start the downloader
+downloader.startup({ ZCAM_URL, projectId: 1 })
+bus
+  .on('takes/cut', () => {
+    downloader.startup({ ZCAM_URL, projectId: 1 })
+  })
+
 // Z Cam connections
 console.log('Connecting to Z Cam WebSocket at', ZCAM_WS_URL)
 zcamWsRelay(ZCAM_WS_URL, app.get('bus'), app.get('zcam'))
@@ -117,8 +126,10 @@ server.listen(app.get('port'), () => {
   }
 })
 
-function bye () {
+async function bye () {
+  console.log('Shutting down ...')
   bus.removeAllListeners()
+  await downloader.shutdown()
   process.exit()
 }
 process.on('SIGTERM', bye)
