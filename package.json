@@ -17,6 +17,7 @@
     "date-fns-tz": "1.0.9",
     "ejs": "3.0.1",
     "express": "4.17.1",
+    "ffmpeg-stream": "0.6.0",
     "fs-extra": "8.1.0",
     "method-override": "3.0.0",
     "multiparty": "4.2.1",

@@ -17,6 +17,7 @@ const createWebSocketServer = require('./websockets')
 const zcamWsRelay = require('./zcam-ws-relay')
 
 const downloader = require('./services/downloader')
+const rtspClient = require('./services/rtsp-client')
 
 const home = require('./routes/home')
 const projects = require('./routes/projects')
@@ -38,6 +39,8 @@ const ZCAM_URL = process.env.ZCAM_URL || 'http://localhost:8080'
 
 const ZCAM_WS_URL = process.env.ZCAM_WS_URL ||
   `ws://${url.parse(ZCAM_URL).hostname}:${parseInt(url.parse(ZCAM_URL).port) + 1}`
+
+const ZCAM_RTSP_URL = process.env.ZCAM_RTSP_URL || 'rtsp://localhost:554'
 
 const app = express()
 app.set('port', PORT || 8000)
@@ -99,6 +102,16 @@ downloader.startup({ ZCAM_URL, projectId: 1 })
 bus
   .on('takes/cut', () => {
     downloader.startup({ ZCAM_URL, projectId: 1 })
+  })
+
+bus
+  .on('takes/create', ({ id }) => {
+    console.log('RTSP client START recording stream for take', id)
+    rtspClient.startup({ ZCAM_RTSP_URL, takeId: id })
+  })
+  .on('takes/cut', () => {
+    console.log('RTSP client STOP recording stream')
+    rtspClient.shutdown()
   })
 
 // Z Cam connections
