@@ -7,12 +7,12 @@ const action = require('./services/takes/action')
 const cut = require('./services/takes/cut')
 const updateFilepath = require('./services/takes/update-filepath')
 
-module.exports = function (url, bus, zcam) {
+module.exports = function (url, bus, zcam, { projectId }) {
   let msecs = 5000
   let reconnectTimeoutId
 
   let state = {
-    projectId: 1,
+    projectId,
     cameraListener: true
   }
   bus.on('camera-listener/enable', () => (state.cameraListener = true))
@@ -101,6 +101,8 @@ module.exports = function (url, bus, zcam) {
 
     ws.on('message', async function incoming (message) {
       try {
+        // TODO handle '' message?
+
         // console.log('[zcam-ws] data')
         let data = JSON.parse(message)
 
