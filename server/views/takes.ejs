@@ -1,0 +1,104 @@
+<%- include('header') %>
+<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
+  <div class="lh-copy">
+    <h1 class="f3 ma0 mb4">
+      <a href="/">Home</a> /
+      <a href="/projects/<%= project.id %>"><%= project.name %></a> /
+      <br />
+      Takes
+    </h1>
+
+    <style>
+      .flex-row > div {
+        margin-right: 2rem;
+        margin-bottom: 1rem;
+      }
+      .flex-row > div:last-child {
+        margin-right: 0;
+      }
+    </style>
+    <div class="flex flex-column w-100 f6">
+      <div class="flex flex-row w-100">
+        <div class="w-10 f7 ttu tracked black-40">
+          id
+        </div>
+        <div class="w-20 f7 ttu tracked black-40">
+          thumbnail
+        </div>
+        <div class="w-10 f7 ttu tracked black-40">
+          scene
+        </div>
+        <div class="w-10 f7 ttu tracked black-40">
+          shot
+        </div>
+        <div class="w-10 f7 ttu tracked black-40">
+          take
+        </div>
+        <div class="w-10 f7 ttu tracked black-40">
+          preview
+        </div>
+        <div class="w-10 f7 ttu tracked black-40">
+          footage
+        </div>
+        <div class="w-10 f7 ttu tracked black-40">
+          notes
+        </div>
+      </div>
+      <% for (let take of takes) { %>
+        <% let scene = scenes.find(scene => scene.id == take.scene_id) %>
+        <% let shot = shots.find(shot => shot.id == take.shot_id) %>
+        <div class="flex flex-row w-100">
+          <div class="w-10">
+            <%= take.id %>
+          </div>
+          <div class="w-20">
+            <% let thumbnail = take.filenameForThumbnail({
+              scene_number: scene.scene_number,
+              shot_number: shot.shot_number
+            }) %>
+            <img
+              style="width: 160px; height: 90px"
+              src="/uploads/projects/<%= project.id %>/takes/<%= thumbnail %>"
+            />
+          </div>
+          <div class="w-10">
+            <%= scene.scene_number %>
+          </div>
+          <div class="w-10">
+            <%= shot.shot_number %>
+          </div>
+          <div class="w-10">
+            <%= take.take_number %>
+          </div>
+          <div class="w-10">
+            <% let stream = take.filenameForStream({
+              scene_number: scene.scene_number,
+              shot_number: shot.shot_number
+            }) %>
+            <a href="/uploads/projects/<%= project.id %>/takes/<%= stream %>">
+              .mp4
+            </a>
+          </div>
+          <div class="w-10">
+            <% if (take.downloaded) { %>
+              <% let footage = take.filenameForFootage({
+                scene_number: scene.scene_number,
+                shot_number: shot.shot_number
+              }) %>
+              <a href="/uploads/projects/<%= project.id %>/takes/<%= footage %>">
+                .mov
+              </a>
+            <% } else { %>
+              On Camera
+            <% } %>
+          </div>
+          <div class="w-10">
+            <span class="black-20">---</span>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+</div>
+<%- include('footer') -%>

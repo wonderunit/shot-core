@@ -1,9 +1,13 @@
-const { get } = require('../db')
+const { get, all } = require('../db')
 
 const create = require('../services/takes/create')
 const action = require('../services/takes/action')
 const cut = require('../services/takes/cut')
 const updateFilepath = require('../services/takes/update-filepath')
+
+const Take = require('../decorators/take')
+
+const q = arr => arr.map(() => '?').join(',')
 
 exports.create = async (req, res) => {
   let { projectId, sceneId, shotId } = req.params
@@ -69,4 +73,26 @@ exports.show = (req, res) => {
   take.cut_at = new Date(take.cut_at)
 
   res.render('take', { project, scene, shot, take })
+}
+
+exports.index = (req, res) => {
+  let { projectId } = req.params
+
+  let project = get(`SELECT * FROM projects WHERE id = ?`, projectId)
+
+  let takes = all(`SELECT * FROM takes WHERE project_id = ?`, project.id)
+
+  let shotIds = takes.map(shot => shot.shot_id)
+  let shots = all(
+    `SELECT id, shot_number FROM shots WHERE id IN (${q(shotIds)})`, shotIds
+  )
+
+  let sceneIds = takes.map(scene => scene.scene_id)
+  let scenes = all(
+    `SELECT id, scene_number FROM scenes WHERE id IN (${q(sceneIds)})`, sceneIds
+  )
+
+  takes = Take.decorateCollection(takes)
+
+  res.render('takes', { project, takes, shots, scenes })
 }
