@@ -5,6 +5,8 @@ const path = require('path')
 const { UPLOADS_PATH } = require('../config')
 const { get } = require('../db')
 
+const Take = require('../decorators/take')
+
 let converter
 let running = false
 
@@ -24,7 +26,13 @@ async function startup ({ ZCAM_RTSP_URL, takeId }) {
   let { shot_number } = get(`SELECT shot_number from shots WHERE id = ?`, take.shot_id)
 
   let dirname = path.join('projects', take.project_id.toString(), 'takes')
-  let filename = `scene_${scene_number}_shot_${shot_number}_take_${take.take_number}_id_${take.id}-STREAM.mp4`
+
+  let filename = Take.filenameForStream({
+    scene_number,
+    shot_number,
+    take_number: take.take_number,
+    id: take.id
+  })
   let filepath = path.join(dirname, filename)
 
   fs.mkdirpSync(path.join(UPLOADS_PATH, dirname))

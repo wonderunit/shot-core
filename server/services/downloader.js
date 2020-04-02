@@ -5,6 +5,8 @@ const path = require('path')
 const { UPLOADS_PATH } = require('../config')
 const { run, get } = require('../db')
 
+const Take = require('../decorators/take')
+
 const delay = msecs => new Promise((resolve) => setTimeout(resolve, msecs))
 
 // via https://gist.github.com/falkolab/f160f446d0bda8a69172
@@ -69,15 +71,25 @@ async function next ({ ZCAM_URL, projectId }) {
 
     // destination filepath
     let dirname = path.join('projects', projectId.toString(), 'takes')
-    let filename = `scene_${scene_number}_shot_${shot_number}_take_${take.take_number}_id_${take.id}.mov`
+
+    let opts = {
+      scene_number,
+      shot_number,
+      take_number: take.take_number,
+      id: take.id
+    }
+    let filename = Take.filenameForFootage(opts)
+    let thumbnail = Take.filenameForThumbnail(opts)
 
     console.log(`[downloader] downloading …`)
-    console.log(`[downloader] from: ${uri}`)
-    console.log(`[downloader] to:   public/uploads/${path.join(dirname, filename)}`)
+    console.log(`[downloader] from:   ${uri}`)
+    console.log(`[downloader] to:     public/uploads/${path.join(dirname, filename)}`)
+    console.log(`[downloader] thumb:  public/uploads/${path.join(dirname, thumbnail)}`)
 
     fs.mkdirpSync(path.join(UPLOADS_PATH, dirname))
 
     await download(uri, path.join(UPLOADS_PATH, dirname, filename))
+    await download(uri + '?act=scr', path.join(UPLOADS_PATH, dirname, thumbnail))
 
     run(
       `UPDATE takes
