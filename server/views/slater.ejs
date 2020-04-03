@@ -175,26 +175,26 @@
             <div
               class="f6 mt1"
               data-controller="rating"
-              data-rating-value="<%= take.rating %>"
+              data-rating-value="<%= prev.rating %>"
               data-rating-url="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}/takes/${prev.id}.json` %>"
             >
               <a data-target="rating.none"
                  data-action="click->rating#setRating"
                  data-value=""
-                 class="mr2 <%= take.rating == null ? 'black' : 'black-30' %>"
+                 class="mr2 <%= prev.rating == null ? 'black' : 'black-30' %>"
                  href="#">No Rating</a>
 
               <a data-target="rating.zero"
                  data-action="click->rating#setRating"
                  data-value="0"
-                 class="mr2 <%= take.rating == 0 ? 'black' : 'black-30' %>"
+                 class="mr2 <%= prev.rating == 0 ? 'black' : 'black-30' %>"
                  href="#">No Stars</a>
 
               <% for (let i = 0; i < 5; i++) { %>
                 <a data-target="rating.star"
                   data-action="click->rating#setRating"
                   data-value="<%= i + 1 %>"
-                  class="link <%= take.rating > i ? 'black' : 'black-30' %>"
+                  class="link <%= prev.rating > i ? 'black' : 'black-30' %>"
                   href="#">★</a>
               <% } %>
             </div>
