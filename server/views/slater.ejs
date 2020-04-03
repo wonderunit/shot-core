@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/tachyons.min.css">
   <link rel="stylesheet" href="/css/slater.css">
+
+  <script src="/js/turbolinks.umd.js"></script>
+  <script src="/js/stimulus.umd.js"></script>
+  <script src="/js/slater.js"></script>
 </head>
 <body>
 
@@ -236,11 +240,8 @@
 
 <div class="ma4">
   <small class="lh-copy helvetica black-40">
-    Device Time: <span id="clock"></span>
+    Device Time: <span data-controller="clock"></span>
   </small>
 </div>
-
-<script src="/js/stimulus.umd.js"></script>
-<script src="/js/slater.js"></script>
 </body>
 </html>

@@ -4,6 +4,14 @@ browserSync.create().init({
     target: 'localhost:8000',
     ws: true
   },
+  snippetOptions: {
+    rule: {
+      match: /<\/head>/gi,
+      fn: function (snippet, match) {
+        return snippet + match
+      }
+    }
+  },
   port: 3000,
   files: ['public/**/*'],
   ignore: ['node_modules'],
