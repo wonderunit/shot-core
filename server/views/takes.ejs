@@ -41,7 +41,7 @@
           footage
         </div>
         <div class="w-10 f7 ttu tracked black-40">
-          notes
+          rating
         </div>
       </div>
       <% for (let take of takes) { %>
@@ -92,8 +92,10 @@
               On Camera
             <% } %>
           </div>
-          <div class="w-10">
-            <span class="black-20">---</span>
+          <div class="w-10 f7 no-wrap">
+            <% if (take.rating == null) { %>---<% } else { %>
+              <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
+            <% } %>
           </div>
         </div>
       <% } %>

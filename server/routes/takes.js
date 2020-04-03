@@ -1,4 +1,4 @@
-const { get, all } = require('../db')
+const { run, get, all } = require('../db')
 
 const create = require('../services/takes/create')
 const action = require('../services/takes/action')
@@ -57,6 +57,23 @@ exports.cut = async (req, res) => {
     console.error(err)
     res.sendStatus(500)
   }
+}
+
+exports.update = async (req, res) => {
+  let { takeId } = req.params
+
+  if (req.body.hasOwnProperty('rating')) {
+    let { rating } = req.body
+
+    run(
+      `UPDATE takes
+      SET rating = ?
+      WHERE id = ?`,
+      rating,
+      takeId
+    )
+  }
+  res.sendStatus(204)
 }
 
 exports.show = (req, res) => {

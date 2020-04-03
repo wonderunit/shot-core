@@ -50,5 +50,6 @@ CREATE TABLE takes(
   action_at TEXT,
   cut_at TEXT,
   filepath TEXT,
-  downloaded BOOLEAN NOT NULL CHECK (downloaded IN (0,1))
+  downloaded BOOLEAN NOT NULL CHECK (downloaded IN (0,1)),
+  rating INTEGER CHECK (rating BETWEEN 0 AND 5)
 );

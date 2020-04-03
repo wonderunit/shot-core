@@ -40,3 +40,31 @@ function update () {
 }
 setInterval(update, ~~(1000/3))
 update()
+
+function forceReload () {
+  window.location = window.location
+}
+
+const application = Stimulus.Application.start()
+application.register('rating', class extends Stimulus.Controller {
+  static targets = ['star', 'none', 'zero']
+
+  setRating (event) {
+    event.preventDefault()
+
+    let rating = event.target.dataset.value == ''
+      ? null
+      : parseInt(event.target.dataset.value, 10)
+
+    fetch(
+      this.data.get('url'),
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating })
+      }
+    )
+    .then(forceReload)
+    .catch(err => alert(err))
+  }
+})

@@ -91,6 +91,7 @@ app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId', take
 app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes.json', jsonParser, takes.create)
 app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId/action.json', jsonParser, takes.action)
 app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId/cut.json', jsonParser, takes.cut)
+app.patch('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId.json', jsonParser, takes.update)
 
 app.get('/projects/:projectId/slater', slater.show)
 app.patch('/projects/:projectId/slater.json', jsonParser, slater.update)
