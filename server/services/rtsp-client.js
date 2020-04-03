@@ -47,11 +47,7 @@ async function startup ({ ZCAM_RTSP_URL, takeId }) {
   converter
     .createOutputToFile(path.join(UPLOADS_PATH, dirname, filename), { codec: 'copy' })
 
-  try {
-    await converter.run()
-  } catch (err) {
-    console.error('[rtsp-client]', err)
-  }
+  await converter.run()
 }
 
 async function shutdown () {

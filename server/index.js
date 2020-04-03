@@ -107,9 +107,13 @@ bus
   })
 
 bus
-  .on('takes/create', ({ id }) => {
+  .on('takes/create', async ({ id }) => {
     console.log('RTSP client START recording stream for take', id)
-    rtspClient.startup({ ZCAM_RTSP_URL, takeId: id })
+    try {
+      await rtspClient.startup({ ZCAM_RTSP_URL, takeId: id })
+    } catch (err) {
+      console.error('[rtsp-client]', err)
+    }
   })
   .on('takes/cut', () => {
     console.log('RTSP client STOP recording stream')
