@@ -2,6 +2,10 @@ function filenameForFootage ({ scene_number, shot_number, take_number, id }) {
   return `scene_${scene_number}_shot_${shot_number}_take_${take_number}_id_${id}.mov`
 }
 
+function filenameForProxy ({ scene_number, shot_number, take_number, id }) {
+  return `scene_${scene_number}_shot_${shot_number}_take_${take_number}_id_${id}-PROXY.mov`
+}
+
 function filenameForStream ({ scene_number, shot_number, take_number, id }) {
   return `scene_${scene_number}_shot_${shot_number}_take_${take_number}_id_${id}-STREAM.mp4`
 }
@@ -18,6 +22,9 @@ class Take {
   static filenameForFootage ({ scene_number, shot_number, take_number, id }) {
     return filenameForFootage ({ scene_number, shot_number, take_number, id })
   }
+  static filenameForProxy ({ scene_number, shot_number, take_number, id }) {
+    return filenameForProxy ({ scene_number, shot_number, take_number, id })
+  }
   static filenameForStream ({ scene_number, shot_number, take_number, id }) {
     return filenameForStream ({ scene_number, shot_number, take_number, id })
   }
@@ -28,6 +35,13 @@ class Take {
 
   filenameForFootage ({ scene_number, shot_number }) {
     return filenameForFootage({
+      scene_number, shot_number,
+      take_number: this.take_number, id: this.id
+    })
+  }
+
+  filenameForProxy ({ scene_number, shot_number }) {
+    return filenameForProxy({
       scene_number, shot_number,
       take_number: this.take_number, id: this.id
     })

@@ -5,6 +5,8 @@ const path = require('path')
 const { UPLOADS_PATH } = require('../config')
 const { run, get } = require('../db')
 
+const createProxyWithVisualSlate = require('../services/visual-slate')
+
 const Take = require('../decorators/take')
 
 const delay = msecs => new Promise((resolve) => setTimeout(resolve, msecs))
@@ -80,16 +82,29 @@ async function next ({ ZCAM_URL, projectId }) {
     }
     let filename = Take.filenameForFootage(opts)
     let thumbnail = Take.filenameForThumbnail(opts)
+    let proxy = Take.filenameForProxy(opts)
 
     console.log(`[downloader] downloading …`)
     console.log(`[downloader] from:   ${uri}`)
     console.log(`[downloader] to:     public/uploads/${path.join(dirname, filename)}`)
     console.log(`[downloader] thumb:  public/uploads/${path.join(dirname, thumbnail)}`)
+    console.log(`[downloader] proxy:  public/uploads/${path.join(dirname, proxy)}`)
 
     fs.mkdirpSync(path.join(UPLOADS_PATH, dirname))
 
     await download(uri, path.join(UPLOADS_PATH, dirname, filename))
     await download(uri + '?act=scr', path.join(UPLOADS_PATH, dirname, thumbnail))
+
+    await createProxyWithVisualSlate({
+      inpath: path.join(UPLOADS_PATH, dirname, filename),
+      outpath: path.join(UPLOADS_PATH, dirname, proxy),
+
+      // TODO don't hardcode codec_time_base
+      //
+      // to get codec_time_base:
+      // $ ffprobe -v error -select_streams v:0 -show_entries stream=codec_time_base -of default=noprint_wrappers=1:nokey=1 $MOVFILE
+      frameLengthInSeconds: 1001/24000
+    })
 
     run(
       `UPDATE takes
