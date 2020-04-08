@@ -19,22 +19,6 @@ Environment vars:
 - `PORT`: web UI server port, default is 3000  
 - `DEBUG`: configure debug logging
 
-If you don’t have access to a Z Cam, you can run the mock server:
-```
-DEBUG=shotcore TAKE_MOV=./A001MOVFILE_0001.MOV npm start zcam-mock-server
-```
-Listens for HTTP on `:8080` and WS on `:8081`.  
-`TAKE_MOV` is a path to an example take downloaded from the Z Cam to use as a placeholder video.  
-
-For simulating an RTSP server, can run `live555MediaServer` or similar on port `:80/:554`.
-
-To connect to a mock server:
-```
-DEBUG=shotcore:*
-ZCAM_URL=http://localhost:8080 \
-ZCAM_WS_URL=http://localhost:8081 \
-ZCAM_RTSP_URL=rtsp://localhost/live_stream.264 \
-npm start
-```
+If you don’t have access to a Z Cam, you can run the [Z Cam Mock Server](./lib/zcam/mock-server/README.md) 
 
 For more, read [DEVELOPERS.md](DEVELOPERS.md).
