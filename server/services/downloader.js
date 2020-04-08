@@ -93,9 +93,9 @@ async function next ({ ZCAM_URL, projectId }) {
     console.log(`[downloader] proxy:  public/uploads/${path.join(dirname, proxy)}`)
 
     fs.mkdirpSync(path.join(UPLOADS_PATH, dirname))
-
-    await download(uri, path.join(UPLOADS_PATH, dirname, filename))
+  
     await download(uri + '?act=scr', path.join(UPLOADS_PATH, dirname, thumbnail))
+    await download(uri, path.join(UPLOADS_PATH, dirname, filename))
 
     await createProxyWithVisualSlate({
       inpath: path.join(UPLOADS_PATH, dirname, filename),
