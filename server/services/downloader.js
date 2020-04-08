@@ -68,6 +68,8 @@ async function next ({ ZCAM_URL, projectId }) {
     let { scene_number } = get(`SELECT scene_number from scenes WHERE id = ?`, take.scene_id)
     let { shot_number } = get(`SELECT shot_number from shots WHERE id = ?`, take.shot_id)
 
+    console.log(`[downloader] take.filepath is: ${take.filepath}`)
+
     // source uri
     let uri = `${ZCAM_URL}${take.filepath}`
 
