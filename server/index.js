@@ -38,7 +38,7 @@ const { PORT } = process.env
 const ZCAM_URL = process.env.ZCAM_URL || 'http://localhost:8080'
 
 const ZCAM_WS_URL = process.env.ZCAM_WS_URL ||
-  `ws://${url.parse(ZCAM_URL).hostname}:${parseInt(url.parse(ZCAM_URL).port) + 1}`
+  `ws://${url.parse(ZCAM_URL).hostname}:${parseInt(url.parse(ZCAM_URL).port || 80) + 1}`
 
 const ZCAM_RTSP_URL = process.env.ZCAM_RTSP_URL ||
   `rtsp://${url.parse(ZCAM_URL).hostname}/live_stream`
