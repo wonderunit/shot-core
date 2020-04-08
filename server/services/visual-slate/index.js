@@ -170,6 +170,7 @@ async function createStreamWithVisualSlate ({ inpath, outpath, frameLengthInSeco
 
   } catch (err) {
     debug('ERROR:', err)
+    console.error('ERROR:', err)
     throw err
 
   } finally {
@@ -211,6 +212,7 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
 
   } catch (err) {
     debug('ERROR:', err)
+    console.error('ERROR:', err)
     throw err
 
   } finally {
