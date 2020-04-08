@@ -80,13 +80,22 @@
             </a>
           </div>
           <div class="w-10">
+            <% let proxy = take.filenameForProxy({
+              scene_number: scene.scene_number,
+              shot_number: shot.shot_number
+            }) %>
+            <a href="/uploads/projects/<%= project.id %>/takes/<%= proxy %>">
+              .mov (h265)
+            </a>
+          </div>
+          <div class="w-10">
             <% if (take.downloaded) { %>
               <% let footage = take.filenameForFootage({
                 scene_number: scene.scene_number,
                 shot_number: shot.shot_number
               }) %>
               <a href="/uploads/projects/<%= project.id %>/takes/<%= footage %>">
-                .mov
+                .mov (ProRes)
               </a>
             <% } else { %>
               On Camera
