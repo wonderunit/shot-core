@@ -10,7 +10,7 @@ const Take = require('../decorators/take')
 let converter
 let running = false
 
-async function startup ({ ZCAM_RTSP_URL, takeId }) {
+async function startup ({ uri, takeId }) {
   if (running) {
     console.warn('[rtsp-client] startup() called but it is already in progress')
     return
@@ -18,8 +18,6 @@ async function startup ({ ZCAM_RTSP_URL, takeId }) {
 
   console.log('[rtsp-client] startup()')
   running = true
-
-  let uri = `${ZCAM_RTSP_URL}/live_stream`
 
   let take = get('SELECT * FROM takes WHERE id = ?', takeId)
   let { scene_number } = get(`SELECT scene_number from scenes WHERE id = ?`, take.scene_id)

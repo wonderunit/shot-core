@@ -40,7 +40,8 @@ const ZCAM_URL = process.env.ZCAM_URL || 'http://localhost:8080'
 const ZCAM_WS_URL = process.env.ZCAM_WS_URL ||
   `ws://${url.parse(ZCAM_URL).hostname}:${parseInt(url.parse(ZCAM_URL).port) + 1}`
 
-const ZCAM_RTSP_URL = process.env.ZCAM_RTSP_URL || 'rtsp://localhost:554'
+const ZCAM_RTSP_URL = process.env.ZCAM_RTSP_URL ||
+  `rtsp://${url.parse(ZCAM_URL).hostname}/live_stream`
 
 const app = express()
 app.set('port', PORT || 8000)
@@ -110,7 +111,7 @@ bus
   .on('takes/create', async ({ id }) => {
     console.log('RTSP client START recording stream for take', id)
     try {
-      await rtspClient.startup({ ZCAM_RTSP_URL, takeId: id })
+      await rtspClient.startup({ uri: ZCAM_RTSP_URL, takeId: id })
     } catch (err) {
       console.error('[rtsp-client]', err)
     }
