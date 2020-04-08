@@ -13,7 +13,7 @@ npm t
 
 Can show more detailed logs with:
 ```
-DEBUG=shotcore* npm start
+DEBUG=shotcore:* npm start
 ```
 
 ## Data

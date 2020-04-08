@@ -3,7 +3,7 @@
 If you don’t have access to a Z Cam, you can run the mock server:
 
 ```
-DEBUG=shotcore* \
+DEBUG=shotcore:* \
 PORT=8080 \
 TAKE_MOV=./A001MOVFILE_0001.MOV \
 npm run zcam-mock-server
