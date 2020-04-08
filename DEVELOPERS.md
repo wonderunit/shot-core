@@ -9,6 +9,13 @@ sqlite3 test.sqlite3 < db/schema.sql
 npm t
 ```
 
+## Logs
+
+Can show more detailed logs with:
+```
+DEBUG=shotcore* npm start
+```
+
 ## Data
 
 Database is sqlite.  
@@ -92,9 +99,52 @@ If `PORT` is not set, default HTTP port is `8080`
 Default WebSocket port is `PORT+1`, so `8081`  
 `TAKE_MOV` is a path to an example take downloaded from the Z Cam to use as a placeholder video.  
 
+## Mock Z Cam RTSP
 
-If `PORT` is not set, default HTTP port is `8080`
-Default WebSocket port is `PORT+1`, so `8081`
+Given a 30 second test file, e.g.:
+
+```
+ffmpeg \
+  -f lavfi \
+  -i testsrc2=size=1920x1080:rate=ntsc-film \
+  -an \
+  -vcodec h264 \
+  -pix_fmt yuv420p \
+  -f mp4 \
+  -t 30 \
+  live_stream.264
+```
+
+Serve it with `live555MediaServer` (you can install this via `brew install openrtsp` on macOS)
+
+```
+live555MediaServer
+```
+
+Test the RTSP server with ncat (press ENTER twice after typing):
+
+```
+ncat --crlf localhost 80
+DESCRIBE rtsp://localhost/live_stream.264 RTSP/1.0
+CSeq: 2
+
+
+```
+
+Play with VLC:
+
+```
+vlc rtsp://localhost/live_stream.264
+```
+
+Running the server with a mock `ZCAM_RTSP_URL`:
+
+```
+ZCAM_URL=http://localhost:8080 \
+ZCAM_WS_URL=http://localhost:8081 \
+ZCAM_RTSP_URL=rtsp://localhost/live_stream.264 \
+npm start
+```
 
 ### Simulating Z Cam WebSocket messages
 

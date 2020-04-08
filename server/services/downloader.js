@@ -5,7 +5,7 @@ const path = require('path')
 const { UPLOADS_PATH } = require('../config')
 const { run, get } = require('../db')
 
-const createProxyWithVisualSlate = require('../services/visual-slate')
+const { createProxyWithVisualSlate } = require('../services/visual-slate')
 
 const Take = require('../decorators/take')
 
@@ -103,7 +103,12 @@ async function next ({ ZCAM_URL, projectId }) {
       //
       // to get codec_time_base:
       // $ ffprobe -v error -select_streams v:0 -show_entries stream=codec_time_base -of default=noprint_wrappers=1:nokey=1 $MOVFILE
-      frameLengthInSeconds: 1001/24000
+      frameLengthInSeconds: 1001/24000,
+
+      slateData: {
+        width: 1280,
+        height: 720
+      }
     })
 
     run(

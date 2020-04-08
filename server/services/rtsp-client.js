@@ -7,6 +7,8 @@ const { get } = require('../db')
 
 const Take = require('../decorators/take')
 
+const { createStreamWithVisualSlate } = require('../services/visual-slate')
+
 let converter
 let running = false
 
@@ -37,20 +39,38 @@ async function startup ({ uri, takeId }) {
 
   converter = new Converter()
 
-  console.log('[rtsp-client] - from: ', uri)
+  console.log(`[rtsp-client] - from: ${uri}`)
   converter
     .createInputFromFile(uri, { rtsp_transport: 'tcp' })
 
-  console.log('[rtsp-client] - to:   ', filepath)
+  console.log(`[rtsp-client] - to:   public/uploads/${filepath}`)
+
   converter
     .createOutputToFile(path.join(UPLOADS_PATH, dirname, filename), { codec: 'copy' })
 
   await converter.run()
+
+  await createStreamWithVisualSlate({
+    inpath: path.join(UPLOADS_PATH, dirname, filename),
+    outpath: path.join(UPLOADS_PATH, dirname, filename),
+    // TODO don't hardcode
+    frameLengthInSeconds: 1001/24000,
+    slateData: {
+      width: 1920,
+      height: 1080
+    }
+  })
 }
 
 async function shutdown () {
   console.log('[rtsp-client] shutdown()')
-  converter.kill()
+  try {
+    console.log('[rtsp-client] killing current process …')
+    converter.kill()
+  } catch (err) {
+    // .kill() throws Error of { code: 1 }
+    // console.error('[rtsp-client] ERROR', err)
+  }
   running = false
 }
 

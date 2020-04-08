@@ -113,7 +113,8 @@ bus
     try {
       await rtspClient.startup({ uri: ZCAM_RTSP_URL, takeId: id })
     } catch (err) {
-      console.error('[rtsp-client]', err)
+    // .kill() throws Error of { code: 1 }
+      // console.error('ERROR', err)
     }
   })
   .on('takes/cut', () => {
