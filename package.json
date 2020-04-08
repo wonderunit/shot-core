@@ -1,5 +1,5 @@
 {
-  "name": "shot-server",
+  "name": "shot-core",
   "version": "1.0.0",
   "scripts": {
     "start": "npm run server & npm run browser-sync",
