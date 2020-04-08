@@ -15,6 +15,10 @@ DEBUG=shotcore:* ZCAM_URL=http://192.168.0.100 npm start
 
 Starts a web UI listening at [http://localhost:3000](http://localhost:3000)
 
+On macOS you can then seed the first project on the server by running (in another terminal):
+
+`scripts/seed`
+
 Environment vars:  
 - `ZCAM_URL`: full url to Z Cam, default is `http://localhost:8080`  
 - `ZCAM_WS_URL`: override Z Cam WebSockets URL (default is based on `ZCAM_URL`, port + 1)  
