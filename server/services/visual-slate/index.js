@@ -171,6 +171,13 @@ async function createStreamWithVisualSlate ({ inpath, outpath, frameLengthInSeco
   } catch (err) {
     debug('ERROR:', err)
     throw err
+
+  } finally {
+    // cleanup
+    debug('cleanup …')
+    fs.unlinkSync(path.join(folder, 'slate.png'))
+    fs.rmdir(path.join(folder))
+
   }
 }
 
@@ -205,6 +212,13 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
   } catch (err) {
     debug('ERROR:', err)
     throw err
+
+  } finally {
+    debug('cleanup …')
+    fs.unlinkSync(path.join(folder, filename))
+    fs.unlinkSync(path.join(folder, 'slate.png'))
+    fs.rmdir(path.join(folder))
+
   }
 }
 
