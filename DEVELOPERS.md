@@ -86,7 +86,12 @@ For simplicity we currently use the database id for a resource in the URL, and N
 
 If you don’t have access to a Z Cam, you can run the mock server:
 
-    PORT=8080 npm start zcam-mock-server
+    DEBUG=shotcore* PORT=8080 TAKE_MOV=./A001MOVFILE_0001.MOV npm run zcam-mock-server
+
+If `PORT` is not set, default HTTP port is `8080`  
+Default WebSocket port is `PORT+1`, so `8081`  
+`TAKE_MOV` is a path to an example take downloaded from the Z Cam to use as a placeholder video.  
+
 
 If `PORT` is not set, default HTTP port is `8080`
 Default WebSocket port is `PORT+1`, so `8081`

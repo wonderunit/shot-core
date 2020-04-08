@@ -18,8 +18,11 @@ Environment vars:
 
 If you don’t have access to a Z Cam, you can run the mock server:
 ```
-npm start zcam-mock-server
+DEBUG=shotcore TAKE_MOV=./A001MOVFILE_0001.MOV npm start zcam-mock-server
 ```
-Listens on `:8080`.
+Listens for HTTP on `:8080` and WS on `:8081`.  
+`TAKE_MOV` is a path to an example take downloaded from the Z Cam to use as a placeholder video.  
+
+```
 
 For more, read [DEVELOPERS.md](DEVELOPERS.md).
