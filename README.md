@@ -1,12 +1,15 @@
 # Shot Core
 
-## Running in development environment
-
-Given a Z Cam listening on `http://192.168.0.100`:
+## Getting Started
 
 ```
 npm install
 sqlite3 dev.sqlite3 < db/schema.sql
+```
+
+Given a Z Cam listening on `http://192.168.0.100`:
+
+```
 DEBUG=shotcore:* ZCAM_URL=http://192.168.0.100 npm start
 ```
 
