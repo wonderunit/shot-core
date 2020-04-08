@@ -52,7 +52,7 @@ No batch/group editing yet
 
 ### Projects and Scenes
 
-In shot list server, a script-based project is a "project", but a single scene is ALSO a "project".
+In the Shot Core server, a script-based project is a "project", but a single scene is ALSO a "project".
 
 Script-Based Project:
 - `project` has a `script_path` value
@@ -95,6 +95,6 @@ If you don’t have access to a Z Cam, you can run the [Z Cam Mock Server](./lib
 
 ## Security
 
-There is none! Shot List Server is not a secure web service, and is not meant to be hosted on an internet-accessible IP. It does a bunch of stuff for simplicity-sake (e.g.: hand-rolled SQL queries) that makes it a security risk.
+There is none! Shot Core’s server is not a secure web service, and is not meant to be hosted on an internet-accessible IP. It does a bunch of stuff for simplicity-sake (e.g.: hand-rolled SQL queries) that makes it a security risk.
 
 No real data integrity checks. We don’t protect against errant data, e.g.: in a URL with project, scene, and shot ids, we trust that the project and scene ids you provide us are connected to the shot id you provide us.
