@@ -22,7 +22,9 @@ exports.create = async (req, res) => {
     let takeId = create({ projectId, sceneId, shotId, at })
     bus.emit('takes/create', { id: takeId })
 
+    console.log(`GET /ctrl/get?k=last_file_name`)
     let filepath = (await zcam.get('/ctrl/get?k=last_file_name')).data.value
+    console.log(`  response:`, filepath)
     updateFilepath({ takeId, filepath })
 
     res.status(201).send({ id: takeId })
