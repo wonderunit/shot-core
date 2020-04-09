@@ -38,6 +38,9 @@
           preview
         </div>
         <div class="w-10 f7 ttu tracked black-40">
+          proxy
+        </div>
+        <div class="w-10 f7 ttu tracked black-40">
           footage
         </div>
         <div class="w-10 f7 ttu tracked black-40">
@@ -75,8 +78,8 @@
               scene_number: scene.scene_number,
               shot_number: shot.shot_number
             }) %>
-            <a href="/uploads/projects/<%= project.id %>/takes/<%= stream %>">
-              .mp4
+            <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= stream %>">
+              mp4
             </a>
           </div>
           <div class="w-10">
@@ -84,8 +87,8 @@
               scene_number: scene.scene_number,
               shot_number: shot.shot_number
             }) %>
-            <a href="/uploads/projects/<%= project.id %>/takes/<%= proxy %>">
-              .mov (h265)
+            <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= proxy %>">
+              mov (h265)
             </a>
           </div>
           <div class="w-10">
@@ -94,8 +97,8 @@
                 scene_number: scene.scene_number,
                 shot_number: shot.shot_number
               }) %>
-              <a href="/uploads/projects/<%= project.id %>/takes/<%= footage %>">
-                .mov (ProRes)
+              <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= footage %>">
+                mov (ProRes)
               </a>
             <% } else { %>
               On Camera
