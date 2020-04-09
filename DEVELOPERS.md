@@ -16,6 +16,14 @@ Can show more detailed logs with:
 DEBUG=shotcore:* npm start
 ```
 
+## Scripts
+
+Some helper scripts are provided. Only tested on macOS:
+
+- `scripts/seed`: seeds the sqlite3 database with a ZIP created from the Storyboarder project in `test/fixtures/multi-scene`. Must be run while the server is listening on port :3000.
+- `scripts/reset`: deletes development database file and all contents of uploads folder. run this when the server is not running.
+- `scripts/parse-ngrok.js`: accepts ngrok info banner text on STDIN and writes startup commands on STDOUT. if you have ngrok info banner text copied in your clipboard: `pbpaste | node scripts/parse-ngrok.js`
+
 ## Data
 
 Database is sqlite.  
