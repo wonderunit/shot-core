@@ -231,7 +231,6 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
     // to extract a new proxy from take:
     debug('extracting proxy to', tmpfilepath)
     await extractProxy({ inpath, outpath: tmpfilepath })
-
     // FOR TESTING
     // to copy and continue with an existing proxy file:
     // debug('copying', inpath, 'to', tmpfilepath)
