@@ -7,8 +7,8 @@
 
   concat:
   - fix missing extended metadata
-  - match durations exactly
-  - fix timecode stream
+  - fix timecode stream (handler_name, reel_name)
+  - match durations/framerates exactly (rtsp STREAM issue)
 
   cleanup:
   - delete the tmp folder when complete
