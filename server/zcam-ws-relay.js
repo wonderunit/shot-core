@@ -104,10 +104,14 @@ module.exports = function (url, bus, zcam, { projectId }) {
     // })
 
     ws.on('message', async function incoming (message) {
-      try {
-        // TODO handle '' message?
+      console.log('[zcam-ws] message', message)
 
-        // console.log('[zcam-ws] data')
+      if (message === '') {
+        console.warn('[zcam-ws] got empty ws message from Z Cam.')
+        return
+      }
+
+      try {
         let data = JSON.parse(message)
 
         // raw data
@@ -171,8 +175,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
             break
         }
       } catch (err) {
-        console.error(err)
-        console.log({ message })
+        console.error('[zcam-ws] ERROR', err)
       }
     })
 
