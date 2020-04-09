@@ -17,7 +17,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
   }
   bus.on('camera-listener/enable', () => (state.cameraListener = true))
   bus.on('camera-listener/disable', () => (state.cameraListener = false))
-  async function onRecStart ({ projectId, at }) {
+  function onRecStart ({ projectId, at }) {
     // SEE: slater.show
     let project = get('SELECT * FROM projects WHERE id = ?', projectId)
 
@@ -30,14 +30,11 @@ module.exports = function (url, bus, zcam, { projectId }) {
       let takeId = create({ projectId, sceneId, shotId, at })
       bus.emit('takes/create', { id: takeId })
 
-      let filepath = (await zcam.get('/ctrl/get?k=last_file_name')).data.value
-      updateFilepath({ takeId, filepath })
-
       action({ takeId, at })
       bus.emit('takes/action')
     }
   }
-  function onRecStop ({ projectId, at }) {
+  async function onRecStop ({ projectId, at }) {
     // SEE: slater.show
     let project = get('SELECT * FROM projects WHERE id = ?', projectId)
 
@@ -61,7 +58,12 @@ module.exports = function (url, bus, zcam, { projectId }) {
 
       if (take) {
         let takeId = take.id
+
         cut({ takeId, at })
+
+        let filepath = (await zcam.get('/ctrl/get?k=last_file_name')).data.value
+        updateFilepath({ takeId, filepath })
+
         bus.emit('takes/cut')
       } else {
         console.error('[zcam-ws] ERROR could not find take in database')
@@ -127,7 +129,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
           case 'RecStarted':
             console.log('[zcam-ws] got RecStarted', state.cameraListener ? '…' : '(ignored)')
             if (state.cameraListener) {
-              await onRecStart({
+              onRecStart({
                 projectId: state.projectId,
                 at: new Date().toISOString()
               })
@@ -136,7 +138,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
           case 'RecStoped':
             console.log('[zcam-ws] got RecStoped', state.cameraListener ? '…' : '(ignored)')
             if (state.cameraListener) {
-              onRecStop({
+              await onRecStop({
                 projectId: state.projectId,
                 at: new Date().toISOString()
               })

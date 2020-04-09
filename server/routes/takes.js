@@ -22,11 +22,6 @@ exports.create = async (req, res) => {
     let takeId = create({ projectId, sceneId, shotId, at })
     bus.emit('takes/create', { id: takeId })
 
-    console.log(`GET /ctrl/get?k=last_file_name`)
-    let filepath = (await zcam.get('/ctrl/get?k=last_file_name')).data.value
-    console.log(`  response:`, filepath)
-    updateFilepath({ takeId, filepath })
-
     res.status(201).send({ id: takeId })
   } catch (err) {
     console.error(err)
@@ -48,9 +43,15 @@ exports.cut = async (req, res) => {
   let { takeId } = req.params
   let { at } = req.body
 
+  let zcam = req.app.get('zcam')
+
   try {
-    await req.app.get('zcam').get('/ctrl/rec?action=stop')
+    await zcam.get('/ctrl/rec?action=stop')
     cut({ takeId, at })
+
+    let filepath = (await zcam.get('/ctrl/get?k=last_file_name')).data.value
+    updateFilepath({ takeId, filepath })
+
     req.app.get('bus').emit('takes/cut')
     req.app.get('bus').emit('camera-listener/enable')
 
