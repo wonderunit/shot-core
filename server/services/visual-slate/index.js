@@ -11,6 +11,8 @@
       "You requested a copy of the original timecode track so timecode metadata are now ignored"
       try e.g.: -tag:2 tmcd or -copy_unknown?
   - fix timecode stream (handler_name, reel_name)
+    - try mpeg ts?
+    - try mp4 instead of mov for temporary files?
   - match durations/framerates exactly (rtsp STREAM issue)
 
   cleanup:
