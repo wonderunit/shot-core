@@ -88,9 +88,12 @@ exports.show = (req, res) => {
 
   let take = get(`SELECT * FROM takes WHERE id = ?`, takeId)
 
+  // TODO
   take.ready_at = new Date(take.ready_at)
   take.action_at = new Date(take.action_at)
   take.cut_at = new Date(take.cut_at)
+
+  take = new Take(take)
 
   res.render('take', { project, scene, shot, take })
 }

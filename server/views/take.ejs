@@ -11,7 +11,64 @@
     </h1>
 
     <div class="mb4">
-      On
+      Rating:
+      <% if (take.rating == null) { %>---<% } else { %>
+        <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
+      <% } %>
+    </div>
+
+    <h2 class="f4 mv3">Media</h2>
+
+    <div class="mb4">
+      <h3 class="f5 mv3">Video</h2>
+
+      <% let stream = take.filenameForStream({
+        scene_number: scene.scene_number,
+        shot_number: shot.shot_number
+      }) %>
+      <div>
+        <div>
+          <video controls
+            class="mw-100"
+            src="<%= `/uploads/projects/${project.id}/takes/${stream}` %>"
+            type="video/quicktime"
+          ></video>
+        </div>
+        <div>
+          [stream] <a class="link f6" href="<%= `/uploads/projects/${project.id}/takes/${stream}` %>">
+            <%= `/uploads/projects/${project.id}/takes/${stream}` %>
+          </a>
+        </div>
+        <div>
+          <% let proxy = take.filenameForProxy({
+            scene_number: scene.scene_number,
+            shot_number: shot.shot_number
+          }) %>
+          [proxy] <a class="link f6" href="<%= `/uploads/projects/${project.id}/takes/${proxy}` %>">
+            <%= `/uploads/projects/${project.id}/takes/${proxy}` %>
+          </a>
+        </div>
+        <div>
+          <% let footage = take.filenameForFootage({
+            scene_number: scene.scene_number,
+            shot_number: shot.shot_number
+          }) %>
+          [footage] <a class="link f6" href="<%= `/uploads/projects/${project.id}/takes/${footage}` %>">
+            <%= `/uploads/projects/${project.id}/takes/${footage}` %>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb4">
+      <h3 class="f5 mv3">Audio</h2>
+      <div>
+        …
+      </div>
+    </div>
+
+    <div class="mb4">
+      Recorded on
       <b><%= format(take.ready_at, 'EEE, dd MMM yyyy') %></b>
       from <b><%= format(take.ready_at, 'hh:mm:ss a') %></b>
       to <b><%= format(take.cut_at, 'hh:mm:ss a') %></b>
@@ -38,19 +95,6 @@
       </table>
     </div>
 
-    <h2 class="f4 mv3">Media</h2>
-    <table>
-      <tr>
-        <td>
-          Video Preview File
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Audio Channels Files
-        </td>
-      </tr>
-    </table>
   </div>
 </div>
 <%- include('footer') -%>
