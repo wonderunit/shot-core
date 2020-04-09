@@ -52,7 +52,7 @@
         <% let shot = shots.find(shot => shot.id == take.shot_id) %>
         <div class="flex flex-row w-100">
           <div class="w-10">
-            <%= take.id %>
+            <a class="link" href="<%= `/projects/${take.project_id}/scenes/${take.scene_id}/shots/${take.shot_id}/takes/${take.id}` %>"><%= take.id %></a>
           </div>
           <div class="w-20" style="min-width: 160px">
             <% let thumbnail = take.filenameForThumbnail({

@@ -174,7 +174,7 @@
         <div>
           <% if (prev) { %>
             <div class="mt3 mb2">
-              Rating for previous Take #<%= prev.take_number %>:
+              Rating for previous Take <a href="<%= `/projects/${take.project_id}/scenes/${take.scene_id}/shots/${take.shot_id}/takes/${take.id}` %>">#<%= prev.take_number %></a>:
             </div>
             <div
               class="f6 mt1"
