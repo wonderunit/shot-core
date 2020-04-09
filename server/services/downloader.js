@@ -30,7 +30,7 @@ function download (url, dest) {
           file.write(chunk)
           downloaded += chunk.length
           percent = (100.0 * downloaded / len).toFixed(2)
-          process.stdout.write(`[downloader] ${percent}% ${downloaded} bytes\r`)
+          process.stdout.write(`[downloader] ${url} ${percent}% ${downloaded} bytes\r`)
         })
         .on('end', function () {
           file.end()
