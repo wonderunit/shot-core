@@ -228,8 +228,14 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
     debug('generating slate png')
     await renderSlateImageFile({ outpath: slate, slateData })
 
+    // to extract a new proxy from take:
     debug('extracting proxy to', tmpfilepath)
     await extractProxy({ inpath, outpath: tmpfilepath })
+
+    // FOR TESTING
+    // to copy and continue with an existing proxy file:
+    // debug('copying', inpath, 'to', tmpfilepath)
+    // fs.copyFileSync(inpath, tmpfilepath)
 
     debug('concat to', outpath)
     await concat({
