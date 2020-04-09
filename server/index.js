@@ -142,8 +142,8 @@ server.listen(app.get('port'), () => {
     const http = require('http')
     http
       .get(
-        'http://localhost:3000/__browser_sync__?method=reload',
-        () => console.log(`Listening on :3000`))
+        'http://localhost:4000/__browser_sync__?method=reload',
+        () => console.log(`Listening on :4000`))
       .on('error', err => {
         console.error('Could not connect to browser sync server. Is it running?')
         console.log(`Listening on :${app.get('port')}`)
