@@ -1,6 +1,6 @@
 const { run } = require('../../db')
 
-module.exports = function show ({ takeId, at }) {
+module.exports = function cut ({ takeId, at }) {
   run(
     `UPDATE takes
      SET cut_at = ?
