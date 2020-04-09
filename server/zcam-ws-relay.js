@@ -140,6 +140,9 @@ module.exports = function (url, bus, zcam, { projectId }) {
               })
             }
             break
+          case 'RecordingFile':
+            console.log('[zcam-ws] RecordingFile', value)
+            break
 
           case 'RecUpdateDur':
             break
