@@ -22,13 +22,11 @@ const path = require('path')
 const debug = require('debug')('shotcore:visual-slate')
 
 const spawner = require('./spawner')
-
-const TEMPLATE = path.join(__dirname, 'slate-template.png')
+const { render } = require('./renderer')
 
 async function createSlate ({ outpath, slateData }) {
   debug('createSlate() with data:', { slateData })
-  debug('copying', TEMPLATE, 'to', outpath)
-  fs.copyFileSync(TEMPLATE, outpath)
+  fs.writeFileSync(outpath, render({ slateData }))
 }
 
 async function extractProxy ({ inpath, outpath }) {
