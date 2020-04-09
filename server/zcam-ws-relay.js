@@ -63,6 +63,8 @@ module.exports = function (url, bus, zcam, { projectId }) {
         let takeId = take.id
         cut({ takeId, at })
         bus.emit('takes/cut')
+      } else {
+        console.error('[zcam-ws] ERROR could not find take in database')
       }
     }
   }
