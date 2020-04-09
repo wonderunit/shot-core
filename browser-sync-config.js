@@ -1,9 +1,4 @@
-const browserSync = require('browser-sync')
-browserSync.create().init({
-  proxy: {
-    target: 'localhost:8000',
-    ws: true
-  },
+module.exports = {
   snippetOptions: {
     rule: {
       match: /<\/head>/gi,
@@ -12,7 +7,6 @@ browserSync.create().init({
       }
     }
   },
-  port: 3000,
   files: ['public/**/*'],
   ignore: ['node_modules'],
   reloadDelay: 100,
@@ -21,8 +15,5 @@ browserSync.create().init({
   open: false,
   reloadOnRestart: true,
   online: false,
-  logLevel: 'silent',
-  socket: {
-    port: 3001
-  }
-})
+  logLevel: 'silent'
+}
