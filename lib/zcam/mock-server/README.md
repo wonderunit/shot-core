@@ -12,7 +12,7 @@ npm run zcam-mock-server
 Environment vars:  
 - `DEBUG`: configure debug logging
 - `PORT`, HTTP port, WebSocket listens on `PORT+1`. default `8080` (so, WS on `8081`)  
-- `TAKE_MOV`, path to example take downloaded from Z Cam. default is null, and no video will be served.  
+- `TAKE_MOV`, path to example take MOV downloaded from Z Cam. default is null, and no video will be served. If a JPG of the same basename exists, it will be served for thumbnail requests.   
 
 To connect to a mock server:
 ```
