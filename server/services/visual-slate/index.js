@@ -1,19 +1,21 @@
 /*
-TODO
-slate:
-- generate slate PNG from real data (png generator fn as argument? png path as argument?)
-- don't hardcode frameLengthInSeconds
 
-concat:
-- fix missing extended metadata
-- match durations exactly
-- fix timecode stream
+  TODO
 
-cleanup:
-- delete the tmp folder when complete
-- handle interrupts, e.g.:
-  process.on('SIGTERM', () => …)
-  process.on('SIGINT', () => …) // if running, ffmpeg.kill()
+  slate:
+  - don't hardcode frameLengthInSeconds
+
+  concat:
+  - fix missing extended metadata
+  - match durations exactly
+  - fix timecode stream
+
+  cleanup:
+  - delete the tmp folder when complete
+  - handle interrupts, e.g.:
+    process.on('SIGTERM', () => …)
+    process.on('SIGINT', () => …) // if running, ffmpeg.kill()
+
 */
 const fs = require('fs-extra')
 const os = require('os')
@@ -24,8 +26,8 @@ const debug = require('debug')('shotcore:visual-slate')
 const spawner = require('./spawner')
 const { render } = require('./renderer')
 
-async function createSlate ({ outpath, slateData }) {
-  debug('createSlate() with data:', { slateData })
+async function renderSlateImageFile ({ outpath, slateData }) {
+  debug('renderSlateImageFile() with data:', { slateData })
   fs.writeFileSync(outpath, render({ slateData }))
 }
 
@@ -128,6 +130,10 @@ async function concat ({ inpath, frameLengthInSeconds, folder, slate, outpath, o
     outpath
   ])
 
+  debug('')
+  debug('open', folder)
+  debug('')
+
   debug('written to', outpath)
 
   // fs.unlinkSync(path.join(folder, `frame.mov`))
@@ -141,6 +147,9 @@ function createTempFolder () {
 }
 
 async function createStreamWithVisualSlate ({ inpath, outpath, frameLengthInSeconds, slateData }) {
+  debug('createStreamWithVisualSlate()')
+  debug({ inpath, outpath, frameLengthInSeconds, slateData })
+
   const folder = createTempFolder()
 
   let slate = path.join(folder, 'slate.png')
@@ -150,9 +159,9 @@ async function createStreamWithVisualSlate ({ inpath, outpath, frameLengthInSeco
     debug('using tmp folder', folder)
 
     debug('generating slate png')
-    await createSlate({ outpath: slate, slateData })
+    await renderSlateImageFile({ outpath: slate, slateData })
 
-    debug('concat to', outpath)
+    debug('concat() to', tmpout)
     await concat({
       inpath: inpath,
       frameLengthInSeconds,
@@ -164,6 +173,7 @@ async function createStreamWithVisualSlate ({ inpath, outpath, frameLengthInSeco
     })
 
     // overwrite
+    debug('moving from', tmpout, 'to', outpath)
     fs.moveSync(tmpout, outpath, { overwrite: true })
 
   } catch (err) {
@@ -181,6 +191,9 @@ async function createStreamWithVisualSlate ({ inpath, outpath, frameLengthInSeco
 }
 
 async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSeconds, slateData }) {
+  debug('createProxyWithVisualSlate()')
+  debug({ inpath, outpath, frameLengthInSeconds, slateData })
+
   const folder = createTempFolder()
 
   let filename = path.basename(outpath)
@@ -192,7 +205,7 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
     debug('using tmp folder', folder)
 
     debug('generating slate png')
-    await createSlate({ outpath: slate, slateData })
+    await renderSlateImageFile({ outpath: slate, slateData })
 
     debug('extracting proxy to', tmpfilepath)
     await extractProxy({ inpath, outpath: tmpfilepath })
