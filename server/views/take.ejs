@@ -11,6 +11,17 @@
     </h1>
 
     <div class="mb4">
+      <% let thumbnail = take.filenameForThumbnail({
+        scene_number: scene.scene_number,
+        shot_number: shot.shot_number
+      }) %>
+      <img
+        class="mw-100"
+        src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
+      />
+    <div>
+
+    <div class="mb4">
       Rating:
       <% if (take.rating == null) { %>---<% } else { %>
         <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
