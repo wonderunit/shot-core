@@ -2,6 +2,10 @@
 
 ## Getting Started
 
+System Requirements:
+- node
+- ffmpeg
+
 ```
 npm install
 sqlite3 dev.sqlite3 < db/schema.sql
