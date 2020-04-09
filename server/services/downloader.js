@@ -64,6 +64,11 @@ async function next ({ ZCAM_URL, projectId }) {
   )
 
   if (take) {
+    if (take.filepath == null) {
+      console.error('[downloader] take has not been downloaded but filepath is null')
+      return null
+    }
+
     // grab associations
     let { scene_number } = get(`SELECT scene_number from scenes WHERE id = ?`, take.scene_id)
     let { shot_number } = get(`SELECT shot_number from shots WHERE id = ?`, take.shot_id)
