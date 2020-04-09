@@ -127,6 +127,22 @@ async function concat ({ inpath, frameLengthInSeconds, folder, slate, outpath, o
     '-i', path.join(folder, 'concat.txt'),
     '-c', 'copy',
     '-n',
+    path.join(folder, 'concat.mov')
+  ])
+
+  // via https://superuser.com/a/996278
+  debug('copy metadata from', inpath, 'to', outpath)
+  await spawner('ffmpeg', [
+    '-loglevel', 32,
+    '-i', path.join(folder, 'concat.mov'),  // 0 = new
+    '-i', inpath,   // 1 = old
+    '-map', '0',
+    '-c', 'copy',
+    '-movflags', 'use_metadata_tags',
+    '-map_metadata', '1',
+    // '-copy_unknown',
+    // '-tag:2', 'tmcd',
+    '-y',
     outpath
   ])
 
@@ -140,6 +156,7 @@ async function concat ({ inpath, frameLengthInSeconds, folder, slate, outpath, o
   // fs.unlinkSync(path.join(folder, `remain.mov`))
   // fs.unlinkSync(path.join(folder, 'slate.mov'))
   // fs.unlinkSync(path.join(folder, 'concat.txt'))
+  // fs.unlinkSync(path.join(folder, 'concat.mov'))
 }
 
 function createTempFolder () {
