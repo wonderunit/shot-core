@@ -148,7 +148,7 @@ async function startup ({ ZCAM_URL }) {
         await shutdown()
       }
     } catch (err) {
-      console.error('[downloader] ERROR:', err.message)
+      console.error('[downloader] ERROR:', err)
     }
 
     await delay(1000)
