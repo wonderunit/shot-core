@@ -134,6 +134,7 @@ application.register('monitor', class extends Stimulus.Controller {
     if (options.hasOwnProperty('query_free') && options.hasOwnProperty('query_total')) {
       let h = Math.floor(query_free / query_total * 100)
       this.cameraStatusDiskValueTarget.style.height = h + '%'
+      this.cameraStatusDiskValueTarget.title = `${query_free} of ${query_total}`
     }
 
     if (options.hasOwnProperty('iso')) {
