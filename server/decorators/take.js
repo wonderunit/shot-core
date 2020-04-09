@@ -1,17 +1,19 @@
+const pad = (str, n = 3) => str.toString().padStart(n, 0)
+
 function filenameForFootage ({ scene_number, shot_number, take_number, id }) {
-  return `scene_${scene_number}_shot_${shot_number}_take_${take_number}_id_${id}.mov`
+  return `scene_${pad(scene_number)}_shot_${pad(shot_number, 4)}_take_${pad(take_number)}_id_${id}.mov`
 }
 
 function filenameForProxy ({ scene_number, shot_number, take_number, id }) {
-  return `scene_${scene_number}_shot_${shot_number}_take_${take_number}_id_${id}-PROXY.mov`
+  return `scene_${pad(scene_number)}_shot_${pad(shot_number, 4)}_take_${pad(take_number)}_id_${id}-PROXY.mov`
 }
 
 function filenameForStream ({ scene_number, shot_number, take_number, id }) {
-  return `scene_${scene_number}_shot_${shot_number}_take_${take_number}_id_${id}-STREAM.mp4`
+  return `scene_${pad(scene_number)}_shot_${pad(shot_number, 4)}_take_${pad(take_number)}_id_${id}-STREAM.mp4`
 }
 
 function filenameForThumbnail ({ scene_number, shot_number, take_number, id }) {
-  return `scene_${scene_number}_shot_${shot_number}_take_${take_number}_id_${id}.jpg`
+  return `scene_${pad(scene_number)}_shot_${pad(shot_number, 4)}_take_${pad(take_number)}_id_${id}.jpg`
 }
 
 class Take {
