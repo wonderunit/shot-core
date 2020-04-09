@@ -6,7 +6,10 @@
   - don't hardcode frameLengthInSeconds
 
   concat:
-  - fix missing extended metadata
+  - fix warnings when copying metadata
+      "Could not find codec parameters for stream 2"
+      "You requested a copy of the original timecode track so timecode metadata are now ignored"
+      try e.g.: -tag:2 tmcd or -copy_unknown?
   - fix timecode stream (handler_name, reel_name)
   - match durations/framerates exactly (rtsp STREAM issue)
 
@@ -120,29 +123,31 @@ async function concat ({ inpath, frameLengthInSeconds, folder, slate, outpath, o
 
   fs.writeFileSync(path.join(folder, 'concat.txt'), concat)
 
-  debug('concat to', outpath)
+  // concat, with metadata
+  // see https://superuser.com/a/996278
+  debug('concat to', outpath, '(with metadata)')
   await spawner('ffmpeg', [
     '-loglevel', 24,
     '-f', 'concat',
     '-i', path.join(folder, 'concat.txt'),
-    '-c', 'copy',
-    '-n',
-    path.join(folder, 'concat.mov')
-  ])
+    '-i', inpath,
 
-  // via https://superuser.com/a/996278
-  debug('copy metadata from', inpath, 'to', outpath)
-  await spawner('ffmpeg', [
-    '-loglevel', 32,
-    '-i', path.join(folder, 'concat.mov'),  // 0 = new
-    '-i', inpath,   // 1 = old
-    '-map', '0',
+    // video from concat
+    '-map', '0:0',
+
+    // audio from concat
+    '-map', '0:1',
+
+    // timecode from *original* file
+    '-map', '1:2',
+
     '-c', 'copy',
+
+    // metadata from original
     '-movflags', 'use_metadata_tags',
     '-map_metadata', '1',
-    // '-copy_unknown',
-    // '-tag:2', 'tmcd',
-    '-y',
+
+    '-n',
     outpath
   ])
 
@@ -156,7 +161,6 @@ async function concat ({ inpath, frameLengthInSeconds, folder, slate, outpath, o
   // fs.unlinkSync(path.join(folder, `remain.mov`))
   // fs.unlinkSync(path.join(folder, 'slate.mov'))
   // fs.unlinkSync(path.join(folder, 'concat.txt'))
-  // fs.unlinkSync(path.join(folder, 'concat.mov'))
 }
 
 function createTempFolder () {
