@@ -41,7 +41,7 @@ CREATE TABLE events(
 );
 
 CREATE TABLE takes(
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  id CHAR(7) PRIMARY KEY,
   project_id INTEGER NOT NULL,
   scene_id INTEGER NOT NULL,
   shot_id INTEGER NOT NULL,
@@ -53,3 +53,13 @@ CREATE TABLE takes(
   downloaded BOOLEAN NOT NULL CHECK (downloaded IN (0,1)),
   rating INTEGER CHECK (rating BETWEEN 0 AND 5)
 );
+
+CREATE TRIGGER AutoGenerateUid
+AFTER INSERT ON takes
+FOR EACH ROW
+WHEN (NEW.id IS NULL)
+BEGIN
+  UPDATE takes
+  SET id = substr(lower(hex(randomblob(4))), 1, 7)
+  WHERE rowid = NEW.rowid;
+END;
