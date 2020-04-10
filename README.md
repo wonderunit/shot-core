@@ -17,7 +17,7 @@ Given a Z Cam listening on `http://192.168.0.100`:
 DEBUG=shotcore:* ZCAM_URL=http://192.168.0.100 npm start
 ```
 
-Starts a web UI listening at [http://localhost:3000](http://localhost:3000)
+Starts a web UI listening at [http://localhost:4000](http://localhost:4000)
 
 On macOS you can then seed the first project on the server by running (in another terminal):
 
