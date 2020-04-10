@@ -13,7 +13,7 @@
   - fix timecode stream (handler_name, reel_name)
     - try mpeg ts?
     - try mp4 instead of mov for temporary files?
-  - match durations/framerates exactly (rtsp STREAM issue)
+  - fix RTSP stream? match durations/framerates exactly
 
   cleanup:
   - delete the tmp folder when complete
@@ -61,9 +61,9 @@ async function extractProxy ({ inpath, outpath }) {
 }
 
 // TODO
-const mp4 = [
-  '-c:v:0', 'h264'
-]
+// const mp4 = [
+//   '-c:v:0', 'h264'
+// ]
 
 const hevc = [
   '-c:v:0', 'hevc',
@@ -169,49 +169,49 @@ function createTempFolder () {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'shotcore-'))
 }
 
-async function createStreamWithVisualSlate ({ inpath, outpath, frameLengthInSeconds, slateData }) {
-  debug('createStreamWithVisualSlate()')
-  debug({ inpath, outpath, frameLengthInSeconds, slateData })
+// async function createStreamWithVisualSlate ({ inpath, outpath, frameLengthInSeconds, slateData }) {
+//   debug('createStreamWithVisualSlate()')
+//   debug({ inpath, outpath, frameLengthInSeconds, slateData })
 
-  const folder = createTempFolder()
+//   const folder = createTempFolder()
 
-  let slate = path.join(folder, 'slate.png')
-  let tmpout = path.join(folder, 'output.mp4')
+//   let slate = path.join(folder, 'slate.png')
+//   let tmpout = path.join(folder, 'output.mp4')
 
-  try {
-    debug('using tmp folder', folder)
+//   try {
+//     debug('using tmp folder', folder)
 
-    debug('generating slate png')
-    await renderSlateImageFile({ outpath: slate, slateData })
+//     debug('generating slate png')
+//     await renderSlateImageFile({ outpath: slate, slateData })
 
-    debug('concat() to', tmpout)
-    await concat({
-      inpath: inpath,
-      frameLengthInSeconds,
-      folder,
-      slate,
-      outpath: tmpout,
+//     debug('concat() to', tmpout)
+//     await concat({
+//       inpath: inpath,
+//       frameLengthInSeconds,
+//       folder,
+//       slate,
+//       outpath: tmpout,
 
-      options: mp4
-    })
+//       options: mp4
+//     })
 
-    // overwrite
-    debug('moving from', tmpout, 'to', outpath)
-    fs.moveSync(tmpout, outpath, { overwrite: true })
+//     // overwrite
+//     debug('moving from', tmpout, 'to', outpath)
+//     fs.moveSync(tmpout, outpath, { overwrite: true })
 
-  } catch (err) {
-    debug('ERROR:', err)
-    console.error('ERROR:', err)
-    throw err
+//   } catch (err) {
+//     debug('ERROR:', err)
+//     console.error('ERROR:', err)
+//     throw err
 
-  } finally {
-    // cleanup
-    // debug('cleanup …')
-    // fs.unlinkSync(path.join(folder, 'slate.png'))
-    // fs.rmdir(path.join(folder))
+//   } finally {
+//     // cleanup
+//     // debug('cleanup …')
+//     // fs.unlinkSync(path.join(folder, 'slate.png'))
+//     // fs.rmdir(path.join(folder))
 
-  }
-}
+//   }
+// }
 
 async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSeconds, slateData }) {
   debug('createProxyWithVisualSlate()')
@@ -264,6 +264,6 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
 }
 
 module.exports = {
-  createStreamWithVisualSlate,
+  // createStreamWithVisualSlate,
   createProxyWithVisualSlate
 }

@@ -7,7 +7,7 @@ const { get } = require('../db')
 
 const Take = require('../decorators/take')
 
-const { createStreamWithVisualSlate } = require('../services/visual-slate')
+// const { createStreamWithVisualSlate } = require('../services/visual-slate')
 
 let converter
 let running = false
@@ -50,16 +50,16 @@ async function startup ({ uri, takeId }) {
 
   await converter.run()
 
-  await createStreamWithVisualSlate({
-    inpath: path.join(UPLOADS_PATH, dirname, filename),
-    outpath: path.join(UPLOADS_PATH, dirname, filename),
-    // TODO don't hardcode
-    frameLengthInSeconds: 1001/24000,
-    slateData: {
-      width: 1920,
-      height: 1080
-    }
-  })
+  // await createStreamWithVisualSlate({
+  //    inpath: path.join(UPLOADS_PATH, dirname, filename),
+  //   outpath: path.join(UPLOADS_PATH, dirname, filename),
+  //   // TODO don't hardcode
+  //   frameLengthInSeconds: 1001/24000,
+  //   slateData: {
+  //     width: 1920,
+  //     height: 1080
+  //   }
+  // })
 }
 
 async function shutdown () {
