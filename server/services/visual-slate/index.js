@@ -159,10 +159,10 @@ async function concat ({ inpath, frameLengthInSeconds, folder, slate, outpath, o
 
   debug('written to', outpath)
 
-  // fs.unlinkSync(path.join(folder, `frame.mov`))
-  // fs.unlinkSync(path.join(folder, `remain.mov`))
-  // fs.unlinkSync(path.join(folder, 'slate.mov'))
-  // fs.unlinkSync(path.join(folder, 'concat.txt'))
+  fs.unlinkSync(path.join(folder, `frame.mov`))
+  fs.unlinkSync(path.join(folder, `remain.mov`))
+  fs.unlinkSync(path.join(folder, 'slate.mov'))
+  fs.unlinkSync(path.join(folder, 'concat.txt'))
 }
 
 function createTempFolder () {
@@ -206,9 +206,9 @@ function createTempFolder () {
 
 //   } finally {
 //     // cleanup
-//     // debug('cleanup …')
-//     // fs.unlinkSync(path.join(folder, 'slate.png'))
-//     // fs.rmdir(path.join(folder))
+//     debug('cleanup …')
+//     fs.unlinkSync(path.join(folder, 'slate.png'))
+//     fs.rmdir(path.join(folder))
 
 //   }
 // }
@@ -256,9 +256,9 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
 
   } finally {
     // debug('cleanup …')
-    // fs.unlinkSync(path.join(folder, filename))
-    // fs.unlinkSync(path.join(folder, 'slate.png'))
-    // fs.rmdir(path.join(folder))
+    fs.unlinkSync(path.join(folder, filename))
+    fs.unlinkSync(path.join(folder, 'slate.png'))
+    fs.rmdir(path.join(folder))
 
   }
 }
