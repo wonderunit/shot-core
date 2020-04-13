@@ -25,7 +25,7 @@ On macOS you can then seed the first project on the server by running (in anothe
 
 Environment vars:  
 - `ZCAM`: address of Z Cam, default `10.98.33.1`  
-- `PORT`: shot core server port, default 4000  
+- `PORT`: shot core server port, default 8000, proxied through browser-sync to 4000  
 - `DEBUG`: configure `debug` library logging  
 
 If you don’t have access to a Z Cam, you can run the [Z Cam Mock Server](./lib/zcam/mock-server/README.md) and start the server with:

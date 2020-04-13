@@ -35,6 +35,7 @@ const bus = new EventEmitter()
 
 const jsonParser = express.json()
 
+const BS_PORT = process.env.BS_PORT || 4000
 const PORT = process.env.PORT || 8000
 const ZCAM = process.env.ZCAM || '10.98.33.1'
 const ZCAM_URL = `http://${ZCAM}`
@@ -138,8 +139,8 @@ server.listen(app.get('port'), () => {
     const http = require('http')
     http
       .get(
-        'http://localhost:4000/__browser_sync__?method=reload',
-        () => console.log(`Listening on :4000`))
+        `http://localhost:${BS_PORT}/__browser_sync__?method=reload`,
+        () => console.log(`Listening on :${BS_PORT}`))
       .on('error', err => {
         console.error('Could not connect to browser sync server. Is it running?')
         console.log(`Listening on :${app.get('port')}`)
