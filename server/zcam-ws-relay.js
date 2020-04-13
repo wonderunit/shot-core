@@ -131,21 +131,25 @@ module.exports = function (url, bus, zcam, { projectId }) {
             break
 
           case 'RecStarted':
-            console.log('[zcam-ws] got RecStarted', state.cameraListener ? '…' : '(ignored)')
             if (state.cameraListener) {
+              console.log('[zcam-ws] Z Cam REC (RecStarted)')
               onRecStart({
                 projectId: state.projectId,
                 at: new Date().toISOString()
               })
+            } else {
+              // Slater is currently recording. Ignore REC notification.
             }
             break
           case 'RecStoped':
-            console.log('[zcam-ws] got RecStoped', state.cameraListener ? '…' : '(ignored)')
             if (state.cameraListener) {
+              console.log('[zcam-ws] Z Cam STOP (RecStoped)')
               await onRecStop({
                 projectId: state.projectId,
                 at: new Date().toISOString()
               })
+            } else {
+              // Slater is currently stopping. Ignore STOP notification.
             }
             break
           case 'RecordingFile':
