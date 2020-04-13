@@ -41,7 +41,7 @@ async function startup ({ uri, takeId }) {
 
   console.log(`[rtsp-client] - from: ${uri}`)
   converter
-    .createInputFromFile(uri, { rtsp_transport: 'tcp' })
+    .createInputFromFile(uri, { rtsp_transport: 'udp+tcp' })
 
   console.log(`[rtsp-client] - to:   public/uploads/${filepath}`)
 
