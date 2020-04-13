@@ -27,9 +27,9 @@ Shot Core will try to use the mock server by default, so running `npm start` is 
 
 ## Mock Z Cam RTSP
 
-The mock server doesn't provide mock RTSP, but you can simulate by running an RTSP server like live555MediaServer.
+The mock server runs an RTSP server for clients on :554.
 
-Given a 30 second test file, e.g.:
+Given a 5 second test file, e.g.:
 
 ```
 ffmpeg \
@@ -39,24 +39,26 @@ ffmpeg \
   -vcodec h264 \
   -pix_fmt yuv420p \
   -f mp4 \
-  -t 30 \
-  live_stream.264
+  -t 5 \
+  stream.mp4
 ```
 
-Serve it with `live555MediaServer` (you can install this via `brew install openrtsp` on macOS).
-
+Can stream to the mock server, e.g.:
 ```
-live555MediaServer
+ffmpeg \
+  -re \
+  -stream_loop -1 \
+  -i tmp/stream.mp4 \
+  -c:v copy \
+  -f rtsp \
+  rtsp://127.0.0.1:5554/live_stream
 ```
-
-By default, `live555MediaServer` will run on `:80/:554`.
-
 
 Test the RTSP server with `ncat` (press ENTER twice after typing):
 
 ```
-ncat --crlf localhost 80
-DESCRIBE rtsp://localhost/live_stream.264 RTSP/1.0
+ncat --crlf 127.0.0.1 554
+DESCRIBE rtsp://127.0.0.1/live_stream RTSP/1.0
 CSeq: 2
 
 
@@ -65,16 +67,7 @@ CSeq: 2
 Play:
 
 ```
-ffplay rtsp://localhost/live_stream.264
-```
-
-Running the server with a mock `ZCAM_RTSP_URL`:
-
-```
-ZCAM_URL=http://localhost:8080 \
-ZCAM_WS_URL=http://localhost:8081 \
-ZCAM_RTSP_URL=rtsp://localhost/live_stream.264 \
-npm start
+ffplay rtsp://127.0.0.1/live_stream
 ```
 
 ## Testing
