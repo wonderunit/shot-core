@@ -35,17 +35,14 @@ const bus = new EventEmitter()
 
 const jsonParser = express.json()
 
-const { PORT } = process.env
-const ZCAM_URL = process.env.ZCAM_URL || 'http://localhost:8080'
-
-const ZCAM_WS_URL = process.env.ZCAM_WS_URL ||
-  `ws://${url.parse(ZCAM_URL).hostname}:${parseInt(url.parse(ZCAM_URL).port || 80) + 1}`
-
-const ZCAM_RTSP_URL = process.env.ZCAM_RTSP_URL ||
-  `rtsp://${url.parse(ZCAM_URL).hostname}/live_stream`
+const PORT = process.env.PORT || 8000
+const ZCAM = process.env.ZCAM || '10.98.33.1'
+const ZCAM_URL = `http://${ZCAM}`
+const ZCAM_WS_URL = `ws://${ZCAM}:81`
+const ZCAM_RTSP_URL = `rtsp://${ZCAM}/live_stream`
 
 const app = express()
-app.set('port', PORT || 8000)
+app.set('port', PORT)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
 app.set('bus', bus)
@@ -113,16 +110,15 @@ bus
 
 bus
   .on('takes/create', async ({ id }) => {
-    console.log('RTSP client START recording stream for take', id)
+    console.log('[server] RTSP client START recording stream for take', id)
     try {
       await rtspClient.startup({ uri: ZCAM_RTSP_URL, takeId: id })
     } catch (err) {
-    // .kill() throws Error of { code: 1 }
-      // console.error('ERROR', err)
+      console.error('[server] RTSP client error', err)
     }
   })
   .on('takes/cut', () => {
-    console.log('RTSP client STOP recording stream')
+    console.log('[server] RTSP client STOP recording stream')
     rtspClient.shutdown()
   })
 

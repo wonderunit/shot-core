@@ -11,10 +11,10 @@ npm install
 sqlite3 dev.sqlite3 < db/schema.sql
 ```
 
-Given a Z Cam listening on `http://192.168.0.100`:
+Given a Z Cam with IP `192.168.0.100`:
 
 ```
-DEBUG=shotcore:* ZCAM_URL=http://192.168.0.100 npm start
+DEBUG=shotcore:* ZCAM=192.168.0.100 npm start
 ```
 
 Starts a web UI listening at [http://localhost:4000](http://localhost:4000)
@@ -24,12 +24,14 @@ On macOS you can then seed the first project on the server by running (in anothe
 `scripts/seed`
 
 Environment vars:  
-- `ZCAM_URL`: full url to Z Cam, default is `http://localhost:8080`  
-- `ZCAM_WS_URL`: override Z Cam WebSockets URL (default is based on `ZCAM_URL`, port + 1)  
-- `ZCAM_RTSP_URL`: override Z Cam RTSP URL, default is based on `ZCAM_URL` hostname, port 80  
-- `PORT`: web UI server port, default is 3000  
-- `DEBUG`: configure debug logging
+- `ZCAM`: address of Z Cam, default `10.98.33.1`  
+- `PORT`: shot core server port, default 4000  
+- `DEBUG`: configure `debug` library logging  
 
-If you don’t have access to a Z Cam, you can run the [Z Cam Mock Server](./lib/zcam/mock-server/README.md) 
+If you don’t have access to a Z Cam, you can run the [Z Cam Mock Server](./lib/zcam/mock-server/README.md) and start the server with:
+
+```
+DEBUG=shotcore:* ZCAM=127.0.0.1 npm start
+```
 
 For more, read [DEVELOPERS.md](DEVELOPERS.md).

@@ -3,12 +3,12 @@ const t = require('tap')
 const ZcamHTTPClient = require('../lib/zcam/client')
 
 const client = new ZcamHTTPClient({
-  uri: 'http://localhost:8080',
+  uri: 'http://127.0.0.1',
   timeout: 500
 })
 
 const disconnectedClient = new ZcamHTTPClient({
-  uri: 'http://localhost:666'
+  uri: 'http://127.0.0.1:666'
 })
 
 t.test('handles timeouts', async t => {

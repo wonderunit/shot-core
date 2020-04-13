@@ -3,27 +3,20 @@
 If you don’t have access to a Z Cam, you can run the mock server:
 
 ```
-DEBUG=shotcore:* \
-PORT=8080 \
-TAKE_MOV=./A001MOVFILE_0001.MOV \
+DEBUG=shotcore:*,rtsp-streaming-server:* \
+TAKE_MOV=./tmp/take.mov \
 npm run zcam-mock-server
 ```
 
 Environment vars:  
-- `DEBUG`: configure debug logging
-- `PORT`, HTTP port, WebSocket listens on `PORT+1`. default `8080` (so, WS on `8081`)  
 - `TAKE_MOV`, path to example take MOV downloaded from Z Cam. default is null, and no video will be served. If a JPG of the same basename exists, it will be served for thumbnail requests.   
+- `DEBUG`: configure debug logging
+- `PORT`, HTTP port, default :80
 
-To connect to a mock server:
+When the mock server is running, pass `ZCAM=127.0.0.1` to shot core server:
 ```
-DEBUG=shotcore:*
-ZCAM_URL=http://localhost:8080 \
-ZCAM_WS_URL=http://localhost:8081 \
-ZCAM_RTSP_URL=rtsp://localhost/live_stream.264 \
-npm start
+DEBUG=shotcore:* ZCAM=127.0.0.1 npm start
 ```
-
-Shot Core will try to use the mock server by default, so running `npm start` is the same as running `ZCAM_URL=http://localhost:8080 npm start`
 
 ## Mock Z Cam RTSP
 
@@ -74,9 +67,17 @@ ffplay rtsp://127.0.0.1/live_stream
 
 ### Testing HTTP:
 
+Testing the client against the mock z cam server:
+
 ```
-curl http://localhost:8080/info
-curl http://localhost:8080/mjpeg_stream | ffplay -
+node test/zcam-http-client.test.js
+```
+
+Can check HTTP with curl and streams with ffplay, e.g.:
+```
+curl http://127.0.0.1/info
+ffplay http://127.0.0.1/mjpeg_stream -f mjpeg
+ffplay rtsp://127.0.0.1/live_stream
 ```
 
 ### Testing WebSockets:
@@ -90,22 +91,5 @@ npm install -g wscat
 ### Logging Websocket Messages Received From The Mock Server
 
 ```
-wscat -P -c ws://localhost:8081
+wscat -P -c ws://127.0.0.1:81
 ```
-
-### Simulating Z Cam Websocket Messages
-
-To simulate WebSocket messages as if they were sent from a camera, run a simple server on a new port, e.g. `8082`:
-
-    $ wscat -l 8082
-
-This will be the mock camera.
-
-Then, override the `ZCAM_WS_URL` of the server:
-
-    $ ZCAM_WS_URL=http://localhost:8082 npm start
-
-Now the server will connect to `http://localhost:8082` via ws, and you can send it commands from the `wscat` session, e.g.:
-
-    > {"what":"RecStarted"}
-    > {"what":"RecStoped"}
