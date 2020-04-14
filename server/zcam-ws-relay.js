@@ -150,7 +150,7 @@ class ZcamWsRelay {
             if (this.state.cameraListener) {
               debug('Z Cam REC (RecStarted)')
               this.onRecStart({
-                projectId: state.projectId,
+                projectId: this.state.projectId,
                 at: new Date().toISOString()
               })
             } else {
@@ -161,7 +161,7 @@ class ZcamWsRelay {
             if (this.state.cameraListener) {
               debug('Z Cam STOP (RecStoped)')
               await this.onRecStop({
-                projectId: state.projectId,
+                projectId: this.state.projectId,
                 at: new Date().toISOString()
               })
             } else {
