@@ -13,7 +13,7 @@ const { format } = require('date-fns-tz')
 const ZcamHttpClient = require('../lib/zcam/client')
 const createMjpegProxy = require('../lib/mjpeg-proxy')
 
-const createWebSocketServer = require('./websockets')
+const WebSocketServer = require('./websockets')
 const zcamWsRelay = require('./zcam-ws-relay')
 
 const visualSlateRendererStartup = require('./services/visual-slate/renderer').startup
@@ -132,7 +132,8 @@ app.get('/projects/:projectId/monitor/mjpeg_stream', mjpegProxy.get)
 
 const server = http.createServer(app)
 
-createWebSocketServer({ app, server })
+const webSocketServer = new WebSocketServer(app, server)
+webSocketServer.start()
 
 server.listen(app.get('port'), () => {
   if (app.get('env') == 'development') {
@@ -152,6 +153,7 @@ server.listen(app.get('port'), () => {
 
 async function bye () {
   console.log('Shutting down ...')
+  webSocketServer.stop()
   bus.removeAllListeners()
   await downloader.shutdown()
   process.exit()
