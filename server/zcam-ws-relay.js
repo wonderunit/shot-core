@@ -19,6 +19,10 @@ class ZcamWsRelay {
 
       msecs: 5000,
       reconnectTimeoutId: null,
+      stopping: false,
+
+      // TODO
+      // idleTimeoutId: null,
 
       projectId,
       cameraListener: true
@@ -123,6 +127,9 @@ class ZcamWsRelay {
       try {
         let data = JSON.parse(message)
 
+        // clearTimeout(this.idleTimeoutId)
+        // this.idleTimeoutId = setTimeout(onIdle, 5000)
+
         // raw data
         this.bus.emit('zcam-ws/data', data)
 
@@ -192,20 +199,24 @@ class ZcamWsRelay {
       }
     })
 
-    this.state.ws.on('close', () => {
-      debug('disconnected')
+    this.state.ws.on('close', code => {
+      debug('ws close', { code })
       // pingTimeoutId = clearTimeout(pingTimeoutId)
-      this.state.reconnectTimeoutId = clearTimeout(this.state.reconnectTimeoutId)
       this.bus.emit('zcam-ws/closed')
-      this.reconnect()
+      if (this.state.stopping === false) {
+        this.state.reconnectTimeoutId = clearTimeout(this.state.reconnectTimeoutId)
+        this.reconnect()
+      }
     })
 
     this.state.ws.on('error', (err) => {
       console.error('[zcam-ws] error connecting to', this.url)
       // pingTimeoutId = clearTimeout(pingTimeoutId)
-      this.state.reconnectTimeoutId = clearTimeout(this.state.reconnectTimeoutId)
       this.bus.emit('zcam-ws/error', err.code)
-      this.reconnect()
+      if (this.state.stopping === false) {
+        this.state.reconnectTimeoutId = clearTimeout(this.state.reconnectTimeoutId)
+        this.reconnect()
+      }
     })
   }
 
@@ -220,8 +231,9 @@ class ZcamWsRelay {
   async stop () {
     debug('stop')
     try {
-      clearTimeout(this.state.reconnectTimeoutId)
+      this.state.stopping = true
       if (this.state.ws) this.state.ws.close()
+      clearTimeout(this.state.reconnectTimeoutId)
     } catch (err) {
       console.error(err)
     }
