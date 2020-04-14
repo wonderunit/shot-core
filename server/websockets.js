@@ -24,16 +24,16 @@ class WebSocketServer {
     this.zcamHeartbeat = new Heartbeat(zcam)
     this.zcamHeartbeat.start()
 
-    const wss = new WebSocket.Server({ clientTracking: true, noServer: true })
+    this.wss = new WebSocket.Server({ clientTracking: true, noServer: true })
 
-    this.server.on('upgrade', function (request, socket, head) {
+    this.server.on('upgrade', (request, socket, head) => {
       console.log('server: upgrade')
-      wss.handleUpgrade(request, socket, head, function (ws) {
-        wss.emit('connection', ws, request)
+      this.wss.handleUpgrade(request, socket, head, (ws) => {
+        this.wss.emit('connection', ws, request)
       })
     })
 
-    wss.on('connection', function (ws, request) {
+    this.wss.on('connection', function (ws, request) {
       console.log('wss: connection')
       ws.isAlive = true
       ws.send(JSON.stringify({
@@ -58,7 +58,7 @@ class WebSocketServer {
     })
 
     this.pingIntervalId = setInterval(function ping () {
-      wss.clients.forEach(function each (ws) {
+      this.wss.clients.forEach(function each (ws) {
         if (ws.isAlive === false) {
           console.log('ws: client unreachable. terminating')
           ws.terminate()
@@ -70,19 +70,12 @@ class WebSocketServer {
       })
     }, 30000)
 
-    wss.on('close', function close () {
-      console.log('------')
-      console.log('------')
-      console.log('------')
-      console.log('clearing pingIntervalId', this.pingIntervalId)
-      console.log('------')
-      console.log('------')
-      console.log('------')
+    this.wss.on('close', function close () {
       clearInterval(this.pingIntervalId)
     })
 
     const broadcast = data => {
-      wss.clients.forEach(function (ws) {
+      this.wss.clients.forEach(function (ws) {
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify(data))
         }
@@ -162,6 +155,7 @@ class WebSocketServer {
       )
   }
   async stop () {
+    this.wss.close()
     this.zcamHeartbeat.stop()
     clearInterval(this.reportCameraStatusIntervalId)
     clearInterval(this.pingIntervalId)
