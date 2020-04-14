@@ -86,7 +86,8 @@ const ws = sockette(`ws://${location.host}`, {
   onmessage: e => {
     let { action, payload } = JSON.parse(event.data)
 
-    console.log('ws', action, payload)
+    console.log('ws', action)
+    console.log(payload)
 
     switch (action) {
       case 'reload':
