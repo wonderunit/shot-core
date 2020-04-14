@@ -232,7 +232,13 @@ class ZcamWsRelay {
     debug('stop')
     try {
       this.state.stopping = true
-      if (this.state.ws) this.state.ws.close()
+      clearTimeout(this.state.idleTimeoutId)
+      if (this.state.ws) {
+        await new Promise(resolve => {
+          this.state.ws.on('close', code => resolve(code))
+          this.state.ws.close()
+        })
+      }
       clearTimeout(this.state.reconnectTimeoutId)
     } catch (err) {
       console.error(err)
