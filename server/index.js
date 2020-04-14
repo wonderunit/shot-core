@@ -15,7 +15,7 @@ const createMjpegProxy = require('../lib/mjpeg-proxy')
 const WebSocketServer = require('./websockets')
 const zcamWsRelay = require('./zcam-ws-relay')
 
-const visualSlateRendererStartup = require('./services/visual-slate/renderer').startup
+const visualSlateRenderer = require('./services/visual-slate/renderer')
 const downloader = require('./services/downloader')
 const rtspClient = require('./services/rtsp-client')
 
@@ -99,7 +99,7 @@ app.get('/projects/:projectId/slater.png', slater.png)
 app.get('/projects/:projectId/monitor', monitor.show)
 
 // TODO await
-visualSlateRendererStartup()
+visualSlateRenderer.start()
 
 // start the downloader
 downloader.startup({ ZCAM_URL, projectId: 1 })

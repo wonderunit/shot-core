@@ -6,7 +6,7 @@ const debug = require('debug')('shotcore:visual-slate-render')
 const TEMPLATE_FILE = path.join(__dirname, 'slate-template.png')
 
 let templateImage
-async function startup () {
+async function start () {
   try {
     templateImage = await loadImage(TEMPLATE_FILE)
     debug(`loaded ${path.basename(TEMPLATE_FILE)}`)
@@ -52,6 +52,6 @@ function render ({ slateData }) {
 }
 
 module.exports = {
-  startup,
+  start,
   render
 }
