@@ -1,5 +1,5 @@
 const WebSocket = require('ws')
-const debug = require('debug')('debug:zcam-ws-relay')
+const debug = require('debug')('shotcore:zcam-ws-relay')
 
 const { get } = require('./db')
 
@@ -8,17 +8,24 @@ const action = require('./services/takes/action')
 const cut = require('./services/takes/cut')
 const updateFilepath = require('./services/takes/update-filepath')
 
-module.exports = function (url, bus, zcam, { projectId }) {
-  let msecs = 5000
-  let reconnectTimeoutId
+class ZcamWsRelay {
+  constructor (url, bus, zcam, { projectId }) {
+    this.url = url
+    this.bus = bus
+    this.zcam = zcam
 
-  let state = {
-    projectId,
-    cameraListener: true
+    this.state = {
+      ws: null,
+
+      msecs: 5000,
+      reconnectTimeoutId: null,
+
+      projectId,
+      cameraListener: true
+    }
   }
-  bus.on('camera-listener/enable', () => (state.cameraListener = true))
-  bus.on('camera-listener/disable', () => (state.cameraListener = false))
-  function onRecStart ({ projectId, at }) {
+
+  onRecStart ({ projectId, at }) {
     // SEE: slater.show
     let project = get('SELECT * FROM projects WHERE id = ?', projectId)
 
@@ -29,13 +36,14 @@ module.exports = function (url, bus, zcam, { projectId }) {
       let shotId = event.shot_id
 
       let takeId = create({ projectId, sceneId, shotId, at })
-      bus.emit('takes/create', { id: takeId })
+      this.bus.emit('takes/create', { id: takeId })
 
       action({ takeId, at })
-      bus.emit('takes/action')
+      this.bus.emit('takes/action')
     }
   }
-  async function onRecStop ({ projectId, at }) {
+
+  async onRecStop ({ projectId, at }) {
     // SEE: slater.show
     let project = get('SELECT * FROM projects WHERE id = ?', projectId)
 
@@ -62,26 +70,26 @@ module.exports = function (url, bus, zcam, { projectId }) {
 
         cut({ takeId, at })
 
-        let filepath = (await zcam.get('/ctrl/get?k=last_file_name')).data.value
+        let filepath = (await this.zcam.get('/ctrl/get?k=last_file_name')).data.value
         updateFilepath({ takeId, filepath })
 
-        bus.emit('takes/cut')
+        this.bus.emit('takes/cut')
       } else {
         console.error('[zcam-ws] ERROR could not find take in database')
       }
     }
   }
 
-  function reconnect () {
-    clearTimeout(reconnectTimeoutId)
-    reconnectTimeoutId = setTimeout(function () {
+  reconnect () {
+    clearTimeout(this.state.reconnectTimeoutId)
+    this.state.reconnectTimeoutId = setTimeout(() => {
       debug('attempting to reconnect …')
-      open(url, bus)
-    }, msecs)
+      this.open()
+    }, this.state.msecs)
   }
 
-  function open (url, bus) {
-    const ws = new WebSocket(url)
+  open () {
+    this.state.ws = new WebSocket(this.url)
     // let pingTimeoutId
 
     // function heartbeat () {
@@ -89,22 +97,22 @@ module.exports = function (url, bus, zcam, { projectId }) {
     //   clearTimeout(pingTimeoutId)
     //   pingTimeoutId = setTimeout(() => {
     //     debug('timed out! terminating')
-    //     ws.terminate()
+    //     this.state.ws.terminate()
     //   }, 30000 + 1000)
     // }
 
-    ws.on('open', function open () {
+    this.state.ws.on('open', () => {
       // heartbeat()
-      bus.emit('zcam-ws/open')
+      this.bus.emit('zcam-ws/open')
       debug('connected')
     })
 
-    // ws.on('ping', function ping () {
+    // this.state.ws.on('ping', function ping () {
     //   heartbeat()
     //   debug('ping!')
     // })
 
-    ws.on('message', async function incoming (message) {
+    this.state.ws.on('message', async (message) => {
       debug('message', message)
 
       if (message === '') {
@@ -116,11 +124,11 @@ module.exports = function (url, bus, zcam, { projectId }) {
         let data = JSON.parse(message)
 
         // raw data
-        bus.emit('zcam-ws/data', data)
+        this.bus.emit('zcam-ws/data', data)
 
         // as action
         const { what, value } = data
-        bus.emit(`zcam/${what}`, value)
+        this.bus.emit(`zcam/${what}`, value)
 
         switch (what) {
           case 'ConfigChanged':
@@ -184,22 +192,40 @@ module.exports = function (url, bus, zcam, { projectId }) {
       }
     })
 
-    ws.on('close', function close() {
+    this.state.ws.on('close', () => {
       debug('disconnected')
       // pingTimeoutId = clearTimeout(pingTimeoutId)
-      reconnectTimeoutId = clearTimeout(reconnectTimeoutId)
-      bus.emit('zcam-ws/closed')
-      reconnect()
+      this.state.reconnectTimeoutId = clearTimeout(this.state.reconnectTimeoutId)
+      this.bus.emit('zcam-ws/closed')
+      this.reconnect()
     })
 
-    ws.on('error', function error (err) {
-      console.error('[zcam-ws] error connecting to', url)
+    this.state.ws.on('error', (err) => {
+      console.error('[zcam-ws] error connecting to', this.url)
       // pingTimeoutId = clearTimeout(pingTimeoutId)
-      reconnectTimeoutId = clearTimeout(reconnectTimeoutId)
-      bus.emit('zcam-ws/error', err.code)
-      reconnect()
+      this.state.reconnectTimeoutId = clearTimeout(this.state.reconnectTimeoutId)
+      this.bus.emit('zcam-ws/error', err.code)
+      this.reconnect()
     })
   }
 
-  open(url, bus)
+  async start () {
+    debug('start')
+    this.bus.on('camera-listener/enable', () => (this.state.cameraListener = true))
+    this.bus.on('camera-listener/disable', () => (this.state.cameraListener = false))
+
+    this.open()
+  }
+
+  async stop () {
+    debug('stop')
+    try {
+      clearTimeout(this.state.reconnectTimeoutId)
+      if (this.state.ws) this.state.ws.close()
+    } catch (err) {
+      console.error(err)
+    }
+  }
 }
+
+module.exports = ZcamWsRelay

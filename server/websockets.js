@@ -1,4 +1,5 @@
 const WebSocket = require('ws')
+const debug = require('debug')('shotcore:websockets')
 
 const Heartbeat = require('../lib/zcam/client/heartbeat')
 
@@ -19,6 +20,8 @@ class WebSocketServer {
   }
 
   async start () {
+    debug('start')
+
     const zcam = this.app.get('zcam')
     const bus = this.app.get('bus')
     this.zcamHeartbeat = new Heartbeat(zcam)
@@ -27,14 +30,14 @@ class WebSocketServer {
     this.wss = new WebSocket.Server({ clientTracking: true, noServer: true })
 
     this.server.on('upgrade', (request, socket, head) => {
-      console.log('server: upgrade')
+      debug('server: upgrade')
       this.wss.handleUpgrade(request, socket, head, (ws) => {
         this.wss.emit('connection', ws, request)
       })
     })
 
     this.wss.on('connection', (ws, request) => {
-      console.log('wss: connection')
+      debug('wss: connection')
       ws.isAlive = true
       ws.send(JSON.stringify({
         action: 'camera/update',
@@ -47,20 +50,20 @@ class WebSocketServer {
       reportCameraStatus()
 
       ws.on('message', function (message) {
-        console.log('ws: message', message)
+        debug('ws: message', message)
       })
 
       ws.on('pong', heartbeat)
 
       ws.on('close', function () {
-        console.log('ws: close')
+        debug('ws: close')
       })
     })
 
     this.pingIntervalId = setInterval(() => {
       this.wss.clients.forEach(function each (ws) {
         if (ws.isAlive === false) {
-          console.log('ws: client unreachable. terminating')
+          debug('ws: client unreachable. terminating')
           ws.terminate()
           return
         }
@@ -155,8 +158,10 @@ class WebSocketServer {
       )
   }
   async stop () {
-    this.wss.close()
-    this.zcamHeartbeat.stop()
+    debug('stop')
+
+    await new Promise(resolve => this.wss.close(resolve))
+    await this.zcamHeartbeat.stop()
     clearInterval(this.reportCameraStatusIntervalId)
     clearInterval(this.pingIntervalId)
   }

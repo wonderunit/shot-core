@@ -13,7 +13,7 @@ const ZcamHttpClient = require('../lib/zcam/client')
 const createMjpegProxy = require('../lib/mjpeg-proxy')
 
 const WebSocketServer = require('./websockets')
-const zcamWsRelay = require('./zcam-ws-relay')
+const ZcamWsRelay = require('./zcam-ws-relay')
 
 const visualSlateRenderer = require('./services/visual-slate/renderer')
 const downloader = require('./services/downloader')
@@ -124,7 +124,8 @@ bus
 
 // Z Cam connections
 console.log('Connecting to Z Cam WebSocket at', ZCAM_WS_URL)
-zcamWsRelay(ZCAM_WS_URL, app.get('bus'), app.get('zcam'), { projectId: 1 })
+const zcamWsRelay = new ZcamWsRelay(ZCAM_WS_URL, app.get('bus'), app.get('zcam'), { projectId: 1 })
+zcamWsRelay.start()
 
 const mjpegProxy = createMjpegProxy(ZCAM_URL + '/mjpeg_stream')
 app.get('/projects/:projectId/monitor/mjpeg_stream', mjpegProxy.get)
@@ -154,8 +155,13 @@ async function bye () {
   console.log('Shutting down ...')
   await webSocketServer.stop()
   await downloader.shutdown()
+  await zcamWsRelay.stop()
   bus.removeAllListeners()
-  process.exit()
+  server.close(code => {
+    console.log('exit', code)
+    process.exit(code)
+  })
 }
+ 
 process.on('SIGTERM', bye)
 process.on('SIGINT', bye)
