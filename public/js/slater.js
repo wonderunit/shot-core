@@ -1,3 +1,5 @@
+import sockette from './sockette.js'
+
 Turbolinks.start()
 
 const application = Stimulus.Application.start()
@@ -77,5 +79,19 @@ application.register('rating', class extends Stimulus.Controller {
     )
     .then(refresh)
     .catch(err => alert(err))
+  }
+})
+
+const ws = sockette(`ws://${location.host}`, {
+  onmessage: e => {
+    let { action, payload } = JSON.parse(event.data)
+
+    console.log('ws', action, payload)
+
+    switch (action) {
+      case 'reload':
+        window.location = window.location
+        break
+    }
   }
 })
