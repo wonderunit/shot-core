@@ -33,7 +33,7 @@ class WebSocketServer {
       })
     })
 
-    this.wss.on('connection', function (ws, request) {
+    this.wss.on('connection', (ws, request) => {
       console.log('wss: connection')
       ws.isAlive = true
       ws.send(JSON.stringify({
@@ -57,7 +57,7 @@ class WebSocketServer {
       })
     })
 
-    this.pingIntervalId = setInterval(function ping () {
+    this.pingIntervalId = setInterval(() => {
       this.wss.clients.forEach(function each (ws) {
         if (ws.isAlive === false) {
           console.log('ws: client unreachable. terminating')
@@ -70,7 +70,7 @@ class WebSocketServer {
       })
     }, 30000)
 
-    this.wss.on('close', function close () {
+    this.wss.on('close', () => {
       clearInterval(this.pingIntervalId)
     })
 
