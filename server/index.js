@@ -1,4 +1,3 @@
-const url = require('url')
 const express = require('express')
 const methodOverride = require('method-override')
 const responseTime = require('response-time')
