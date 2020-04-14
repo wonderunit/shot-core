@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const http = require('http')
 const path = require('path')
+const debug = require('debug')('shotcore:downloader')
 
 const { UPLOADS_PATH } = require('../config')
 const { run, get } = require('../db')
@@ -19,7 +20,7 @@ function download (url, dest) {
   return new Promise(function (resolve, reject) {
     let req = http.get(url, function (res) {
       if (res.statusCode < 200 || res.statusCode >= 300) {
-        console.log('[downloader] statusCode:', res.statusCode)
+        debug('statusCode:', res.statusCode)
         return reject(new Error('Download failed'))
       }
       let len = parseInt(res.headers['content-length'], 10)
@@ -35,7 +36,7 @@ function download (url, dest) {
         .on('end', function () {
           file.end()
           console.log('')
-          console.log('[downloader] single download complete')
+          debug('single download complete')
           resolve()
         })
     }).on('error', function (err) {
@@ -89,11 +90,11 @@ async function next ({ ZCAM_URL, projectId }) {
     let thumbnail = Take.filenameForThumbnail(opts)
     let proxy = Take.filenameForProxy(opts)
 
-    console.log(`[downloader] downloading …`)
-    console.log(`[downloader] from:   ${uri}`)
-    console.log(`[downloader] to:     public/uploads/${path.join(dirname, filename)}`)
-    console.log(`[downloader] thumb:  public/uploads/${path.join(dirname, thumbnail)}`)
-    console.log(`[downloader] proxy:  public/uploads/${path.join(dirname, proxy)}`)
+    debug(`downloading …`)
+    debug(`from:   ${uri}`)
+    debug(`to:     public/uploads/${path.join(dirname, filename)}`)
+    debug(`thumb:  public/uploads/${path.join(dirname, thumbnail)}`)
+    debug(`proxy:  public/uploads/${path.join(dirname, proxy)}`)
 
     fs.mkdirpSync(path.join(UPLOADS_PATH, dirname))
   
@@ -123,7 +124,7 @@ async function next ({ ZCAM_URL, projectId }) {
       take.id
     )
 
-    console.log('[downloader] updated download status for take')
+    debug('updated download status for take')
 
     return take
   } else {
@@ -139,15 +140,15 @@ async function startup ({ ZCAM_URL }) {
     return
   }
 
-  console.log('[downloader] startup()')
+  debug('startup()')
   running = true
 
   while (running) {
-    console.log('[downloader] checking for new files …')
+    debug('checking for new files …')
     try {
       let take = await next({ ZCAM_URL, projectId: 1 })
       if (!take) {
-        console.log('[downloader] queue complete. shutting down')
+        debug('queue complete. shutting down')
         await shutdown()
       }
     } catch (err) {
@@ -159,7 +160,7 @@ async function startup ({ ZCAM_URL }) {
 }
 
 async function shutdown () {
-  console.log('[downloader] shutdown()')
+  debug('shutdown()')
   running = false
 }
 
