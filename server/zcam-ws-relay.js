@@ -1,4 +1,5 @@
 const WebSocket = require('ws')
+const debug = require('debug')('debug:zcam-ws-relay')
 
 const { get } = require('./db')
 
@@ -74,7 +75,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
   function reconnect () {
     clearTimeout(reconnectTimeoutId)
     reconnectTimeoutId = setTimeout(function () {
-      console.log('[zcam-ws] attempting to reconnect …')
+      debug('attempting to reconnect …')
       open(url, bus)
     }, msecs)
   }
@@ -84,10 +85,10 @@ module.exports = function (url, bus, zcam, { projectId }) {
     // let pingTimeoutId
 
     // function heartbeat () {
-    //   console.log('[zcam-ws] heartbeat')
+    //   debug('heartbeat')
     //   clearTimeout(pingTimeoutId)
     //   pingTimeoutId = setTimeout(() => {
-    //     console.log('[zcam-ws] timed out! terminating')
+    //     debug('timed out! terminating')
     //     ws.terminate()
     //   }, 30000 + 1000)
     // }
@@ -95,16 +96,16 @@ module.exports = function (url, bus, zcam, { projectId }) {
     ws.on('open', function open () {
       // heartbeat()
       bus.emit('zcam-ws/open')
-      console.log('[zcam-ws] connected')
+      debug('connected')
     })
 
     // ws.on('ping', function ping () {
     //   heartbeat()
-    //   console.log('[zcam-ws] ping!')
+    //   debug('ping!')
     // })
 
     ws.on('message', async function incoming (message) {
-      console.log('[zcam-ws] message', message)
+      debug('message', message)
 
       if (message === '') {
         console.warn('[zcam-ws] got empty ws message from Z Cam.')
@@ -132,7 +133,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
 
           case 'RecStarted':
             if (state.cameraListener) {
-              console.log('[zcam-ws] Z Cam REC (RecStarted)')
+              debug('Z Cam REC (RecStarted)')
               onRecStart({
                 projectId: state.projectId,
                 at: new Date().toISOString()
@@ -143,7 +144,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
             break
           case 'RecStoped':
             if (state.cameraListener) {
-              console.log('[zcam-ws] Z Cam STOP (RecStoped)')
+              debug('Z Cam STOP (RecStoped)')
               await onRecStop({
                 projectId: state.projectId,
                 at: new Date().toISOString()
@@ -153,7 +154,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
             }
             break
           case 'RecordingFile':
-            console.log('[zcam-ws] RecordingFile', value)
+            debug('RecordingFile', value)
             break
 
           case 'RecUpdateDur':
@@ -184,7 +185,7 @@ module.exports = function (url, bus, zcam, { projectId }) {
     })
 
     ws.on('close', function close() {
-      console.log('[zcam-ws] disconnected')
+      debug('disconnected')
       // pingTimeoutId = clearTimeout(pingTimeoutId)
       reconnectTimeoutId = clearTimeout(reconnectTimeoutId)
       bus.emit('zcam-ws/closed')
