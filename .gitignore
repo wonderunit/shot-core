@@ -5,3 +5,4 @@ node_modules
 public/uploads/projects/*
 public/uploads/scenes/*
 tmp/
+.envrc
