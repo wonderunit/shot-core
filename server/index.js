@@ -153,8 +153,8 @@ server.listen(app.get('port'), () => {
 async function bye () {
   console.log('Shutting down ...')
   await webSocketServer.stop()
-  bus.removeAllListeners()
   await downloader.shutdown()
+  bus.removeAllListeners()
   process.exit()
 }
 process.on('SIGTERM', bye)
