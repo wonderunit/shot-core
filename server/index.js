@@ -171,8 +171,7 @@ async function bye () {
   await downloader.stop()
   await zcamWsRelay.stop()
   bus.removeAllListeners()
-  server.close(code =>
-    process.exit(code))
+  server.close()
 }
  
 process.on('SIGTERM', bye)
