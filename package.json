@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npm run server & npm run browser-sync",
-    "server": "nodemon ./server/index.js",
+    "server": "nodemon --exitcrash ./server/index.js",
     "zcam-mock-server": "node ./lib/zcam/mock-server/index.js",
     "browser-sync": "browser-sync start --config browser-sync-config.js --port ${BS_PORT:-4000} --proxy 'localhost:8000' --ws",
     "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js"
