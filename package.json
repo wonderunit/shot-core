@@ -23,6 +23,7 @@
     "method-override": "3.0.0",
     "multiparty": "4.2.1",
     "rtsp-streaming-server": "2.0.6",
+    "sockette": "2.0.6",
     "ws": "7.2.3"
   },
   "devDependencies": {

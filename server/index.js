@@ -133,7 +133,12 @@ bus
 
 // Z Cam connections
 console.log('Connecting to Z Cam WebSocket at', ZCAM_WS_URL)
-const zcamWsRelay = new ZcamWsRelay(ZCAM_WS_URL, app.get('bus'), app.get('zcam'), { projectId: 1 })
+const zcamWsRelay = new ZcamWsRelay(
+  ZCAM_WS_URL,
+  app.get('bus'),
+  app.get('zcam'),
+  { projectId: 1 }
+)
 zcamWsRelay.start()
 
 const mjpegProxy = createMjpegProxy(ZCAM_URL + '/mjpeg_stream')

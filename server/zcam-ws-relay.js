@@ -1,4 +1,3 @@
-const WebSocket = require('ws')
 const debug = require('debug')('shotcore:zcam-ws-relay')
 
 const { get } = require('./db')
@@ -7,6 +6,9 @@ const create = require('./services/takes/create')
 const action = require('./services/takes/action')
 const cut = require('./services/takes/cut')
 const updateFilepath = require('./services/takes/update-filepath')
+
+global.WebSocket = global.WebSocket || require('ws')
+const Sockette = require('sockette')
 
 class ZcamWsRelay {
   constructor (url, bus, zcam, { projectId }) {
@@ -17,13 +19,12 @@ class ZcamWsRelay {
     this.state = {
       ws: null,
 
-      msecs: 5000,
-      reconnectTimeoutId: null,
-      stopping: false,
-
       projectId,
       cameraListener: true
     }
+
+    this.onCameraEnable = this.onCameraEnable.bind(this)
+    this.onCameraDisable = this.onCameraDisable.bind(this)
   }
 
   onRecStart ({ projectId, at }) {
@@ -81,161 +82,132 @@ class ZcamWsRelay {
     }
   }
 
-  reconnect () {
-    clearTimeout(this.state.reconnectTimeoutId)
-    this.state.reconnectTimeoutId = setTimeout(() => {
-      debug('attempting to reconnect …')
-      this.open()
-    }, this.state.msecs)
+  open () {
+    this.state.ws = new Sockette(this.url, {
+      timeout: 5e3,
+
+      onopen: e => {
+        debug('connected')
+        this.bus.emit('zcam-ws/open')
+      },
+
+      onmessage: async e => {
+        debug('message', message)
+
+        if (message === '') {
+          console.warn('[zcam-ws] got empty ws message from Z Cam.')
+          return
+        }
+
+        try {
+          let data = JSON.parse(message)
+
+          // raw data
+          this.bus.emit('zcam-ws/data', data)
+
+          // as action
+          const { what, value } = data
+          this.bus.emit(`zcam/${what}`, value)
+
+          switch (what) {
+            case 'ConfigChanged':
+              break
+
+            case 'CardMounted':
+              break
+            case 'CardUnmounted':
+              break
+
+            case 'RecStarted':
+              if (this.state.cameraListener) {
+                debug('Z Cam REC (RecStarted)')
+                this.onRecStart({
+                  projectId: this.state.projectId,
+                  at: new Date().toISOString()
+                })
+              } else {
+                // Slater is currently recording. Ignore REC notification.
+              }
+              break
+            case 'RecStoped':
+              if (this.state.cameraListener) {
+                debug('Z Cam STOP (RecStoped)')
+                await this.onRecStop({
+                  projectId: this.state.projectId,
+                  at: new Date().toISOString()
+                })
+              } else {
+                // Slater is currently stopping. Ignore STOP notification.
+              }
+              break
+            case 'RecordingFile':
+              debug('RecordingFile', value)
+              break
+
+            case 'RecUpdateDur':
+              break
+            case 'RecUpdateRemain':
+              break
+
+            case 'TempUpdate':
+              break
+
+            case 'AiDetection':
+              break
+
+            case 'ModeChanged':
+              break
+
+            case 'HeadphonePlug':
+              break
+
+            case 'LtcPlug':
+              break
+            case 'UsbPlug':
+              break
+          }
+        } catch (err) {
+          console.error('[zcam-ws] ERROR', err)
+        }
+      },
+
+      onclose: event => {
+        debug('onclose', 'code:' + event.code)
+        this.bus.emit('zcam-ws/closed')
+      },
+
+      onerror: event => {
+        console.error('[zcam-ws] error connecting to', this.url)
+        this.bus.emit('zcam-ws/error', event.error.code)
+      }
+    })
   }
 
-  open () {
-    this.state.ws = new WebSocket(this.url)
-    // let pingTimeoutId
-
-    // function heartbeat () {
-    //   debug('heartbeat')
-    //   clearTimeout(pingTimeoutId)
-    //   pingTimeoutId = setTimeout(() => {
-    //     debug('timed out! terminating')
-    //     this.state.ws.terminate()
-    //   }, 30000 + 1000)
-    // }
-
-    this.state.ws.on('open', () => {
-      // heartbeat()
-      this.bus.emit('zcam-ws/open')
-      debug('connected')
-    })
-
-    // this.state.ws.on('ping', function ping () {
-    //   heartbeat()
-    //   debug('ping!')
-    // })
-
-    this.state.ws.on('message', async (message) => {
-      debug('message', message)
-
-      if (message === '') {
-        console.warn('[zcam-ws] got empty ws message from Z Cam.')
-        return
-      }
-
-      try {
-        let data = JSON.parse(message)
-
-        // raw data
-        this.bus.emit('zcam-ws/data', data)
-
-        // as action
-        const { what, value } = data
-        this.bus.emit(`zcam/${what}`, value)
-
-        switch (what) {
-          case 'ConfigChanged':
-            break
-
-          case 'CardMounted':
-            break
-          case 'CardUnmounted':
-            break
-
-          case 'RecStarted':
-            if (this.state.cameraListener) {
-              debug('Z Cam REC (RecStarted)')
-              this.onRecStart({
-                projectId: this.state.projectId,
-                at: new Date().toISOString()
-              })
-            } else {
-              // Slater is currently recording. Ignore REC notification.
-            }
-            break
-          case 'RecStoped':
-            if (this.state.cameraListener) {
-              debug('Z Cam STOP (RecStoped)')
-              await this.onRecStop({
-                projectId: this.state.projectId,
-                at: new Date().toISOString()
-              })
-            } else {
-              // Slater is currently stopping. Ignore STOP notification.
-            }
-            break
-          case 'RecordingFile':
-            debug('RecordingFile', value)
-            break
-
-          case 'RecUpdateDur':
-            break
-          case 'RecUpdateRemain':
-            break
-
-          case 'TempUpdate':
-            break
-
-          case 'AiDetection':
-            break
-
-          case 'ModeChanged':
-            break
-
-          case 'HeadphonePlug':
-            break
-
-          case 'LtcPlug':
-            break
-          case 'UsbPlug':
-            break
-        }
-      } catch (err) {
-        console.error('[zcam-ws] ERROR', err)
-      }
-    })
-
-    this.state.ws.on('close', code => {
-      debug('ws close', { code })
-      // pingTimeoutId = clearTimeout(pingTimeoutId)
-      this.bus.emit('zcam-ws/closed')
-      if (this.state.stopping === false) {
-        this.state.reconnectTimeoutId = clearTimeout(this.state.reconnectTimeoutId)
-        this.reconnect()
-      }
-    })
-
-    this.state.ws.on('error', (err) => {
-      console.error('[zcam-ws] error connecting to', this.url)
-      // pingTimeoutId = clearTimeout(pingTimeoutId)
-      this.bus.emit('zcam-ws/error', err.code)
-      if (this.state.stopping === false) {
-        this.state.reconnectTimeoutId = clearTimeout(this.state.reconnectTimeoutId)
-        this.reconnect()
-      }
-    })
+  onCameraEnable () {
+    this.state.cameraListener = true
+  }
+  onCameraDisable () {
+    this.state.cameraListener = false
   }
 
   async start () {
     debug('start')
-    this.bus.on('camera-listener/enable', () => (this.state.cameraListener = true))
-    this.bus.on('camera-listener/disable', () => (this.state.cameraListener = false))
+
+    this.bus.on('camera-listener/enable', this.onCameraEnable)
+    this.bus.on('camera-listener/disable', this.onCameraDisable)
 
     this.open()
   }
 
   async stop () {
     debug('stop')
-    try {
-      this.state.stopping = true
-      if (this.state.ws) {
-        await new Promise(resolve => {
-          this.state.ws.on('close', code => resolve(code))
-          this.state.ws.close()
-        })
-      }
-      clearTimeout(this.state.reconnectTimeoutId)
-    } catch (err) {
-      console.error(err)
-    }
+
+    this.bus.off('camera-listener/enable', this.onCameraEnable)
+    this.bus.off('camera-listener/disable', this.onCameraDisable)
+
+    if (!this.state.ws) return
+
+    this.state.ws.close()
   }
 }
 
