@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+if [[ $# -eq 0 ]]
+then
+  echo "USAGE: test-remote-api <command>"
+  echo "where <command> is one of: status, ready, action, cut, next, previous"
+  exit 1
+
+else
+  URI='http://127.0.0.1:3000'
+
+  if [ $1 == 'status' ]
+  then
+    curl -X GET $URI/projects/1/slater.json \
+      -H 'Content-Type: application/json'
+
+  elif [[ $1 == 'ready' || $1 == 'action' ||  $1 == 'cut' ]]
+  then
+    NOW=`date -u +"%Y-%m-%dT%H:%M:%S.000Z"` && \
+    curl -X POST $URI/projects/1/slater/$1.json \
+      -H 'Content-Type: application/json' \
+      -d "{ \"at\": \"${NOW}\" }"
+
+  else
+    curl -X POST $URI/projects/1/slater/$1.json \
+      -H 'Content-Type: application/json'
+
+  fi
+
+fi
+echo

@@ -75,13 +75,13 @@ exports.update = (req, res) => {
         `UPDATE projects SET slater_event_id = ? WHERE id = ?`,
         next.id, projectId)
       req.app.get('bus').emit('slater/updated')
-      return res.sendStatus(204)
+      return res.status(200).send({ id: next.id })
     case 'previous':
       run(
         `UPDATE projects SET slater_event_id = ? WHERE id = ?`,
         prev.id, projectId)
       req.app.get('bus').emit('slater/updated')
-      return res.sendStatus(204)
+      return res.status(200).send({ id: prev.id })
     default:
       return res.status(422).send()
   }
@@ -110,6 +110,7 @@ exports.show = (req, res) => {
       shot.id
     )
 
+    // most recently cut take, used for rating
     let prev = get(
       `
       SELECT * FROM takes
@@ -135,7 +136,13 @@ exports.show = (req, res) => {
     }
   }
 
-  res.render('slater', { project, ...slater })
+  res.format({
+    'application/json': () =>
+      res.send({ project, ...slater }),
+
+    default: () =>
+      res.render('slater', { project, ...slater })    
+  })
 }
 
 exports.png = (req, res) => {

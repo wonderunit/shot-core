@@ -27,6 +27,7 @@ const shots = require('./routes/shots')
 const takes = require('./routes/takes')
 const slater = require('./routes/slater')
 const monitor = require('./routes/monitor')
+const remote = require('./routes/remote')
 
 const { truncate, durationMsecsToString, friendlyDuration } = require('./helpers')
 
@@ -97,6 +98,14 @@ app.patch('/projects/:projectId/slater.json', jsonParser, slater.update)
 app.get('/projects/:projectId/slater.png', slater.png)
 
 app.get('/projects/:projectId/monitor', monitor.show)
+
+// REMOTE
+app.get('/projects/:projectId/slater.json', jsonParser, remote.status)
+app.post('/projects/:projectId/slater/ready.json', jsonParser, remote.ready)
+app.post('/projects/:projectId/slater/action.json', jsonParser, remote.action)
+app.post('/projects/:projectId/slater/cut.json', jsonParser, remote.cut)
+app.post('/projects/:projectId/slater/next.json', jsonParser, remote.next)
+app.post('/projects/:projectId/slater/previous.json', jsonParser, remote.previous)
 
 // TODO await
 visualSlateRenderer.start()

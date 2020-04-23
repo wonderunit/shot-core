@@ -47,6 +47,16 @@ class Shot {
       ) + 'mm'
     }
   }
+
+  toJSON () {
+    return {
+      ...this,
+      boards_json: undefined,
+      thumbnail: this.thumbnail,
+      posterframe: this.posterframe,
+      cameraPlot: this.cameraPlot
+    }
+  }
 }
 
 module.exports = Shot
