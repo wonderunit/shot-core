@@ -91,7 +91,9 @@ class ZcamWsRelay {
         this.bus.emit('zcam-ws/open')
       },
 
-      onmessage: async e => {
+      onmessage: async event => {
+        let message = event.data
+
         debug('message', message)
 
         if (message === '') {
