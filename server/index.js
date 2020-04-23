@@ -111,10 +111,10 @@ app.post('/projects/:projectId/slater/previous.json', jsonParser, remote.previou
 visualSlateRenderer.start()
 
 // start the downloader
-downloader.startup({ ZCAM_URL, projectId: 1 })
+downloader.start({ ZCAM_URL, projectId: 1 })
 bus
   .on('takes/cut', () => {
-    downloader.startup({ ZCAM_URL, projectId: 1 })
+    downloader.start({ ZCAM_URL, projectId: 1 })
   })
 
 bus
@@ -163,7 +163,7 @@ server.listen(app.get('port'), () => {
 async function bye () {
   console.log('Shutting down ...')
   await webSocketServer.stop()
-  await downloader.shutdown()
+  await downloader.stop()
   await zcamWsRelay.stop()
   bus.removeAllListeners()
   server.close(code =>

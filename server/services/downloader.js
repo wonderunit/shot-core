@@ -134,13 +134,13 @@ async function next ({ ZCAM_URL, projectId }) {
 
 let running = false
 
-async function startup ({ ZCAM_URL }) {
+async function start ({ ZCAM_URL }) {
   if (running) {
-    console.warn('[downloader] startup() called but downloader is already in progress')
+    console.warn('[downloader] start() called but downloader is already in progress')
     return
   }
 
-  debug('startup()')
+  debug('start()')
   running = true
 
   while (running) {
@@ -148,8 +148,8 @@ async function startup ({ ZCAM_URL }) {
     try {
       let take = await next({ ZCAM_URL, projectId: 1 })
       if (!take) {
-        debug('queue complete. shutting down')
-        await shutdown()
+        debug('queue complete. stopping')
+        await stop()
       }
     } catch (err) {
       console.error('[downloader] ERROR:', err)
@@ -159,12 +159,12 @@ async function startup ({ ZCAM_URL }) {
   }
 }
 
-async function shutdown () {
-  debug('shutdown()')
+async function stop () {
+  debug('stop()')
   running = false
 }
 
 module.exports = {
-  startup,
-  shutdown
+  start,
+  stop
 }
