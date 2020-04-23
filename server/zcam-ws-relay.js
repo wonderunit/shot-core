@@ -21,9 +21,6 @@ class ZcamWsRelay {
       reconnectTimeoutId: null,
       stopping: false,
 
-      // TODO
-      // idleTimeoutId: null,
-
       projectId,
       cameraListener: true
     }
@@ -127,9 +124,6 @@ class ZcamWsRelay {
       try {
         let data = JSON.parse(message)
 
-        // clearTimeout(this.idleTimeoutId)
-        // this.idleTimeoutId = setTimeout(onIdle, 5000)
-
         // raw data
         this.bus.emit('zcam-ws/data', data)
 
@@ -232,7 +226,6 @@ class ZcamWsRelay {
     debug('stop')
     try {
       this.state.stopping = true
-      clearTimeout(this.state.idleTimeoutId)
       if (this.state.ws) {
         await new Promise(resolve => {
           this.state.ws.on('close', code => resolve(code))
