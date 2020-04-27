@@ -10,6 +10,43 @@ const updateFilepath = require('./services/takes/update-filepath')
 global.WebSocket = global.WebSocket || require('ws')
 const Sockette = require('sockette')
 
+const { createMachine, interpret, actions } = require('xstate')
+const { send, cancel } = actions
+
+const sendIdleOnTimeout = send('IDLE', { id: 'sendIdle', delay: 15_000 })
+const markActive = cancel('sendIdle')
+const activityMachineConfiguration = {
+  id: 'activityMonitor',
+  initial: 'active',
+  strict: true,
+  states: {
+    active: {
+      entry: [
+        'emitActive',
+        sendIdleOnTimeout
+      ],
+      on: {
+        'ACTIVITY': { actions: [markActive, sendIdleOnTimeout] },
+        'IDLE': 'idle',
+        'DISABLE': 'disabled'
+      }
+    },
+    idle: {
+      entry: 'emitIdle',
+      on: {
+        'ACTIVITY': 'active',
+        'DISABLE': 'disabled'
+      }
+    },
+    disabled: {
+      on: { 'ENABLE': 'idle' }
+    }
+  },
+  on: {
+    'DISCONNECT': 'idle'
+  }
+}
+
 class ZcamWsRelay {
   constructor (url, bus, zcam, { projectId }) {
     this.url = url
@@ -25,6 +62,19 @@ class ZcamWsRelay {
 
     this.onCameraEnable = this.onCameraEnable.bind(this)
     this.onCameraDisable = this.onCameraDisable.bind(this)
+
+    this.activityMonitor = interpret(
+      createMachine(
+        activityMachineConfiguration,
+        {
+          actions: {
+            emitIdle: () => this.bus.emit('camera/idle'),
+            emitActive: () => this.bus.emit('camera/active')
+          }
+        })
+    )
+    .onTransition(event => debug('->', event.value))
+    this.activityMonitor.start()
   }
 
   onRecStart ({ projectId, at }) {
@@ -88,6 +138,7 @@ class ZcamWsRelay {
 
       onopen: e => {
         debug('connected')
+        this.activityMonitor.send('ACTIVITY')
         this.bus.emit('zcam-ws/open')
       },
 
@@ -121,6 +172,7 @@ class ZcamWsRelay {
               break
 
             case 'RecStarted':
+              this.activityMonitor.send('DISABLE')
               if (this.state.cameraListener) {
                 debug('Z Cam REC (RecStarted)')
                 this.onRecStart({
@@ -132,6 +184,8 @@ class ZcamWsRelay {
               }
               break
             case 'RecStoped':
+              this.activityMonitor.send('ENABLED')
+              this.activityMonitor.send('ACTIVITY')
               if (this.state.cameraListener) {
                 debug('Z Cam STOP (RecStoped)')
                 await this.onRecStop({
@@ -152,12 +206,15 @@ class ZcamWsRelay {
               break
 
             case 'TempUpdate':
+              this.activityMonitor.send('ACTIVITY')
               break
 
             case 'AiDetection':
+              this.activityMonitor.send('ACTIVITY')
               break
 
             case 'ModeChanged':
+              this.activityMonitor.send('ACTIVITY')
               break
 
             case 'HeadphonePlug':
@@ -175,6 +232,7 @@ class ZcamWsRelay {
 
       onclose: event => {
         debug('onclose', 'code:' + event.code)
+        this.activityMonitor.send('DISCONNECT')
         this.bus.emit('zcam-ws/closed')
       },
 

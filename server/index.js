@@ -140,14 +140,8 @@ app.get('/projects/:projectId/monitor/mjpeg_stream', mjpegProxy.get)
 // start the downloader
 downloader.init({ ZCAM_URL, projectId: 1 })
 downloader.start()
-bus
-  .on('takes/create', () => {
-    downloader.send('CAMERA_ACTIVE')
-  })
-  .on('takes/cut', () => {
-    downloader.send('CAMERA_IDLE')
-  })
-downloader.send('CAMERA_IDLE')
+bus.on('camera/idle', () => downloader.send('CAMERA_IDLE'))
+bus.on('camera/active', () => downloader.send('CAMERA_ACTIVE'))
 
 const server = http.createServer(app)
 
