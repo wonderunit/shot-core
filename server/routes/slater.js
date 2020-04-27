@@ -137,11 +137,8 @@ exports.show = (req, res) => {
   }
 
   res.format({
-    'application/json': () =>
-      res.send({ project, ...slater }),
-
-    default: () =>
-      res.render('slater', { project, ...slater })    
+    html: () => res.render('slater', { project, ...slater }),
+    json: () => res.send({ project, ...slater })
   })
 }
 
