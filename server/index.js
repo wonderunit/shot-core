@@ -110,13 +110,6 @@ app.post('/projects/:projectId/slater/previous.json', jsonParser, remote.previou
 // TODO await
 visualSlateRenderer.start()
 
-// start the downloader
-downloader.start({ ZCAM_URL, projectId: 1 })
-bus
-  .on('takes/cut', () => {
-    downloader.start({ ZCAM_URL, projectId: 1 })
-  })
-
 bus
   .on('takes/create', async ({ id }) => {
     console.log('[server] RTSP client START recording stream for take', id)
@@ -143,6 +136,18 @@ zcamWsRelay.start()
 
 const mjpegProxy = createMjpegProxy(ZCAM_URL + '/mjpeg_stream')
 app.get('/projects/:projectId/monitor/mjpeg_stream', mjpegProxy.get)
+
+// start the downloader
+downloader.init({ ZCAM_URL, projectId: 1 })
+downloader.start()
+bus
+  .on('takes/create', () => {
+    downloader.send('CAMERA_ACTIVE')
+  })
+  .on('takes/cut', () => {
+    downloader.send('CAMERA_IDLE')
+  })
+downloader.send('CAMERA_IDLE')
 
 const server = http.createServer(app)
 

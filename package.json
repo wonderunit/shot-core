@@ -20,11 +20,13 @@
     "express": "4.17.1",
     "ffmpeg-stream": "0.6.0",
     "fs-extra": "8.1.0",
+    "got": "11.0.2",
     "method-override": "3.0.0",
     "multiparty": "4.2.1",
     "rtsp-streaming-server": "2.0.6",
     "sockette": "2.0.6",
-    "ws": "7.2.3"
+    "ws": "7.2.3",
+    "xstate": "4.9.1"
   },
   "devDependencies": {
     "browser-sync": "2.26.7",
