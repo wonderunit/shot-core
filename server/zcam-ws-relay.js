@@ -206,11 +206,9 @@ class ZcamWsRelay {
               break
 
             case 'TempUpdate':
-              this.activityMonitor.send('ACTIVITY')
               break
 
             case 'AiDetection':
-              this.activityMonitor.send('ACTIVITY')
               break
 
             case 'ModeChanged':
