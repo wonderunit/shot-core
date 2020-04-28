@@ -38,9 +38,9 @@ const jsonParser = express.json()
 const BS_PORT = process.env.BS_PORT || 4000
 const PORT = process.env.PORT || 8000
 const ZCAM = process.env.ZCAM || '10.98.33.1'
-const ZCAM_URL = `http://${ZCAM}`
-const ZCAM_WS_URL = `ws://${ZCAM}:81`
-const ZCAM_RTSP_URL = `rtsp://${ZCAM}/live_stream`
+const ZCAM_URL = process.env.ZCAM_URL || `http://${ZCAM}`
+const ZCAM_WS_URL = process.env.ZCAM_WS_URL || `ws://${ZCAM}:81`
+const ZCAM_RTSP_URL = process.env.ZCAM_RTSP_URL || `rtsp://${ZCAM}/live_stream`
 
 const app = express()
 app.set('port', PORT)
