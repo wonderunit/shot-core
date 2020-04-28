@@ -40,7 +40,6 @@ class ZcamWsRelay {
       )
     )
     .onTransition(event => debug('->', event.value))
-    this.activityMonitor.start()
   }
 
   onRecStart ({ projectId, at }) {
@@ -104,7 +103,6 @@ class ZcamWsRelay {
 
       onopen: e => {
         debug('connected')
-        this.activityMonitor.send('ACTIVITY')
         this.bus.emit('zcam-ws/open')
       },
 
@@ -130,6 +128,7 @@ class ZcamWsRelay {
 
           switch (what) {
             case 'ConfigChanged':
+              debug('ConfigChanged', value)
               break
 
             case 'CardMounted':
@@ -138,7 +137,6 @@ class ZcamWsRelay {
               break
 
             case 'RecStarted':
-              this.activityMonitor.send('DISABLE')
               if (this.state.cameraListener) {
                 debug('Z Cam REC (RecStarted)')
                 this.onRecStart({

@@ -1,38 +1,39 @@
 const { actions } = require('xstate')
 const { send, cancel } = actions
 
-const sendIdleOnTimeout = send('IDLE', { id: 'sendIdle', delay: 5_000 })
+const timerStart = send('TIMEOUT', { id: 'timer', delay: context => context.timeout })
 
-const markActive = cancel('sendIdle')
+const timerCancel = cancel('timer')
 
 module.exports = {
   id: 'activityMonitor',
-  initial: 'active',
+  initial: 'off',
   strict: true,
+  context: {
+    timeout: 10_000
+  },
   states: {
-    active: {
-      entry: [
-        'emitActive',
-        sendIdleOnTimeout
-      ],
+    off: {
       on: {
-        'ACTIVITY': { actions: [markActive, sendIdleOnTimeout] },
-        'IDLE': 'idle',
-        'DISABLE': 'disabled'
+        ON: 'inactive'
       }
     },
-    idle: {
+    inactive: {
       entry: 'emitIdle',
       on: {
-        'ACTIVITY': 'active',
-        'DISABLE': 'disabled'
+        ACTIVITY: 'active',
+        OFF: 'off'
       }
     },
-    disabled: {
-      on: { 'ENABLE': 'idle' }
+    active: {
+      entry: ['emitActive', timerStart],
+      on: {
+        ACTIVITY: {
+          target: 'active', actions: timerCancel
+        },
+        TIMEOUT: 'inactive',
+        OFF: 'off'
+      }
     }
-  },
-  on: {
-    'DISCONNECT': 'idle'
   }
 }
