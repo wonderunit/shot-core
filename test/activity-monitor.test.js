@@ -22,8 +22,8 @@ let activityMonitor = interpret(
 const delay = msecs => new Promise(resolve => setTimeout(resolve, msecs))
 
 t.test('can monitor camera activity', async t => {
-  activityMonitor.send('ON')
-  t.equal('inactive', activityMonitor.state.value)
+  activityMonitor.send('CONNECTED')
+  t.equal('active', activityMonitor.state.value)
 
   activityMonitor.send('ACTIVITY')
   t.equal('active', activityMonitor.state.value)

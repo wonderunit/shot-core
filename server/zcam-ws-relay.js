@@ -40,6 +40,7 @@ class ZcamWsRelay {
       )
     )
     .onTransition(event => debug('->', event.value))
+    .start()
   }
 
   onRecStart ({ projectId, at }) {
@@ -103,6 +104,7 @@ class ZcamWsRelay {
 
       onopen: e => {
         debug('connected')
+        this.activityMonitor.send('CONNECTED')
         this.bus.emit('zcam-ws/open')
       },
 
@@ -129,6 +131,7 @@ class ZcamWsRelay {
           switch (what) {
             case 'ConfigChanged':
               debug('ConfigChanged', value)
+              this.activityMonitor.send('ACTIVITY')
               break
 
             case 'CardMounted':
@@ -137,6 +140,7 @@ class ZcamWsRelay {
               break
 
             case 'RecStarted':
+              this.activityMonitor.send('OFF')
               if (this.state.cameraListener) {
                 debug('Z Cam REC (RecStarted)')
                 this.onRecStart({
@@ -148,8 +152,6 @@ class ZcamWsRelay {
               }
               break
             case 'RecStoped':
-              this.activityMonitor.send('ENABLED')
-              this.activityMonitor.send('ACTIVITY')
               if (this.state.cameraListener) {
                 debug('Z Cam STOP (RecStoped)')
                 await this.onRecStop({
@@ -159,6 +161,7 @@ class ZcamWsRelay {
               } else {
                 // Slater is currently stopping. Ignore STOP notification.
               }
+              this.activityMonitor.send('CONNECTED')
               break
             case 'RecordingFile':
               debug('RecordingFile', value)
@@ -176,6 +179,7 @@ class ZcamWsRelay {
               break
 
             case 'ModeChanged':
+              debug('ModeChanged', value)
               this.activityMonitor.send('ACTIVITY')
               break
 
@@ -194,7 +198,7 @@ class ZcamWsRelay {
 
       onclose: event => {
         debug('onclose', 'code:' + event.code)
-        this.activityMonitor.send('DISCONNECT')
+        this.activityMonitor.send('OFF')
         this.bus.emit('zcam-ws/closed')
       },
 

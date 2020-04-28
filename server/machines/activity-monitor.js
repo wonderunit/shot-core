@@ -15,7 +15,7 @@ module.exports = {
   states: {
     off: {
       on: {
-        ON: 'inactive'
+        CONNECTED: 'active'
       }
     },
     inactive: {
