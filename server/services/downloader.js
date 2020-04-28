@@ -218,7 +218,8 @@ const downloaderMachine = createMachine({
         'NEXT': {
           target: 'downloading',
           actions: 'setTake'
-        }
+        },
+        'CAMERA_ACTIVE': 'abort'
       }
     },
     downloading: {
@@ -229,29 +230,33 @@ const downloaderMachine = createMachine({
       on: {
         'NEXT': 'success',
         'ERROR': 'abort',
+        'CAMERA_ACTIVE': 'abort'
       }
     },
     success: {
       entry: () => debug('success'),
       after: {
-        1000: {
+        3000: {
           target: 'checking',
           actions: 'clearTake'
         }
+      },
+      on: {
+        'CAMERA_ACTIVE': 'abort'
       }
     },
     abort: {
       entry: () => debug('abort'),
       after: {
-        1000: {
+        3000: {
           target: 'checking',
           actions: 'clearTake'
         }
+      },
+      on: {
+        'CAMERA_ACTIVE': 'abort'
       }
     }
-  },
-  on: {
-    'CAMERA_ACTIVE': 'abort',
   }
 }, {
   actions: {
