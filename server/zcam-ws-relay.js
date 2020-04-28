@@ -1,3 +1,7 @@
+global.WebSocket = global.WebSocket || require('ws')
+const Sockette = require('sockette')
+
+const { createMachine, interpret } = require('xstate')
 const debug = require('debug')('shotcore:zcam-ws-relay')
 
 const { get } = require('./db')
@@ -6,46 +10,7 @@ const create = require('./services/takes/create')
 const action = require('./services/takes/action')
 const cut = require('./services/takes/cut')
 const updateFilepath = require('./services/takes/update-filepath')
-
-global.WebSocket = global.WebSocket || require('ws')
-const Sockette = require('sockette')
-
-const { createMachine, interpret, actions } = require('xstate')
-const { send, cancel } = actions
-
-const sendIdleOnTimeout = send('IDLE', { id: 'sendIdle', delay: 15_000 })
-const markActive = cancel('sendIdle')
-const activityMachineConfiguration = {
-  id: 'activityMonitor',
-  initial: 'active',
-  strict: true,
-  states: {
-    active: {
-      entry: [
-        'emitActive',
-        sendIdleOnTimeout
-      ],
-      on: {
-        'ACTIVITY': { actions: [markActive, sendIdleOnTimeout] },
-        'IDLE': 'idle',
-        'DISABLE': 'disabled'
-      }
-    },
-    idle: {
-      entry: 'emitIdle',
-      on: {
-        'ACTIVITY': 'active',
-        'DISABLE': 'disabled'
-      }
-    },
-    disabled: {
-      on: { 'ENABLE': 'idle' }
-    }
-  },
-  on: {
-    'DISCONNECT': 'idle'
-  }
-}
+const activityMonitorMachine = require('./machines/activity-monitor')
 
 class ZcamWsRelay {
   constructor (url, bus, zcam, { projectId }) {
@@ -65,13 +30,14 @@ class ZcamWsRelay {
 
     this.activityMonitor = interpret(
       createMachine(
-        activityMachineConfiguration,
+        activityMonitorMachine,
         {
           actions: {
             emitIdle: () => this.bus.emit('camera/idle'),
             emitActive: () => this.bus.emit('camera/active')
           }
-        })
+        }
+      )
     )
     .onTransition(event => debug('->', event.value))
     this.activityMonitor.start()
