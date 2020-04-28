@@ -22,7 +22,7 @@
       console.log(bold('As env vars:'))
       console.log(`ZCAM_URL=${httpUri}`)
       console.log(`ZCAM_WS_URL=${wsUri}`)
-      console.log(`ZCAM_RTSP_URL=${rtspUri}`)
+      console.log(`ZCAM_RTSP_URL=${rtspUri}/live_stream`)
       console.log('')
 
       console.log(bold('Test HTTP via curl:'))
