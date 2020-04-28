@@ -10,7 +10,7 @@
       let urlRtsp = url.parse(input.match(/Forwarding\s+(.+) -> .+:554/)[1])
 
       let httpUri = urlHttp.href.replace(/\/$/, '')
-      let wsUri = urlWs.href.replace(/\/$/, '')
+      let wsUri = urlWs.href.replace(/\/$/, '').replace('http', 'ws')
       let rtspUri = `rtsp://${urlRtsp.hostname}:${urlRtsp.port}`
 
       console.log(bold('Z Cam ngrok tunnels:'))
