@@ -142,11 +142,11 @@ downloader.init({ ZCAM_URL, projectId: 1 })
 downloader.start()
 bus.on('camera/idle', () => {
   console.log('telling downloader to start')
-  downloader.send('CAMERA_IDLE')
+  downloader.send('ON')
 })
 bus.on('camera/active', () => {
   console.log('telling downloader to stop')
-  downloader.send('CAMERA_ACTIVE')
+  downloader.send('OFF')
 })
 
 const server = http.createServer(app)
