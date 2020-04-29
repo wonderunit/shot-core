@@ -1,3 +1,5 @@
+// TODO if take download keeps erroring out, only retry n times, then mark unprocessable
+const CAF = require('caf')
 const fs = require('fs-extra')
 const got = require('got')
 const path = require('path')
@@ -51,17 +53,69 @@ const onDownloadProgress = url => ({ percent, transferred, total }) =>
     '\r'
   )
 
-function download (src, dst, callback) {
-  let readable = got
-    .stream(src)
-    .on('downloadProgress', onDownloadProgress(src))
-  let writable = fs.createWriteStream(dst)
-  return pipeline(readable, writable, callback)
+const download = (src, dst, signal) => {
+  return new Promise((resolve, reject) => {
+    let readable = got
+      .stream(src)
+      .on('downloadProgress', onDownloadProgress(src))
+    let writable = fs.createWriteStream(dst)
+
+    signal.pr.catch(event => {
+      if (readable) {
+        debug('abort', src, dst)
+        readable.destroy()
+        writable.destroy()
+        reject(event)
+      }
+      readable = writable = null
+    })
+
+    pipeline(
+      readable,
+      writable,
+      err => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+        readable = writeable = null
+      }
+    )
+  })
 }
 
-const downloadFiles = (context, event) => (callback, onReceive) => {
+const clean = filepath => () => {
+  try {
+    if (fs.existsSync(filepath)) {
+      debug('unlinking', filepath)
+      fs.unlinkSync(filepath)
+    }
+  } catch (err) {
+    console.error('clean() failed with error')
+    console.error(err)
+  }
+}
+
+const checkForTakes = (context, event) => (callback, onReceive) => {
+  debug('checking for new takes …')
+
+  let take = getNextTake(context.projectId)
+
+  if (take) {
+    debug('found take', take.id)
+    callback({ type: 'NEXT', take })
+  } else {
+    debug('queue is empty.')
+    callback('OFF')
+  }
+}
+
+const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) => {
+  debug('downloadAndProcessTakeFiles()')
+
   let { ZCAM_URL, take, projectId } = context
-  let tasks = {}
+  let cleanup = {}
   let success = false
 
   let uri = `${ZCAM_URL}${take.filepath}`
@@ -77,185 +131,154 @@ const downloadFiles = (context, event) => (callback, onReceive) => {
 
   fs.mkdirpSync(path.join(UPLOADS_PATH, takesDir))
 
-  Promise.resolve()
-    .then(() => new Promise((resolve, reject) => {
-      debug('\nthumbnail')
-      let src = `${uri}?act=scr`
-      let dst = path.join(UPLOADS_PATH, takesDir, thumbnail)
-      tasks.thumbnail = {
-        src,
-        dst,
-        stream: download(src, dst, err => err ? reject(err) : resolve())
+  let token = new CAF.cancelToken()
+
+  let steps = CAF(function * (signal) {
+    // STEP 1
+    debug('\ndownload thumbnail')
+    yield download(
+      `${uri}?act=scr`,
+      path.join(UPLOADS_PATH, takesDir, thumbnail),
+      signal
+    )
+    cleanup.thumbnail = clean(path.join(UPLOADS_PATH, takesDir, thumbnail))
+
+    // STEP 2
+    debug('\ndownload mov')
+    yield download(
+      uri,
+      path.join(UPLOADS_PATH, takesDir, filename),
+      signal
+    )
+    cleanup.mov = clean(path.join(UPLOADS_PATH, takesDir, filename))
+
+    // STEP 3
+    debug('\ninsert slate')
+    // TODO handle cancel via signal
+    yield createProxyWithVisualSlate({
+      inpath: path.join(UPLOADS_PATH, takesDir, filename),
+      outpath: path.join(UPLOADS_PATH, takesDir, proxy),
+
+      // TODO don't hardcode codec_time_base
+      //
+      // to get codec_time_base:
+      // $ ffprobe -v error \
+      //   -select_streams v:0 \
+      //   -show_entries stream=codec_time_base \
+      //   -of default=noprint_wrappers=1:nokey=1 \
+      //   $MOVFILE
+      //
+      frameLengthInSeconds: 1001/24000,
+
+      slateData: {
+        width: 1280,
+        height: 720
       }
-    }))
-    .then(() => new Promise((resolve, reject) => {
-      debug('\nmov')
-      let src = uri
-      let dst = path.join(UPLOADS_PATH, takesDir, filename)
-      tasks.mov = {
-        src,
-        dst,
-        stream: download(src, dst, err => err ? reject(err) : resolve())
+    })
+    // TODO also cleanup tmp folder on abort
+    cleanup.proxy = clean(path.join(UPLOADS_PATH, takesDir, proxy))
+  
+    // STEP 4
+    debug('marking take download complete in database')
+    run(
+      `UPDATE takes
+      SET downloaded = 1
+      WHERE id = ?`,
+      take.id
+    )
+  })
+
+  steps( token.signal )
+    .then(
+      function () {
+        debug('take processing complete!')
+        success = true
+        callback('NEXT')
+      },
+      function (event) {
+        console.error('take processing failed')
+        console.error('  ...code', event.code)
+        console.error('  ...message', event.message)
+
+        // useful for reporting internal errors
+        // ERR_STREAM_PREMATURE_CLOSE
+        // ERR_STREAM_DESTROYED
+        callback({ type: 'ERROR', data: event })
       }
-    }))
-    .then(() => {
-      debug('\nslate')
-
-      let src = path.join(UPLOADS_PATH, takesDir, filename)
-      let dst = path.join(UPLOADS_PATH, takesDir, proxy)
-
-      tasks.proxy = {
-        src,
-        dst
-      }
-
-      return createProxyWithVisualSlate({
-        inpath: src,
-        outpath: dst,
-
-        // TODO don't hardcode codec_time_base
-        //
-        // to get codec_time_base:
-        // $ ffprobe -v error \
-        //   -select_streams v:0 \
-        //   -show_entries stream=codec_time_base \
-        //   -of default=noprint_wrappers=1:nokey=1 \
-        //   $MOVFILE
-        //
-        frameLengthInSeconds: 1001/24000,
-
-        slateData: {
-          width: 1280,
-          height: 720
-        }
-      })
-    })
-    .then(() => {
-      debug('marking take complete in database …')
-      run(
-        `UPDATE takes
-        SET downloaded = 1
-        WHERE id = ?`,
-        take.id
-      )
-    })
-    .then(() => {
-      debug('success')
-
-      success = true
-
-      callback('NEXT')
-    })
-    .catch(err => {
-      debug('error')
-
-      // ERR_STREAM_PREMATURE_CLOSE
-      // ERR_STREAM_DESTROYED
-      if (err.code == 'ERR_STREAM_PREMATURE_CLOSE') {
-        console.error(err.code)
-        console.error('shot core aborted the download')
-      } else {
-        console.error(err)
-      }
-
-      callback({ type: 'ERROR', data: err })
-    })
+    )
 
   return () => {
-    // cleanup
-    debug('cleanup')
-    if (success == false) {
-      tasks.thumbnail && fs.unlink(tasks.thumbnail.dst)
-      tasks.mov && fs.unlink(tasks.mov.dst)
-      if (tasks.proxy) {
-        if (fs.existsSync(tasks.proxy.dst)) {
-          fs.unlink(tasks.proxy.dst)
-        }
-      }
+    debug('take processing cleanup')
 
-      tasks.thumbnail && tasks.thumbnail.stream.destroy()
-      tasks.mov && tasks.mov.stream.destroy()
+    if (success == false) {
+      debug('take processing terminated early by state machine')
+      token.abort(new Error('Early termination'))
+
+      debug('unlinking files …')
+      cleanup.thumbnail && cleanup.thumbnail()
+      cleanup.mov && cleanup.mov()
+      cleanup.proxy && cleanup.proxy()
     }
   }
 }
 
 const downloaderMachine = createMachine({
   id: 'downloader',
-  initial: 'idle',
+  initial: 'off',
   strict: true,
   context: {
-    projectId: 1,
+    ZCAM_URL: null,
+    projectId: null,
+
     take: null
   },
   states: {
-    idle: {
+    off: {
       on: {
-        'CAMERA_IDLE': 'checking'
+        'ON': 'checking'
       }
     },
     checking: {
       invoke: {
-        id: 'checking',
-        src: (context, event) => (callback, onReceive) => {
-          debug('checking for new takes …')
-
-          let take = getNextTake(context.projectId)
-
-          if (take) {
-            debug('found take', take.id)
-            callback({ type: 'NEXT', take })
-          } else {
-            debug('queue is empty.')
-            callback('EMPTY')
-          }
-        }
+        id: 'checkForTakes',
+        src: checkForTakes
       },
       on: {
-        'EMPTY': {
-          target: 'idle',
-          actions: 'clearTake'
-        },
         'NEXT': {
           target: 'downloading',
           actions: 'setTake'
-        },
-        'CAMERA_ACTIVE': 'abort'
+        }
       }
     },
     downloading: {
       invoke: {
-        id: 'downloadFiles',
-        src: downloadFiles
+        id: 'downloadAndProcessTakeFiles',
+        src: downloadAndProcessTakeFiles
       },
       on: {
-        'NEXT': 'success',
-        'ERROR': 'abort',
-        'CAMERA_ACTIVE': 'abort'
+        'NEXT': 'downloadingSuccess',
+        'ERROR': 'downloadingError',
       }
     },
-    success: {
-      entry: () => debug('success'),
+    downloadingSuccess: {
+      entry: 'clearTake',
       after: {
-        3000: {
-          target: 'checking',
-          actions: 'clearTake'
-        }
+        3000: 'checking'
       },
-      on: {
-        'CAMERA_ACTIVE': 'abort'
-      }
     },
-    abort: {
-      entry: () => debug('abort'),
-      after: {
-        3000: {
-          target: 'checking',
-          actions: 'clearTake'
-        }
-      },
+    // if any error happens, clearTake, and turn off
+    // to avoid retrying infinitely
+    downloadingError: {
+      entry: 'clearTake',
       on: {
-        'CAMERA_ACTIVE': 'abort'
-      }
+        '': 'off'
+      },
+    }
+  },
+  on: {
+    'OFF': {
+      target: 'off',
+      actions: 'clearTake'
     }
   }
 }, {
@@ -275,7 +298,10 @@ function init ({ ZCAM_URL, projectId }) {
         projectId
       })
   )
-  .onTransition(event => debug('->', event.value))
+  .onTransition(event => debug(
+    '->', event.value,
+    event.context.take ? `take:${event.context.take.id}` : ''
+  ))
 }
 
 async function start () {
