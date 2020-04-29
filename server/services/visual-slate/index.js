@@ -16,6 +16,8 @@
   - fix RTSP stream? match durations/framerates exactly
 
   cleanup:
+  - handle cancel signal
+  - on cancel, cleanup tmp files
   - delete the tmp folder when complete
   - handle interrupts, e.g.:
     process.on('SIGTERM', () => …)
@@ -208,7 +210,7 @@ function createTempFolder () {
 //     // cleanup
 //     debug('cleanup …')
 //     fs.unlinkSync(path.join(folder, 'slate.png'))
-//     fs.rmdir(path.join(folder))
+//     fs.rmdirSync(path.join(folder))
 
 //   }
 // }
@@ -250,16 +252,29 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
     })
 
   } catch (err) {
-    debug('ERROR:', err)
-    console.error('ERROR:', err)
+    console.error('createProxyWithVisualSlate() caught error')
+    console.error(err)
     throw err
 
   } finally {
-    // debug('cleanup …')
-    fs.unlinkSync(path.join(folder, filename))
-    fs.unlinkSync(path.join(folder, 'slate.png'))
-    fs.rmdir(path.join(folder))
+    debug('cleanup …')
 
+    try {
+      for (let f of [
+        'concat.txt', 'frame.mov', 'remain.mov', 'slate.mov',
+        filename, 'slate.png'
+      ]) {
+        let filepath = path.join(folder, f)
+        if (fs.existsSync(filepath)) {
+          fs.unlinkSync(path.join(folder, f))
+        }
+      }
+
+      fs.rmdirSync(path.join(folder))
+    } catch (err) {
+      console.error('createProxyWithVisualSlate() failed with error')
+      console.error(err)
+    }
   }
 }
 
