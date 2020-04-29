@@ -11,7 +11,7 @@
 
       let httpUri = urlHttp.href.replace(/\/$/, '')
       let wsUri = urlWs.href.replace(/\/$/, '').replace('http', 'ws')
-      let rtspUri = `rtsp://${urlRtsp.hostname}:${urlRtsp.port}`
+      let rtspUri = `rtsp://${urlRtsp.hostname}:${urlRtsp.port}/live_stream`
 
       console.log(bold('Z Cam ngrok tunnels:'))
       console.log('http   ', httpUri)
@@ -22,7 +22,7 @@
       console.log(bold('As env vars:'))
       console.log(`ZCAM_URL=${httpUri}`)
       console.log(`ZCAM_WS_URL=${wsUri}`)
-      console.log(`ZCAM_RTSP_URL=${rtspUri}/live_stream`)
+      console.log(`ZCAM_RTSP_URL=${rtspUri}`)
       console.log('')
 
       console.log(bold('Test HTTP via curl:'))
@@ -38,7 +38,7 @@
       console.log('')
 
       console.log(bold('Play RTSP stream:'))
-      console.log('vlc $ZCAM_RTSP_URL/live_stream')
+      console.log('vlc $ZCAM_RTSP_URL')
       console.log('')
 
       console.log(bold('Run Shot Core server:'))
