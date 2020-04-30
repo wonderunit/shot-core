@@ -23,7 +23,7 @@ async function startup ({ uri, takeId }) {
 
   let take = get('SELECT * FROM takes WHERE id = ?', takeId)
   let { scene_number } = get(`SELECT scene_number from scenes WHERE id = ?`, take.scene_id)
-  let { shot_number, impromptu } = get(`SELECT shot_number from shots WHERE id = ?`, take.shot_id)
+  let { shot_number, impromptu } = get(`SELECT shot_number, impromptu from shots WHERE id = ?`, take.shot_id)
 
   let dirname = path.join('projects', take.project_id.toString(), 'takes')
 
