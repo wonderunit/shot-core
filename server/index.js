@@ -15,9 +15,9 @@ const createMjpegProxy = require('../lib/mjpeg-proxy')
 const WebSocketServer = require('./websockets')
 const ZcamWsRelay = require('./zcam-ws-relay')
 
-const visualSlateRenderer = require('./services/visual-slate/renderer')
-const downloader = require('./services/downloader')
-const rtspClient = require('./services/rtsp-client')
+const visualSlateRenderer = require('./systems/visual-slate/renderer')
+const downloader = require('./systems/downloader')
+const rtspClient = require('./systems/rtsp-client')
 
 const home = require('./routes/home')
 const projects = require('./routes/projects')

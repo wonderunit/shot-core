@@ -7,7 +7,7 @@ const { get } = require('../db')
 
 const Take = require('../decorators/take')
 
-// const { createStreamWithVisualSlate } = require('../services/visual-slate')
+// const { createStreamWithVisualSlate } = require('../systems/visual-slate')
 
 let converter
 let running = false

@@ -10,7 +10,7 @@ const debug = require('debug')('shotcore:downloader')
 
 const { UPLOADS_PATH } = require('../config')
 const { run, get } = require('../db')
-const { createProxyWithVisualSlate } = require('../services/visual-slate')
+const { createProxyWithVisualSlate } = require('../systems/visual-slate')
 const Take = require('../decorators/take')
 
 const downloader = require('../machines/downloader')
