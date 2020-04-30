@@ -1,11 +1,13 @@
 const path = require('path')
 const Database = require('better-sqlite3')
 
+const debug = require('debug')('shotcore:db')
+
 let filepath = process.env.NODE_ENV == 'test'
   ? path.join(__dirname, '../test.sqlite3')
   : path.join(__dirname, '../dev.sqlite3')
 
-const db = new Database(filepath/*, { verbose: console.info }*/)
+const db = new Database(filepath/*, { verbose: debug }*/)
 
 function run (string, ...bindParameters) {
   return db.prepare(string).run(...bindParameters)
