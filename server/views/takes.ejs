@@ -57,7 +57,8 @@
           <div class="w-20" style="min-width: 160px">
             <% let thumbnail = take.filenameForThumbnail({
               scene_number: scene.scene_number,
-              shot_number: shot.shot_number
+              shot_number: shot.shot_number,
+              impromptu: shot.impromptu
             }) %>
             <img
               style="width: 160px; height: 90px"
@@ -68,7 +69,7 @@
             <%= scene.scene_number %>
           </div>
           <div class="w-10">
-            <%= shot.shot_number %>
+            <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
           </div>
           <div class="w-10">
             <%= take.take_number %>
@@ -76,7 +77,8 @@
           <div class="w-10">
             <% let stream = take.filenameForStream({
               scene_number: scene.scene_number,
-              shot_number: shot.shot_number
+              shot_number: shot.shot_number,
+              impromptu: shot.impromptu
             }) %>
             <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= stream %>">
               mp4
@@ -85,7 +87,8 @@
           <div class="w-10">
             <% let proxy = take.filenameForProxy({
               scene_number: scene.scene_number,
-              shot_number: shot.shot_number
+              shot_number: shot.shot_number,
+              impromptu: shot.impromptu
             }) %>
             <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= proxy %>">
               mov (h265)
@@ -95,7 +98,8 @@
             <% if (take.downloaded) { %>
               <% let footage = take.filenameForFootage({
                 scene_number: scene.scene_number,
-                shot_number: shot.shot_number
+                shot_number: shot.shot_number,
+                impromptu: shot.impromptu
               }) %>
               <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= footage %>">
                 mov (ProRes)

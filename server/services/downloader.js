@@ -30,11 +30,12 @@ const getNextTake = projectId => {
 
 const getTakeFilenames = take => {
   let { scene_number } = get(`SELECT scene_number from scenes WHERE id = ?`, take.scene_id)
-  let { shot_number } = get(`SELECT shot_number from shots WHERE id = ?`, take.shot_id)
+  let { shot_number, impromptu } = get(`SELECT shot_number, impromptu from shots WHERE id = ?`, take.shot_id)
 
   let opts = {
     scene_number,
     shot_number,
+    impromptu,
     take_number: take.take_number,
     id: take.id
   }

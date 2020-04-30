@@ -56,11 +56,11 @@
             <a
               href="<%= `/projects/${shot.project_id}/scenes/${shot.scene_id}/shots/${shot.id}` %>"
             >
-              <%= shot.shot_number %>
+              <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
             </a>
           </td>
           <td>
-            <%= shot.boards[0].notes %>
+            <%= shot.boards.length && shot.boards[0].notes %>
           </td>
           <td>
             <% for (let board of shot.boards) { %>

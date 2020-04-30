@@ -5,7 +5,7 @@
       <a href="/">Home</a> /
       <a href="/projects/<%= project.id %>"><%= project.name %></a> /
       <br />
-      Scene <%= scene.scene_number %> / Shot <%= shot.shot_number %>
+      Scene <%= scene.scene_number %> / Shot <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
       <br />
       Take 1
     </h1>
@@ -13,7 +13,8 @@
     <div class="mb4">
       <% let thumbnail = take.filenameForThumbnail({
         scene_number: scene.scene_number,
-        shot_number: shot.shot_number
+        shot_number: shot.shot_number,
+        impromptu: shot.impromptu
       }) %>
       <img
         class="mw-100"
@@ -35,7 +36,8 @@
 
       <% let stream = take.filenameForStream({
         scene_number: scene.scene_number,
-        shot_number: shot.shot_number
+        shot_number: shot.shot_number,
+        impromptu: shot.impromptu
       }) %>
       <div>
         <div>
@@ -53,7 +55,8 @@
         <div>
           <% let proxy = take.filenameForProxy({
             scene_number: scene.scene_number,
-            shot_number: shot.shot_number
+            shot_number: shot.shot_number,
+            impromptu: shot.impromptu
           }) %>
           [proxy] <a class="link f6" href="<%= `/uploads/projects/${project.id}/takes/${proxy}` %>">
             <%= `/uploads/projects/${project.id}/takes/${proxy}` %>
@@ -62,7 +65,8 @@
         <div>
           <% let footage = take.filenameForFootage({
             scene_number: scene.scene_number,
-            shot_number: shot.shot_number
+            shot_number: shot.shot_number,
+            impromptu: shot.impromptu
           }) %>
           [footage] <a class="link f6" href="<%= `/uploads/projects/${project.id}/takes/${footage}` %>">
             <%= `/uploads/projects/${project.id}/takes/${footage}` %>

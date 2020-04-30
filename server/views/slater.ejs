@@ -50,7 +50,7 @@
                 Shot
               </div>
               <div class="f1 center">
-                <%= shot.shot_number %>
+                <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
               </div>
             </div>
           </div>
@@ -69,7 +69,9 @@
           </div>
         </div>
         <div class="flex items-start">
-          <img class="w-50" src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
+          <% if (shot.imprompt == false) { %>
+            <img class="w-50" src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
+          <% } %>
 
           <div class="w-25">
             <div class="image-grid">
@@ -166,8 +168,11 @@
           </form>
           <form
             class="mv3 mr3"
-          > 
-            <button disabled title="Insert an Impromptu Shot">Impromptu Shot</button>
+            data-remote="true"
+            method="POST"
+            action="<%= `/projects/${project.id}/slater/impromptu.json` %>"
+          >
+            <button title="Insert an Impromptu Shot">Impromptu Shot</button>
           </form>
         </div>
 
@@ -209,7 +214,7 @@
       <!--
       <div class="pa2">
         <div class="f7">
-          <h3 class="f4 ma0 mb4">All Takes for Shot <%= shot.shot_number %></h3>
+          <h3 class="f4 ma0 mb4">All Takes for Shot <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %></h3>
           <% for (let take of takes) { %>
             <div class="mb3">
               <b>Take <%= take.take_number %></b><br />

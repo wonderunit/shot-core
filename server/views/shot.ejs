@@ -5,7 +5,7 @@
       <a href="/">Home</a> /
       <a href="/projects/<%= project.id %>"><%= project.name %></a> /
       <br />
-      Scene <%= scene.scene_number %> / Shot <%= shot.shot_number %>
+      Scene <%= scene.scene_number %> / Shot <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
     </h1>
 
     <h2 class="f4 mv3">Boards</h2>

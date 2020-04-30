@@ -4,6 +4,8 @@ const slaterCanvas = require('../slater-canvas')
 const Scene = require('../decorators/scene')
 const Shot = require('../decorators/shot')
 
+const createEvent = require('../services/create-event')
+
 const takeState = take => {
   if (take == null) return 'init'
 
@@ -145,4 +147,74 @@ exports.show = (req, res) => {
 exports.png = (req, res) => {
   res.setHeader('Content-Type', 'image/png')
   slaterCanvas.draw().createPNGStream().pipe(res)
+}
+
+// create a new impromptu shot
+exports.impromptu = (req, res, next) => {
+  // what is the current shot?
+  let { projectId } = req.params
+  let project = get('SELECT * FROM projects WHERE id = ?', projectId)
+
+  if (project.slater_event_id == null) {
+    return next(new Error('Missing Slater'))
+  }
+
+  let prevEvent = get('SELECT * FROM events WHERE id = ?', project.slater_event_id)
+  let prevShot = get('SELECT * FROM shots WHERE id = ?', prevEvent.shot_id)
+
+  // how many impromptu shots do we have in this scene already?
+  let count = get(
+    `SELECT COUNT(id)
+     FROM shots
+     WHERE project_id = ?
+     AND scene_id = ?
+     AND impromptu = 1`,
+    project.id,
+    prevShot.scene_id,
+  )['COUNT(id)']
+
+  // prepare a new impromptu shot
+  let values = {
+    project_id: project.id,
+    scene_id: prevShot.scene_id,
+    shot_number: count + 1,
+    impromptu: 1
+  }
+
+  // insert the shot
+  let { lastInsertRowid } = run(
+    `INSERT INTO shots
+     (project_id, scene_id, shot_number, impromptu)
+     VALUES (?, ?, ?, ?)`,
+    values.project_id,
+    values.scene_id,
+    values.shot_number,
+    values.impromptu
+  )
+
+  // add it to the schedule
+  let id = createEvent({
+    projectId: project.id,
+    insertAfter: prevEvent.id,
+    eventType: 'shot',
+    description: 'New Impromptu Shot'
+  })
+
+  // update (remaining values that createEvent doesn’t set)
+  run(
+    `UPDATE events
+     SET
+       scene_id = ?,
+       shot_id = ?
+     WHERE
+       id = ?`,
+    prevShot.scene_id,
+    lastInsertRowid,
+    id
+  )
+
+  // advance slater to the event
+  run(`UPDATE projects SET slater_event_id = ? WHERE id = ?`, id, project.id)
+
+  return res.status(201).send()
 }

@@ -19,17 +19,21 @@
     <div class="ttu tracked f7">Shot</div>
     <a class="dib center link f3 lh-solid"
         href="/projects/<%= event.project_id %>/scenes/<%= scene.scene_number %>/shots/<%= shot.id %>"
-    ><%= shot.shot_number %></a>
+    ><%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %></a>
   </div>
   <div class="schedule-event__image flex flex-column">
-    <div class="aspect-ratio aspect-ratio--board" style="width:100px;">
-      <img
-        width="100"
-        height="56"
-        loading="lazy"
-        class="aspect-ratio--object bg-black"
-        src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
-    </div>
+    <% if (shot.thumbnail) { %>
+      <div class="aspect-ratio aspect-ratio--board" style="width:100px;">
+        <img
+          width="100"
+          height="56"
+          loading="lazy"
+          class="aspect-ratio--object bg-black"
+          src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
+      </div>
+    <% } else { %>
+      <div class="nowrap o-60">---</div>
+    <% } %>
   </div>
   <div class="schedule-event__notes flex flex-column w-40">
     <%

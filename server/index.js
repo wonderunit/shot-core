@@ -106,6 +106,7 @@ app.post('/projects/:projectId/slater/action.json', jsonParser, remote.action)
 app.post('/projects/:projectId/slater/cut.json', jsonParser, remote.cut)
 app.post('/projects/:projectId/slater/next.json', jsonParser, remote.next)
 app.post('/projects/:projectId/slater/previous.json', jsonParser, remote.previous)
+app.post('/projects/:projectId/slater/impromptu.json', jsonParser, remote.impromptu)
 
 // TODO await
 visualSlateRenderer.start()

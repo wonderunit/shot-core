@@ -21,6 +21,7 @@ CREATE TABLE shots(
   project_id INTEGER NOT NULL,
   scene_id INTEGER NOT NULL,
   shot_number INTEGER,
+  impromptu BOOLEAN NOT NULL DEFAULT 0,
   duration INTEGER,
   shotType TEXT,
   fStop TEXT,

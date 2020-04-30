@@ -12,7 +12,9 @@ class Shot {
       this[property] = shot[property]
     }
 
-    this.boards = JSON.parse(this.boards_json).map(board => new Board(board))
+    this.boards = this.boards_json
+      ? JSON.parse(this.boards_json).map(board => new Board(board))
+      : []
   }
 
   get firstBoardWithDialogue () {
@@ -25,12 +27,16 @@ class Shot {
 
   get thumbnail () {
     let board = this.firstBoardWithDialogue || this.boards[0]
-    return board.thumbnail
+    return board
+      ? board.thumbnail
+      : null
   }
 
   get posterframe () {
     let board = this.firstBoardWithDialogue || this.boards[0]
-    return board.posterframe
+    return board
+      ? board.posterframe
+      : null
   }
 
   get cameraPlot () {

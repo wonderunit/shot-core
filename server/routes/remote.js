@@ -46,3 +46,8 @@ exports.previous = async (req, res) => {
   req.body.transition = 'previous'
   await slater.update(req, res)
 }
+
+// create a new impromptu shot
+exports.impromptu = (req, res, next) => {
+  slater.impromptu(req, res)
+}

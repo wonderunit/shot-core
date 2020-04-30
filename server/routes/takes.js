@@ -84,7 +84,7 @@ exports.show = (req, res) => {
 
   let project = get(`SELECT id, name FROM projects where id = ?`, projectId)
   let scene = get(`SELECT id, scene_number FROM scenes where id = ?`, sceneId)
-  let shot = get(`SELECT id, shot_number FROM shots where id = ?`, shotId)
+  let shot = get(`SELECT id, shot_number, impromptu FROM shots where id = ?`, shotId)
 
   let take = get(`SELECT * FROM takes WHERE id = ?`, takeId)
 
@@ -107,7 +107,7 @@ exports.index = (req, res) => {
 
   let shotIds = takes.map(shot => shot.shot_id)
   let shots = all(
-    `SELECT id, shot_number FROM shots WHERE id IN (${q(shotIds)})`, shotIds
+    `SELECT id, shot_number, impromptu FROM shots WHERE id IN (${q(shotIds)})`, shotIds
   )
 
   let sceneIds = takes.map(scene => scene.scene_id)

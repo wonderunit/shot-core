@@ -35,7 +35,8 @@ module.exports = function createEvent ({
   ]
 
   run(...rankings)
-  let { changes, lastInsertRowId } = run(...insertEvent)
 
-  return get('SELECT * FROM events WHERE id = ?', lastInsertRowId)
+  let { changes, lastInsertRowid } = run(...insertEvent)
+
+  return lastInsertRowid
 }
