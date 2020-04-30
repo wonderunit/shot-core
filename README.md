@@ -19,7 +19,9 @@ Starts the web UI listening at [http://localhost:4000](http://localhost:4000). A
 
 On macOS, you can then seed a test project on the server by running (in another terminal):
 
-`scripts/seed`
+```
+scripts/seed
+```
 
 Environment vars:  
 - `ZCAM`: address of Z Cam, default `10.98.33.1`  
