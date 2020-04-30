@@ -13,6 +13,8 @@ const { run, get } = require('../db')
 const { createProxyWithVisualSlate } = require('../services/visual-slate')
 const Take = require('../decorators/take')
 
+const downloader = require('../machines/downloader')
+
 // find earliest, complete, not downloaded take
 const getNextTake = projectId => {
   return get(`
@@ -223,81 +225,27 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
   }
 }
 
-const downloaderMachine = createMachine({
-  id: 'downloader',
-  initial: 'off',
-  strict: true,
-  context: {
-    ZCAM_URL: null,
-    projectId: null,
-
-    take: null
-  },
-  states: {
-    off: {
-      on: {
-        'ON': 'checking'
-      }
-    },
-    checking: {
-      invoke: {
-        id: 'checkForTakes',
-        src: checkForTakes
-      },
-      on: {
-        'NEXT': {
-          target: 'downloading',
-          actions: 'setTake'
-        }
-      }
-    },
-    downloading: {
-      invoke: {
-        id: 'downloadAndProcessTakeFiles',
-        src: downloadAndProcessTakeFiles
-      },
-      on: {
-        'NEXT': 'downloadingSuccess',
-        'ERROR': 'downloadingError',
-      }
-    },
-    downloadingSuccess: {
-      entry: 'clearTake',
-      after: {
-        3000: 'checking'
-      },
-    },
-    // if any error happens, clearTake, and turn off
-    // to avoid retrying infinitely
-    downloadingError: {
-      entry: 'clearTake',
-      on: {
-        '': 'off'
-      },
-    }
-  },
-  on: {
-    'OFF': {
-      target: 'off',
-      actions: 'clearTake'
-    }
-  }
-}, {
-  actions: {
-    setTake: assign({ take: (context, event) => event.take }),
-    clearTake: assign({ take: (context, event) => null })
-  }
-})
-
 let downloaderService
 
 function init ({ ZCAM_URL, projectId }) {
   downloaderService = interpret(
-    downloaderMachine
-      .withContext({
-        ZCAM_URL,
-        projectId
-      })
+    createMachine(
+      downloader,
+      {
+        services: {
+          checkForTakes,
+          downloadAndProcessTakeFiles
+        },
+        actions: {
+          setTake: assign({ take: (context, event) => event.take }),
+          clearTake: assign({ take: (context, event) => null })
+        }
+      }
+    )
+    .withContext({
+      ZCAM_URL,
+      projectId
+    })
   )
   .onTransition(event => debug(
     '->', event.value,
