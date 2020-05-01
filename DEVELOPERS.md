@@ -9,9 +9,13 @@ npm install -g nodemon
 nodemon
 ```
 
-Which will restart the server automatically when server files change.
+nodemon will watch server files (.js, .json), and if they change, it will restart the server.
 
-In the browser, changes to files that are not compiled (ejs, js, css), will cause the server to tell all connected browsers to reload (via SSE). See `server/livereload.js` and `server/views/livereload.ejs`.
+Every time the server restarts, it tells connected browsers to reload.
+
+The server watches other files (public .js and .css, .ejs), and if they change it does NOT restart the server, but it will tell connected browsers to reload.
+
+The signal for connected browsers to reload is sent via SSE (see `server/livereload.js` and `server/views/livereload.ejs`)
 
 ## Testing
 
