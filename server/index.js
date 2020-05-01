@@ -60,8 +60,12 @@ app.use(methodOverride(function (req) {
 }))
 app.use(responseTime())
 
-const livereload = require('./livereload')
-app.get('/livereload', livereload.get)
+let livereload
+
+if (app.get('env') == 'development') {
+  livereload = require('./livereload')
+  app.get('/livereload', livereload.get)
+}
 
 app.locals = {
   parse,
@@ -159,7 +163,9 @@ webSocketServer.start()
 
 server.listen(app.get('port'), () => {
   console.log(`Listening on :${app.get('port')}`)
-  livereload.reload()
+  if (livereload) {
+    livereload.reload()
+  }
 })
 
 async function bye () {
@@ -167,7 +173,9 @@ async function bye () {
   await webSocketServer.stop()
   await downloader.stop()
   await zcamWsRelay.stop()
-  livereload.stop()
+  if (livereload) {
+    livereload.stop()
+  }
   bus.removeAllListeners()
   server.close()
 }
