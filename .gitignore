@@ -4,5 +4,6 @@ node_modules
 *.sqlite3-journal
 public/uploads/projects/*
 public/uploads/scenes/*
+public/css/template.css
 tmp/
 .envrc

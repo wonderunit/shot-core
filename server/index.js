@@ -70,8 +70,11 @@ app.use(responseTime())
 let livereload
 
 if (app.get('env') == 'development') {
+
   livereload = require('./livereload')
   app.get('/livereload', livereload.get)
+
+  app.get('/template.html', (req, res) => res.render('template'))
 }
 
 app.locals = {
