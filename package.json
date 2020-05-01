@@ -2,10 +2,8 @@
   "name": "shot-core",
   "version": "1.0.0",
   "scripts": {
-    "start": "npm run server & npm run browser-sync",
-    "server": "nodemon --exitcrash ./server",
+    "start": "node ./server",
     "zcam-mock-server": "node ./lib/zcam/mock-server/index.js",
-    "browser-sync": "browser-sync start --config browser-sync-config.js --port ${BS_PORT:-4000} --proxy 'localhost:8000' --ws",
     "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js"
   },
   "dependencies": {
@@ -31,6 +29,7 @@
   },
   "devDependencies": {
     "browser-sync": "2.26.7",
+    "chokidar": "3.4.0",
     "mock-fs": "4.10.4",
     "nodemon": "2.0.3",
     "response-time": "2.3.2",

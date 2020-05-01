@@ -1,0 +1,13 @@
+<script>
+  ;(function () {
+    const source = new EventSource('/livereload')
+    const reload = () => {
+      console.log('reloading …')
+      location.reload(true)
+    }
+    source.onmessage = reload
+    source.onerror = () => (source.onopen = reload)
+    console.log('listening for file changes')
+  })()
+</script>
+

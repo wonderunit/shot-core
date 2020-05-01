@@ -35,8 +35,7 @@ const bus = new EventEmitter()
 
 const jsonParser = express.json()
 
-const BS_PORT = process.env.BS_PORT || 4000
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 4000
 const ZCAM = process.env.ZCAM || '10.98.33.1'
 const ZCAM_URL = process.env.ZCAM_URL || `http://${ZCAM}`
 const ZCAM_WS_URL = process.env.ZCAM_WS_URL || `ws://${ZCAM}:81`
@@ -60,6 +59,9 @@ app.use(methodOverride(function (req) {
   }
 }))
 app.use(responseTime())
+
+const livereload = require('./livereload')
+app.get('/livereload', livereload.get)
 
 app.locals = {
   parse,
@@ -156,19 +158,8 @@ const webSocketServer = new WebSocketServer(app, server)
 webSocketServer.start()
 
 server.listen(app.get('port'), () => {
-  if (app.get('env') == 'development') {
-    const http = require('http')
-    http
-      .get(
-        `http://localhost:${BS_PORT}/__browser_sync__?method=reload`,
-        () => console.log(`Listening on :${BS_PORT}`))
-      .on('error', err => {
-        console.error('Could not connect to browser sync server. Is it running?')
-        console.log(`Listening on :${app.get('port')}`)
-      })
-  } else {
-    console.log(`Listening on :${app.get('port')}`)
-  }
+  console.log(`Listening on :${app.get('port')}`)
+  livereload.reload()
 })
 
 async function bye () {
@@ -176,6 +167,7 @@ async function bye () {
   await webSocketServer.stop()
   await downloader.stop()
   await zcamWsRelay.stop()
+  livereload.stop()
   bus.removeAllListeners()
   server.close()
 }
