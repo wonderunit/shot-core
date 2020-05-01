@@ -180,5 +180,10 @@ async function bye () {
   server.close()
 }
  
-process.on('SIGTERM', bye)
-process.on('SIGINT', bye)
+process.once('SIGTERM', bye)
+process.once('SIGINT', bye)
+// https://github.com/remy/nodemon#controlling-shutdown-of-your-script
+process.once('SIGUSR2', async function () {
+  await bye()
+  process.kill(process.pid, 'SIGUSR2')
+})
