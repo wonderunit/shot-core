@@ -15,6 +15,7 @@ module.exports = {
   },
   states: {
     off: {
+      entry: timerCancel,
       on: {
         CONNECTED: 'active'
       }
