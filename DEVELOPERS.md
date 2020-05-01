@@ -1,5 +1,18 @@
 # Notes for Developers
 
+## Running
+
+Can use nodemon if you prefer:
+
+```
+npm install -g nodemon
+nodemon
+```
+
+Which will restart the server automatically when server files change.
+
+In the browser, changes to files that are not compiled (ejs, js, css), will cause the server to tell all connected browsers to reload (via SSE). See `server/livereload.js` and `server/views/livereload.ejs`.
+
 ## Testing
 
 ```
