@@ -37,12 +37,16 @@ exports.show = (req, res) => {
 
   let project = get('SELECT * FROM projects WHERE id = ?', projectId)
 
-  let scenes = all('SELECT * FROM scenes WHERE project_id = ?', projectId)
+  let { days_count } = get('SELECT COUNT(id) as days_count FROM events WHERE event_type = ? AND project_id = ?', "day", projectId)
+  let { scenes_count } = get('SELECT COUNT(id) as scenes_count FROM scenes WHERE project_id = ?', projectId)
+  let { shots_count } = get('SELECT COUNT(id) as shots_count FROM shots WHERE project_id = ?', projectId)
 
-  let shots = all('SELECT * FROM shots WHERE project_id = ?', projectId)
-  shots = Shot.decorateCollection(shots)
-
-  res.render('project', { project, scenes, shots })
+  res.render('project', {
+    project,
+    days_count,
+    scenes_count,
+    shots_count
+  })
 }
 
 exports.destroy = (req, res) => {

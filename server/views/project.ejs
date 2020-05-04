@@ -1,76 +1,88 @@
 <%- include('header') %>
 <div class="helvetica ph3 pa4-ns mv3 ma0-ns">
   <div class="lh-copy">
-    <h1 class="f3 ma0 mb4">
-      <a href="/">Home</a> /
-      <%= project.name %>
-    </h1>
 
-    <h2 class="f4 mv3">
-      <a href="/projects/<%= project.id %>/schedule">Schedule</a>
-    </h2>
+    <nav class="f5 flex justify-end">
+      <ul class="list flex">
+        <li class="mr3">
+          <a class="link" href="/projects/<%= project.id %>/schedule">Schedule</a>
+        </li>
+        <li class="mr3">
+          <a class="link" href="/projects/<%= project.id %>/scenes">Scenes</a>
+        </li>
+        <li class="mr3">
+          <a class="link" href="/projects/<%= project.id %>/shots">Shots</a>
+        </li>
+        <li class="mr3">
+          <a class="link" href="/projects/<%= project.id %>/takes">Takes</a>
+        </li>
+        <li class="mr3">
+          <a class="link" href="/projects/<%= project.id %>/monitor">Monitor</a>
+        </li>
+        <li>
+          <a class="link" href="/projects/<%= project.id %>/slater">Slater</a>
+        </li>
+      </ul>
+    </nav>
 
-    <h2 class="f4 mv3">
-      <a href="<%= `/projects/${project.id}/slater` %>">
-        Slater
-      </a>
-    </h2>
-    
-    <h2 class="f4 mv3">
-      <a href="<%= `/projects/${project.id}/monitor` %>">
-        Monitor
-      </a>
-    </h2>
+    <div>
 
-    <h2 class="f4 mv3">
-      <a href="<%= `/projects/${project.id}/takes` %>">
-        Takes
-      </a>
-    </h2>
+      <div class="mv6">
 
-    <% if (scenes.length) { %>
-      <h2 class="f4 mv3">Scenes</h2>
-      <% for (let scene of scenes) { %>
-        Scene <%= scene.scene_number %>
-        <%= scene.slugline ? `: ${scene.slugline}` : '' %><br/>
-      <% } %>
-    <% } %>
+        <div>
+          <h2 class="f-title lh-solid ma0 ttu fw4">
+            Production
+          </h2>
+          <h2 class="f-headline lh-solid ma0 ttu">
+            <%= project.name %>
+          </h2>
+        </div>
 
-    <h2 class="f4 mv3">Shots</h2>
-    <table class="w-100">
-      <thead>
-        <th>Scene</th>
-        <th># in Scene</th>
-        <th class="w-50">Notes <small>(from 1st board)</small></th>
-        <th>Boards</th>
-      </thead>
-      <tbody>
-        <% for (let shot of shots) { %>
-        <tr>
-          <td>
-            <span>
-              <%= scenes.find(scene => scene.id == shot.scene_id).scene_number %>
-            </span>
-          </td>
-          <td>
-            <a
-              href="<%= `/projects/${shot.project_id}/scenes/${shot.scene_id}/shots/${shot.id}` %>"
-            >
-              <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
-            </a>
-          </td>
-          <td>
-            <%= shot.boards.length && shot.boards[0].notes %>
-          </td>
-          <td>
-            <% for (let board of shot.boards) { %>
-              <%= board.shot %>
-            <% } %>
-          </td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
+      </div>
+
+      <div class="mb6">
+
+        <div class="flex justify-between">
+
+          <div>
+            <h3 class="f4 lh-solid ma0 ttu normal">
+              Schedule
+            </h3>
+            <h3 class="f1 lh-solid ma0">
+              <a class="link" href="<%= `/projects/${project.id}/schedule` %>">
+                <%= days_count  %> Day<%= plural(days_count) %>
+              </a>
+            </h3>
+          </div>
+
+          <div>
+            <h3 class="f4 lh-solid ma0 ttu normal">
+              Scene List
+            </h3>
+            <h3 class="f1 lh-solid ma0">
+              <a class="link" href="<%= `/projects/${project.id}/scenes` %>">
+                <%= scenes_count %> Scene<%= plural(days_count) %>
+              </a>
+            </h3>
+          </div>
+
+          <div>
+            <h3 class="f4 lh-solid ma0 ttu normal">
+              Shot List
+            </h3>
+            <h3 class="f1 lh-solid ma0">
+              <a class="link" href="<%= `/projects/${project.id}/shots` %>">
+                <%= shots_count %> Shot<%= plural(shots_count) %>
+              </a>
+            </h3>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 </div>
 <%- include('footer') -%>
