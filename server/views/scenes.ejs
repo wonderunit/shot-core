@@ -1,0 +1,96 @@
+<% 
+function plural (v) {
+  return v == 1 ? '' : 's'
+}
+%> 
+<%- include('header') %>
+<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
+  <div class="lh-copy">
+    <h1 class="f3 ma0 mb4">
+      <a href="/">Home</a> /
+      <a href="/projects/<%= project.id %>"><%= project.name %></a> /
+      <br />
+      Scenes
+    </h1>
+
+    <div>
+      <h2 class="f1 ma0 mb4">
+        <%= scenes.length %> Scene<%= plural(scenes.length) %>
+      </h2>
+    </div>
+
+    <div class="w-100">
+      <div class="w-100 flex justify-between mb2">
+        <div class="w-10">
+          Scene
+        </div>
+        <div class="w-40">
+          Title
+        </div>
+        <div class="w-20">
+          Slugline
+        </div>
+        <div class="w-10">
+          Shots
+        </div>
+        <div class="w-10">
+          Duration
+        </div>
+        <div class="w-10">
+          Takes
+        </div>
+      </div>
+      <% for (let scene of scenes) { %>
+        <div class="w-100 flex justify-between mb2">
+          <div class="w-10">
+            <%= scene.scene_number %>
+          </div>
+          <div class="w-40">
+            <% if (scene.description) { %>
+              <b class="ma0"><%= scene.description %></b>
+            <% } %>
+            <% if (scene.synopsis) { %>
+              <span class="ma0"><%= scene.synopsis %></span>
+            <% } %>
+            <% if ( !(scene.description || scene.synopsis)) { %>
+              ---
+            <% } %>
+          </div>
+          <div class="w-20">
+            <%= scene.slugline || '---' %>
+          </div>
+          <div class="w-10">
+            <%= scene.shots_count %>
+          </div>
+          <div class="w-10">
+            <%= durationMsecsToString(scene.shots_duration) %>
+          </div>
+          <div class="w-10">
+            <%= scene.takes_count %> Take<%= plural(0) %>
+          </div>
+        </div>
+        <div class="w-100 flex justify-between mb4">
+          <div class="w-10"></div>
+
+          <div class="w-90 flex">
+            <% shots.filter(shot => shot.scene_id === scene.id).forEach(shot => { %>
+              <div class="mr1" style="width:98px;height:40px">
+                <% if (shot.thumbnail) { %>
+                  <img
+                    width="98"
+                    height="40"
+                    loading="lazy"
+                    src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
+                <% } else { %>
+                  <!-- no thumbnail, e.g.: impromptu -->
+                  <div style="width:98px;height:40px;background-color:#3333"></div>
+                <% } %>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+    <div>
+  </div>
+</div>
+<%- include('footer') -%>
