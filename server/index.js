@@ -30,7 +30,7 @@ const slater = require('./routes/slater')
 const monitor = require('./routes/monitor')
 const remote = require('./routes/remote')
 
-const { truncate, durationMsecsToString, friendlyDuration } = require('./helpers')
+const { truncate, durationMsecsToString, friendlyDuration, plural } = require('./helpers')
 
 const bus = new EventEmitter()
 
@@ -73,7 +73,8 @@ app.locals = {
   format,
   truncate,
   durationMsecsToString,
-  friendlyDuration
+  friendlyDuration,
+  plural
 }
 
 app.get('/', home.index)

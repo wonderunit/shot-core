@@ -35,5 +35,7 @@ module.exports = {
       : m > 0
         ? `${m}m${s}s`
         : `${s}s`
-  }
+  },
+
+  plural: v => v == 1 ? '' : 's'
 }
