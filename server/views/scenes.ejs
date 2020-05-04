@@ -38,7 +38,9 @@
       <% for (let scene of scenes) { %>
         <div class="w-100 flex justify-between mb2">
           <div class="w-10">
-            <%= scene.scene_number %>
+            <a href="<%= `/projects/${project.id}/scenes/${scene.id}`%>" class="link">
+              <%= scene.scene_number %>
+            </a>
           </div>
           <div class="w-40">
             <% if (scene.description) { %>

@@ -92,6 +92,7 @@ app.patch('/projects/:projectId/events/:eventId', jsonParser, events.update)
 app.delete('/projects/:projectId/events/:eventId', events.destroy)
 
 app.get('/projects/:projectId/scenes', scenes.index)
+app.get('/projects/:projectId/scenes/:sceneId', scenes.show)
 
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', shots.show)
 app.patch('/projects/:projectId/scenes/:sceneId/shots/:shotId', jsonParser, shots.update)
