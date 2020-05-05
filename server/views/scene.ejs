@@ -7,7 +7,9 @@
         Production
       </h2>
       <h2 class="f5 b lh-solid ttu ma0">
-        <%= project.name %>
+        <a href="<%= `/projects/${project.id}` %>" class="link">
+          <%= project.name %>
+        </a>
       </h2>
     </div>
 
