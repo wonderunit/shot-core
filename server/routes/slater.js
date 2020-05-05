@@ -118,7 +118,7 @@ exports.show = (req, res) => {
       SELECT * FROM takes
       WHERE project_id = ?
       AND cut_at IS NOT NULL
-      ORDER BY take_number DESC
+      ORDER BY datetime(cut_at) DESC
       LIMIT 1
       `,
       project.id
