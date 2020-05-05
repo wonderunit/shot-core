@@ -39,7 +39,7 @@ exports.show = (req, res) => {
       FROM takes
       WHERE shot_id = ?
       AND project_id = ?
-      ORDER BY date(cut_at)
+      ORDER BY datetime(cut_at) DESC
       LIMIT 1`,
       shot.id,
       projectId
