@@ -126,7 +126,9 @@
           <% for (let shot of shots) { %>
             <tr>
               <td class="normal">
-                <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+                <a href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}` %>" class="link">
+                  <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+                </a>
               </td>
               <td class="normal">
                 <%= shot.shotType %>
