@@ -1,21 +1,97 @@
-const path = require('path')
+const num2fraction = require('num2fraction')
 
 const { run, get, all } = require('../db')
 
 const Scene = require('../decorators/scene')
 const Shot = require('../decorators/shot')
+const Take = require('../decorators/take')
+
+const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
+
 
 exports.show = (req, res) => {
   let { projectId, sceneId, shotId } = req.params
   let project = get('SELECT id, name FROM projects WHERE id = ?', projectId)
-  let scene = get('SELECT id, scene_number, storyboarder_path, metadata_json FROM scenes WHERE id = ?', sceneId)
+  let scene = get('SELECT * FROM scenes WHERE id = ?', sceneId)
   let shot = get('SELECT * FROM shots WHERE id = ?', shotId)
   let takes = all('SELECT * FROM takes WHERE shot_id = ?', shotId)
 
-  scene = new Scene(scene)
-  shot = new Shot(shot)
+  let { project_scenes_count } = get(
+    `SELECT COUNT(id) as project_scenes_count
+     FROM scenes
+     WHERE project_id = ?`,
+    projectId
+  )
 
-  res.render('shot', { project, scene, shot, takes })
+  let { scene_shots_count } = get(
+    `SELECT COUNT(id) as scene_shots_count
+     FROM shots
+     WHERE scene_id = ?
+     AND project_id = ?`,
+    sceneId,
+    projectId
+  )
+
+  // best or most recent take
+  // TODO optimize queries
+  let mostRecent = get(
+    `SELECT *
+      FROM takes
+      WHERE shot_id = ?
+      AND project_id = ?
+      ORDER BY date(cut_at)
+      LIMIT 1`,
+      shot.id,
+      projectId
+  )
+  let highestRated = get(
+    `SELECT *
+      FROM takes
+      WHERE rating IS NOT NULL
+      AND shot_id = ?
+      AND project_id = ?
+      ORDER BY rating
+      LIMIT 1`,
+      shot.id,
+      projectId
+  )
+  let take = highestRated || mostRecent || null
+
+  // each day, with calculated day number
+  let days = all(
+    `SELECT
+       id, start_at,
+      ROW_NUMBER() OVER(ORDER BY date(start_at)) AS day_number
+     FROM events
+     WHERE event_type = 'day'
+     AND project_id = ?
+     ORDER BY date(start_at)`,
+    projectId
+  )
+
+  const humanizedAspectRatio = aspectRatio => {
+    let f = num2fraction(aspectRatio)
+    return f.match(/\/100$/)
+      // e.g.: 2.39:1
+      ? `${f.match(/(\d+)/)[1] / 100}:1`
+      // e.g.: 16:9
+      : f.replace('/', ':')
+  }
+
+  res.render('shot', {
+    project,
+    scene: new Scene(scene),
+    shot: new Shot(shot),
+    take: take ? new Take(take) : null,
+    takes: Take.decorateCollection(takes),
+
+    project_scenes_count,
+    scene_shots_count,
+    days,
+
+    differenceInMilliseconds,
+    humanizedAspectRatio
+  })
 }
 
 exports.update = (req, res) => {
