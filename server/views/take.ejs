@@ -1,115 +1,273 @@
 <%- include('header') %>
 <div class="helvetica ph3 pa4-ns mv3 ma0-ns">
   <div class="lh-copy">
-    <h1 class="f3 ma0 mb4">
-      <a href="/">Home</a> /
-      <a href="/projects/<%= project.id %>"><%= project.name %></a> /
-      <br />
-      Scene <%= scene.scene_number %> / Shot <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
-      <br />
-      Take <%= take.take_number %>
-    </h1>
 
     <div class="mb4">
-      <% let thumbnail = take.filenameForThumbnail({
-        scene_number: scene.scene_number,
-        shot_number: shot.shot_number,
-        impromptu: shot.impromptu
-      }) %>
-      <img
-        class="mw-100"
-        src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
-      />
-    <div>
-
-    <div class="mb4">
-      Rating:
-      <% if (take.rating == null) { %>---<% } else { %>
-        <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
-      <% } %>
+      <h2 class="f7 fw4 lh-solid ttu ma0">
+        Production
+      </h2>
+      <h2 class="f5 b lh-solid ttu ma0">
+        <a href="<%= `/projects/${project.id}` %>" class="link">
+          <%= project.name %>
+        </a>
+      </h2>
     </div>
 
-    <h2 class="f4 mv3">Media</h2>
+    <div class="flex w-100 mb4">
+      <div class="flex flex-column w-50">
+        <div class="flex justify-around mr4 mb4">
+          <div class="flex flex-column items-center pr2">
+            <div class="f7 ttu">
+              Scene
+            </div>
+            <b class="f-headline lh-solid ma0">
+              <a href="<%= `/projects/${project.id}/scenes/${scene.id}` %>" class="link">
+                <%= scene.scene_number %>
+              </a>
+            </b>
+            <div>
+              / <%= project_scenes_count %>
+            </div>
+          </div>
 
-    <div class="mb4">
-      <h3 class="f5 mv3">Video</h2>
+          <div class="flex flex-column items-center pr2">
+            <div class="f7 ttu">
+              Shot
+            </div>
+            <b class="f-headline lh-solid ma0">
+              <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+            </b>
+            <div>
+              / <%= scene_shots_count %>
+            </div>
+          </div>
 
-      <% let stream = take.filenameForStream({
-        scene_number: scene.scene_number,
-        shot_number: shot.shot_number,
-        impromptu: shot.impromptu
-      }) %>
-      <div>
-        <div>
-          <video controls
-            class="mw-100"
-            src="<%= `/uploads/projects/${project.id}/takes/${stream}` %>"
-            type="video/quicktime"
-          ></video>
+          <div class="flex flex-column items-center pr2">
+            <div class="f7 ttu">
+              Take
+            </div>
+            <b class="f-headline lh-solid ma0">
+              <%= take.take_number %>
+            </b>
+            <div>
+              / <%= shot_takes_count %>
+            </div>
+          </div>
         </div>
-        <div>
-          [stream] <a class="link f6" href="<%= `/uploads/projects/${project.id}/takes/${stream}` %>">
-            <%= `/uploads/projects/${project.id}/takes/${stream}` %>
-          </a>
+
+        <div class="center pa2">
+          <% if (take.rating == null) { %>No Rating<% } else { %>
+            <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
+          <% } %>
         </div>
+
         <div>
-          <% let proxy = take.filenameForProxy({
-            scene_number: scene.scene_number,
-            shot_number: shot.shot_number,
-            impromptu: shot.impromptu
-          }) %>
-          [proxy] <a class="link f6" href="<%= `/uploads/projects/${project.id}/takes/${proxy}` %>">
-            <%= `/uploads/projects/${project.id}/takes/${proxy}` %>
-          </a>
+          <div class="mb4">
+            <div class="ttu">Notes</div>
+            <div>I don’t know about this one.</div>
+          </div>
+
+          <div class="mb3">
+            <div class="f6 ttu">
+              <%= scene.slugline %>
+            </div>
+            <% if (scene.description || scene.synopsis) { %>
+              <div>
+                <b><%= scene.description %></b> <%= scene.synopsis %>
+              </div>
+            <% } %>
+          </div>
+
+          <%
+          let combinedDialogue = shot.boards
+            .map(board => board.dialogue)
+            .filter(Boolean)
+            .join(' ')
+          %>
+          <% if (combinedDialogue) { %>
+            <div class="mb3">
+              <div class="f7 ttu">
+                Dialogue
+              </div>
+              <div class="f3">
+                <%= combinedDialogue %>
+              </div>
+            </div>
+          <% } %>
+
+          <%
+          let combinedAction = shot.boards
+            .map(board => board.action)
+            .filter(Boolean)
+            .join(' ')
+          %>
+          <% if (combinedAction) { %>
+            <div class="mb3">
+              <div class="f7 ttu">
+                Action
+              </div>
+              <div>
+                <%= combinedAction %>
+              </div>
+            </div>
+          <% } %>
+
+          <%
+          let combinedNotes = shot.boards
+            .map(board => board.notes)
+            .filter(Boolean)
+            .join(' ')
+          %>
+          <% if (combinedNotes) { %>
+            <div class="mb3">
+              <div class="f7 ttu">
+                Notes
+              </div>
+              <div>
+                <%= combinedNotes %>
+              </div>
+            </div>
+          <% } %>
+
+          <div class="mb3">
+            <div class="f7 ttu">
+              Shooting Day
+            </div>
+            <div>
+              Day 1: Wednesday, March 11, 2020 – 14:08
+            </div>
+          </div>
+
         </div>
-        <div>
-          <% let footage = take.filenameForFootage({
-            scene_number: scene.scene_number,
-            shot_number: shot.shot_number,
-            impromptu: shot.impromptu
-          }) %>
-          [footage] <a class="link f6" href="<%= `/uploads/projects/${project.id}/takes/${footage}` %>">
-            <%= `/uploads/projects/${project.id}/takes/${footage}` %>
+      </div>
+
+      <div class="flex flex-column w-50">
+        <% if (shot.posterframe) { %>
+          <div>
+            <div class="w-100">
+              <div>Storyboard</div>
+              <img
+                loading="lazy"
+                src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
+            </div>
+          </div>
+        <% } %>
+
+        <% let stream = take.filenameForStream({
+          ...{ scene_number } = scene,
+          ...{ shot_number, impromptu } = shot
+        }) %>
+        <% if (stream) { %>
+          <div>
+            <div class="w-100">
+              <div>Take Preview</div>
+              <video
+                controls
+                class="w-100"
+                src="<%= `/uploads/projects/${project.id}/takes/${stream}` %>"
+                type="video/quicktime"
+              ></video>
+            </div>
+          </div>
+        <% } %>
+
+        <% if (shot.cameraPlot) { %>
+          <div>
+            <div class="w-50">
+              <div>Shot Diagram</div>
+              <img
+                loading="lazy"
+                src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
+            </div>
+          </div>
+        <% } %>
+
+        <div class="mt3">
+          <a href="#" class="link">
+            Show Footage
           </a>
         </div>
       </div>
     </div>
 
-    <div class="mb4">
-      <h3 class="f5 mv3">Audio</h2>
-      <div>
-        …
-      </div>
-    </div>
-
-    <div class="mb4">
-      Recorded on
-      <b><%= format(take.ready_at, 'EEE, dd MMM yyyy') %></b>
-      from <b><%= format(take.ready_at, 'hh:mm:ss a') %></b>
-      to <b><%= format(take.cut_at, 'hh:mm:ss a') %></b>
-    </div>
-
-    <div>
-      <table class="w-100">
-        <thead>
+    <div class="w-100">
+      <table class="w-100 mb2 f7">
+        <thead class="ttu">
           <tr>
-            <th>#</th>
-            <th>Ready</th>
-            <th>Action</th>
-            <th>Cut</th>
+            <th class="normal">
+              Duration
+            </th>
+            <th class="normal">
+              Lens
+            </th>
+            <th class="normal">
+              Aperature
+            </th>
+            <th class="normal">
+              ISO
+            </th>
+            <th class="normal">
+              Res
+            </th>
+            <th class="normal">
+              FPS
+            </th>
+            <th class="normal">
+              Aspect
+            </th>
+            <th class="normal">
+              Shutter
+            </th>
+            <th class="normal">
+              WB
+            </th>
+            <th class="normal">
+              ND
+            </th>
+            <th class="normal">
+              VFX
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><%= take.take_number %></td>
-            <td><%= format(take.ready_at, 'hh:mm:ss.SSS a') %></td>
-            <td><%= format(take.action_at, 'hh:mm:ss.SSS a') %></td>
-            <td><%= format(take.cut_at, 'hh:mm:ss.SSS a') %></td>
+          <tr class="f3">
+            <td class="normal">
+              <b>03:14</b>
+            </td>
+            <td class="normal">
+              <b>22mm</b>
+            </td>
+            <td class="normal">
+              <b>f/1.4</b>
+            </td>
+            <td class="normal">
+              <b>2500</b>
+            </td>
+            <td class="normal">
+              4K
+            </td>
+            <td class="normal">
+              23.98
+            </td>
+            <td class="normal">
+              2.39
+            </td>
+            <td class="normal">
+              1/50
+            </td>
+            <td class="normal">
+              1500
+            </td>
+            <td class="normal">
+              -2
+            </td>
+            <td class="normal">
+              Chroma
+            </td>
           </tr>
         </tbody>
       </table>
-    </div>
-
+    <div>
   </div>
 </div>
 <%- include('footer') -%>

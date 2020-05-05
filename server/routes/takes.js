@@ -5,6 +5,8 @@ const action = require('../services/takes/action')
 const cut = require('../services/takes/cut')
 const updateFilepath = require('../services/takes/update-filepath')
 
+const Scene = require('../decorators/scene')
+const Shot = require('../decorators/shot')
 const Take = require('../decorators/take')
 
 const q = arr => arr.map(() => '?').join(',')
@@ -83,8 +85,9 @@ exports.show = (req, res) => {
   let { projectId, sceneId, shotId, takeId } = req.params
 
   let project = get(`SELECT id, name FROM projects where id = ?`, projectId)
-  let scene = get(`SELECT id, scene_number FROM scenes where id = ?`, sceneId)
-  let shot = get(`SELECT id, shot_number, impromptu FROM shots where id = ?`, shotId)
+
+  let scene = get(`SELECT * FROM scenes where id = ?`, sceneId)
+  let shot = get(`SELECT * FROM shots where id = ?`, shotId)
 
   let take = get(`SELECT * FROM takes WHERE id = ?`, takeId)
 
@@ -93,9 +96,41 @@ exports.show = (req, res) => {
   take.action_at = new Date(take.action_at)
   take.cut_at = new Date(take.cut_at)
 
-  take = new Take(take)
+  let { project_scenes_count } = get(
+    `SELECT COUNT(id) as project_scenes_count
+     FROM scenes
+     WHERE project_id = ?`,
+    projectId
+  )
 
-  res.render('take', { project, scene, shot, take })
+  let { scene_shots_count } = get(
+    `SELECT COUNT(id) as scene_shots_count
+     FROM shots
+     WHERE scene_id = ?
+     AND project_id = ?`,
+    sceneId,
+    projectId
+  )
+
+  let { shot_takes_count } = get(
+    `SELECT COUNT(id) as shot_takes_count
+     FROM takes
+     WHERE scene_id = ?
+     AND project_id = ?`,
+    sceneId,
+    projectId
+  )
+
+  res.render('take', {
+    project,
+    scene: new Scene(scene),
+    shot: new Shot(shot),
+    take: new Take(take),
+
+    project_scenes_count,
+    scene_shots_count,
+    shot_takes_count
+  })
 }
 
 exports.index = (req, res) => {
