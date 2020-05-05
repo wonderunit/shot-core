@@ -1,12 +1,17 @@
 <%- include('header') %>
 <div class="helvetica ph3 pa4-ns mv3 ma0-ns">
   <div class="lh-copy">
-    <h1 class="f3 ma0 mb4">
-      <a href="/">Home</a> /
-      <a href="/projects/<%= project.id %>"><%= project.name %></a> /
-      <br />
-      Scenes
-    </h1>
+
+    <div class="mb4">
+      <h2 class="f7 fw4 lh-solid ttu ma0">
+        Production
+      </h2>
+      <h2 class="f5 b lh-solid ttu ma0">
+        <a href="<%= `/projects/${project.id}` %>" class="link">
+          <%= project.name %>
+        </a>
+      </h2>
+    </div>
 
     <div>
       <h2 class="f1 ma0 mb4">
