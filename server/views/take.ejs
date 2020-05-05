@@ -35,7 +35,9 @@
               Shot
             </div>
             <b class="f-headline lh-solid ma0">
-              <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+              <a href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}` %>" class="link">
+                <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+              </a>
             </b>
             <div>
               / <%= scene_shots_count %>
