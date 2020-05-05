@@ -1,0 +1,43 @@
+<%- include('header') %>
+<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
+  <div class="lh-copy">
+
+    <div class="mb4">
+      <h2 class="f7 fw4 lh-solid ttu ma0">
+        Production
+      </h2>
+      <h2 class="f5 b lh-solid ttu ma0">
+        <a href="<%= `/projects/${project.id}` %>" class="link">
+          <%= project.name %>
+        </a>
+      </h2>
+    </div>
+
+    <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              Shot
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let shot of shots) { %>
+            <t>
+              <td>
+                <div class="mb2">
+                  <a href="<%= `/projects/${project.id}/scenes/${shot.scene_id}/shots/${shot.id}` %>" class="link">
+                    <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+<%- include('footer') -%>

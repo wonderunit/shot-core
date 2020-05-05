@@ -97,6 +97,8 @@ app.get('/projects/:projectId/scenes/:sceneId', scenes.show)
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId', shots.show)
 app.patch('/projects/:projectId/scenes/:sceneId/shots/:shotId', jsonParser, shots.update)
 
+app.get('/projects/:projectId/shots', shots.index)
+
 app.get('/projects/:projectId/takes', takes.index)
 app.get('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes/:takeId', takes.show)
 app.post('/projects/:projectId/scenes/:sceneId/shots/:shotId/takes.json', jsonParser, takes.create)

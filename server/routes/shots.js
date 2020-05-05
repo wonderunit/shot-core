@@ -8,6 +8,17 @@ const Take = require('../decorators/take')
 
 const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 
+exports.index = (req, res) => {
+  let { projectId } = req.params
+
+  let project = get('SELECT id, name FROM projects WHERE id = ?', projectId)
+  let shots = all('SELECT * FROM shots WHERE project_id = ?', projectId)
+
+  res.render('shots', {
+    project,
+    shots: Shot.decorateCollection(shots)
+  })
+}
 
 exports.show = (req, res) => {
   let { projectId, sceneId, shotId } = req.params
