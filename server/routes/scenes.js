@@ -70,6 +70,7 @@ exports.show = (req, res) => {
 
   let bestTakesByShotId = {}
   for (let shot of shots) {
+    // best or most recent take
     // TODO optimize queries
     let mostRecent = get(
       `SELECT *
