@@ -7,22 +7,25 @@ then
   exit 1
 
 else
-  URI='http://127.0.0.1:3000'
+  URI="${URI:-http://127.0.0.1:4000}"
 
   if [ $1 == 'status' ]
   then
     curl -X GET $URI/projects/1/slater.json \
+      -H 'Accept: application/json' \
       -H 'Content-Type: application/json'
 
   elif [[ $1 == 'ready' || $1 == 'action' ||  $1 == 'cut' ]]
   then
     NOW=`date -u +"%Y-%m-%dT%H:%M:%S.000Z"` && \
     curl -X POST $URI/projects/1/slater/$1.json \
+      -H 'Accept: application/json' \
       -H 'Content-Type: application/json' \
       -d "{ \"at\": \"${NOW}\" }"
 
   else
     curl -X POST $URI/projects/1/slater/$1.json \
+      -H 'Accept: application/json' \
       -H 'Content-Type: application/json'
 
   fi
