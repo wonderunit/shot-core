@@ -3,7 +3,7 @@
 if [[ $# -eq 0 ]]
 then
   echo "USAGE: test-remote-api <command>"
-  echo "where <command> is one of: status, ready, action, cut, next, previous"
+  echo "where <command> is one of: status, ready, action, cut, next, previous, impromptu"
   exit 1
 
 else
