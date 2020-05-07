@@ -23,7 +23,7 @@ const getNextTake = projectId => {
     AND cut_at IS NOT NULL
     AND filepath IS NOT NULL
     AND downloaded = 0
-    ORDER BY date(ready_at)
+    ORDER BY datetime(ready_at)
     LIMIT 1
     `,
     projectId
