@@ -18,6 +18,7 @@ exports.index = (req, res) => {
   let shots = all('SELECT * FROM shots WHERE project_id = ?', projectId)
 
   let scenes = all(`SELECT * FROM scenes WHERE project_id = ?`, projectId)
+  scenes = Scene.decorateCollection(scenes)
   let scenesById = scenes.reduce(keyById, {})
 
  let bestTakesByShotId = {}
