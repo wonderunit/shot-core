@@ -13,31 +13,178 @@
       </h2>
     </div>
 
-    <div>
-      <table class="table">
-        <thead>
+    <h3 class="f5 lh-solid h-auto ma0 mb3"><%= shots.length %> Shot<%= plural(shots.length) %></h3>
+
+    <div class="w-100">
+      <table class="w-100 mb2 f7">
+        <thead class="ttu">
           <tr>
-            <th>
+            <th class="normal">
               Shot
+            </th>
+            <th class="normal">
+              Shot Type
+            </th>
+            <th class="normal">
+              Rigging
+            </th>
+            <th class="normal">
+              Lens
+            </th>
+            <th class="normal">
+              Aperature
+            </th>
+            <th class="normal">
+              ISO
+            </th>
+            <th class="normal">
+              Res
+            </th>
+            <th class="normal">
+              FPS
+            </th>
+            <th class="normal">
+              Shutter
+            </th>
+            <th class="normal">
+              WB
+            </th>
+            <th class="normal">
+              ND
+            </th>
+            <th class="normal">
+              VFX
+            </th>
+            <th class="normal">
+              Duration
+            </th>
+            <th class="normal">
+              Takes
             </th>
           </tr>
         </thead>
         <tbody>
+
           <% for (let shot of shots) { %>
-            <t>
-              <td>
-                <div class="mb2">
-                  <a href="<%= `/projects/${project.id}/scenes/${shot.scene_id}/shots/${shot.id}` %>" class="link">
-                    <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
-                  </a>
-                </div>
+            <% let scene = scenesById[shot.scene_id] %>
+            <tr>
+              <td class="normal">
+                <a href="<%= `/projects/${project.id}/scenes/${shot.scene_id}/shots/${shot.id}` %>" class="link">
+                  <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+                </a>
+              </td>
+              <td class="normal">
+                <%= shot.shotType %>
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                <%= shot.fStop %>
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                ---
+              </td>
+              <td class="normal">
+                <%= durationMsecsToString(shot.duration) %>
+              </td>
+              <td class="normal">
+                <%= takesCountByShotId[shot.id] %>
               </td>
             </tr>
+
+            <tr class="mb2">
+              <td colspan="1">
+              </td>
+              <td colspan="11">
+
+                <div class="flex">
+                  <% if (bestTakesByShotId[shot.id]) { %>
+                    <div class="mr2" style="width:186px;height:76px">
+                      <img
+                        width="186"
+                        height="76"
+                        loading="lazy"
+                        src="<%= `/uploads/projects/${project.id}/takes/${bestTakesByShotId[shot.id]}` %>"
+                      />
+                    </div>
+                  <% } %>
+
+                  <% if (shot.thumbnail) { %>
+                    <div class="mr2" style="width:186px;height:76px">
+                      <img
+                        width="186"
+                        height="76"
+                        loading="lazy"
+                        src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
+                    </div>
+                  <% } %>
+
+                  <% if (shot.cameraPlot) { %>
+                    <div class="mr2" style="width:76px;height:76px">
+                      <img
+                        width="76"
+                        height="76"
+                        loading="lazy"
+                        src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
+                    </div>
+                  <% } %>
+                </div>
+
+                <div class="flex w-30 justify-between">
+                  <%
+                  let combinedAction = shot.boards
+                    .map(board => board.action)
+                    .filter(Boolean)
+                    .join(' ')
+                  %>
+                  <% if (combinedAction) { %>
+                    <div title="<%= combinedAction %>">
+                      <%= truncate(combinedAction) %>
+                    </div>
+                  <% } %>
+
+                  <%
+                  let combinedDialogue = shot.boards
+                    .map(board => board.dialogue)
+                    .filter(Boolean)
+                    .join(' ')
+                  %>
+                  <% if (combinedDialogue) { %>
+                    <div title="<%= combinedDialogue %>">
+                      <i>“<%= truncate(combinedDialogue) %>”</i>
+                    </div>
+                  <% } %>
+                </div>
+
+              </td>
+            <tr>
           <% } %>
+
         </tbody>
       </table>
     </div>
-
   </div>
 </div>
 <%- include('footer') -%>

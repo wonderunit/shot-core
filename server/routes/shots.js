@@ -8,15 +8,72 @@ const Take = require('../decorators/take')
 
 const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 
+const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
+
+// FIXME slow
 exports.index = (req, res) => {
   let { projectId } = req.params
 
   let project = get('SELECT id, name FROM projects WHERE id = ?', projectId)
   let shots = all('SELECT * FROM shots WHERE project_id = ?', projectId)
 
+  let scenes = all(`SELECT * FROM scenes WHERE project_id = ?`, projectId)
+  let scenesById = scenes.reduce(keyById, {})
+
+ let bestTakesByShotId = {}
+  for (let shot of shots) {
+    // best or most recent take
+    // TODO optimize queries
+    let mostRecent = get(
+      `SELECT *
+       FROM takes
+       WHERE shot_id = ?
+       AND project_id = ?
+       ORDER BY datetime(cut_at)
+       LIMIT 1`,
+       shot.id,
+       projectId
+    )
+    let highestRated = get(
+      `SELECT *
+       FROM takes
+       WHERE rating IS NOT NULL
+       AND shot_id = ?
+       AND project_id = ?
+       ORDER BY rating
+       LIMIT 1`,
+       shot.id,
+       projectId
+    )
+    let take = highestRated || mostRecent || null
+    // TODO optimize this
+    bestTakesByShotId[shot.id] = take
+      ? new Take(take).filenameForThumbnail({
+        ...{ scene_number } = scenesById[take.scene_id],
+        ...{ shot_number, impromptu } = shot
+      })
+      : null
+  }
+
+  let takesCountByShotId = {}
+  for (let shot of shots) {
+    let { takes_count } = get(
+      `SELECT COUNT(id) as takes_count
+       FROM takes
+       WHERE shot_id = ?
+       AND project_id = ?`,
+      shot.id, projectId
+    )
+    takesCountByShotId[shot.id] = takes_count
+  }
+
   res.render('shots', {
     project,
-    shots: Shot.decorateCollection(shots)
+    shots: Shot.decorateCollection(shots),
+
+    scenesById,
+    bestTakesByShotId,
+    takesCountByShotId
   })
 }
 
