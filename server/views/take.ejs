@@ -136,7 +136,10 @@
               Shooting Day
             </div>
             <div>
-              Day n: <%= format(take.action_at, 'EEEE, MMM d, yyyy') %> – <%= format(take.action_at, 'HH:mm') %>
+              <% if (day_number != null) { %>
+              Day <%= day_number %>:
+              <% } %>
+              <%= format(take.action_at, 'EEEE, MMM d, yyyy') %> – <%= format(take.action_at, 'HH:mm') %>
             </div>
           </div>
 

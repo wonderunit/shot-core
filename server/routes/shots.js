@@ -5,6 +5,7 @@ const { run, get, all } = require('../db')
 const Scene = require('../decorators/scene')
 const Shot = require('../decorators/shot')
 const Take = require('../decorators/take')
+const Day = require('../decorators/day')
 
 const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 
@@ -127,16 +128,18 @@ exports.show = (req, res) => {
   let take = highestRated || mostRecent || null
 
   // each day, with calculated day number
-  let days = all(
-    `SELECT
-       id, start_at,
-      ROW_NUMBER() OVER(ORDER BY datetime(start_at)) AS day_number
+  let events = all(
+    `SELECT *
      FROM events
-     WHERE event_type = 'day'
-     AND project_id = ?
-     ORDER BY datetime(start_at)`,
+     WHERE project_id = ?`, projectId)
+  let days = all(
+    `SELECT *
+     FROM events
+     WHERE project_id = ? AND event_type = 'day'
+     ORDER BY rank`,
     projectId
   )
+  days = Day.decorateCollection(days, { events })
 
   const humanizedAspectRatio = aspectRatio => {
     let f = num2fraction(aspectRatio)

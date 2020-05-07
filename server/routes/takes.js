@@ -1,5 +1,8 @@
 const { run, get, all } = require('../db')
 
+const format = require('date-fns/format')
+const startOfDay = require('date-fns/startOfDay')
+
 const create = require('../services/takes/create')
 const action = require('../services/takes/action')
 const cut = require('../services/takes/cut')
@@ -8,6 +11,7 @@ const updateFilepath = require('../services/takes/update-filepath')
 const Scene = require('../decorators/scene')
 const Shot = require('../decorators/shot')
 const Take = require('../decorators/take')
+const Day = require('../decorators/day')
 
 const q = arr => arr.map(() => '?').join(',')
 
@@ -113,7 +117,7 @@ exports.show = (req, res) => {
   )
 
   let { shot_takes_count } = get(
-    `SELECT COUNT(id) as shot_takes_count
+    `SELECT COUNT(id) AS shot_takes_count
      FROM takes
      WHERE scene_id = ?
      AND project_id = ?`,
@@ -121,11 +125,31 @@ exports.show = (req, res) => {
     projectId
   )
 
+  // what day?
+  let events = all(
+    `SELECT *
+     FROM events
+     WHERE project_id = ?`, projectId)
+  let days = all(
+    `SELECT *
+     FROM events
+     WHERE project_id = ? AND event_type = 'day'
+     ORDER BY rank`,
+    projectId
+  )
+  days = Day.decorateCollection(days, { events })
+  let day = days.find(day =>
+    format(new Date(day.start_at), 'yyyy-MM-dd') === 
+    format(new Date(take.action_at), 'yyyy-MM-dd')
+  )
+
   res.render('take', {
     project,
     scene: new Scene(scene),
     shot: new Shot(shot),
     take: new Take(take),
+
+    day_number: day ? day.day_number : null,
 
     project_scenes_count,
     scene_shots_count,
