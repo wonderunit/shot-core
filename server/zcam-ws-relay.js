@@ -3,6 +3,7 @@ const Sockette = require('sockette')
 
 const { createMachine, interpret } = require('xstate')
 const debug = require('debug')('shotcore:zcam-ws-relay')
+const activityDebug = require('debug')('shotcore:activity-monitor')
 
 const { get } = require('./db')
 
@@ -33,13 +34,19 @@ class ZcamWsRelay {
         activityMonitorMachine,
         {
           actions: {
-            emitIdle: () => this.bus.emit('camera/idle'),
-            emitActive: () => this.bus.emit('camera/active')
+            emitIdle: () => {
+              activityDebug('activity monitor telling bus that camera is IDLE')
+              this.bus.emit('camera/idle')
+            },
+            emitActive: () => {
+              activityDebug('activity monitor telling bus that camera is ACTIVE')
+              this.bus.emit('camera/active')
+            }
           }
         }
       )
     )
-    .onTransition(event => debug('->', event.value))
+    .onTransition(event => activityDebug('->', event.value))
     .start()
   }
 
