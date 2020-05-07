@@ -130,11 +130,11 @@ exports.show = (req, res) => {
   let days = all(
     `SELECT
        id, start_at,
-      ROW_NUMBER() OVER(ORDER BY date(start_at)) AS day_number
+      ROW_NUMBER() OVER(ORDER BY datetime(start_at)) AS day_number
      FROM events
      WHERE event_type = 'day'
      AND project_id = ?
-     ORDER BY date(start_at)`,
+     ORDER BY datetime(start_at)`,
     projectId
   )
 
