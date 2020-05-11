@@ -29,6 +29,7 @@ const takes = require('./routes/takes')
 const slater = require('./routes/slater')
 const monitor = require('./routes/monitor')
 const remote = require('./routes/remote')
+const settings = require('./routes/settings')
 
 const { truncate, durationMsecsToString, friendlyDuration, plural } = require('./helpers')
 
@@ -120,6 +121,10 @@ app.post('/projects/:projectId/slater/cut.json', jsonParser, remote.cut)
 app.post('/projects/:projectId/slater/next.json', jsonParser, remote.next)
 app.post('/projects/:projectId/slater/previous.json', jsonParser, remote.previous)
 app.post('/projects/:projectId/slater/impromptu.json', jsonParser, remote.impromptu)
+
+// settings
+app.get('/settings', settings.index)
+app.post('/settings', settings.update)
 
 // TODO await
 visualSlateRenderer.start()

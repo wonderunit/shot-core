@@ -64,3 +64,21 @@ BEGIN
   SET id = substr(lower(hex(randomblob(4))), 1, 7)
   WHERE rowid = NEW.rowid;
 END;
+
+CREATE TABLE settings(
+  zcam_wired_ip     TEXT,
+  zcam_wireless_ip  TEXT,
+  uploads_path      TEXT,
+  active_project_id INTEGER
+);
+INSERT INTO settings (
+  zcam_wired_ip,
+  zcam_wireless_ip,
+  uploads_path,
+  active_project_id
+) VALUES (
+  "10.98.33.1",
+  "10.98.32.1",
+  NULL,
+  1
+);
