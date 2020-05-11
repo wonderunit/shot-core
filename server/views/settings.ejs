@@ -3,7 +3,7 @@
   <div class="lh-copy">
     <% if (hasOwnProperty('flash')) { %>
       <div id="flash" class="pa3 bg-yellow">
-        <%= flash %>
+        <%- flash %>
       </div>
     <% } %>
 
@@ -15,20 +15,20 @@
           <div class="flex mb2">
             <div class="w-30 tr mr4 pt1">Z Cam Wired IP</div>
             <div class="w-70">
-              <input class="pa2 w-100" type="text" value="<%= zcam_wired_ip %>" />
+              <input class="pa2 w-100" type="text" name="zcam_wired_ip" value="<%= zcam_wired_ip %>" />
             </div>
           </div>
           <div class="flex mb2">
             <div class="w-30 tr mr4 pt1">Z Cam Wireless IP</div>
             <div class="w-70">
-              <input class="pa2 w-100" type="text" value="<%= zcam_wireless_ip %>" />
+              <input class="pa2 w-100" type="text" name="zcam_wireless_ip" value="<%= zcam_wireless_ip %>" />
             </div>
           </div>
           <div class="flex mb2">
             <div class="w-30 tr mr4 pt1">Uploads Path</div>
             <div class="w-70">
               <input class="pa2 w-100" type="text"
-                value="<%= uploads_path %>" 
+                name="uploads_path" value="<%= uploads_path %>" 
                 placeholder="<%= default_uploads_path %>" 
               />
               <div class="pt1 ph1 f6 black-60 mb2">
