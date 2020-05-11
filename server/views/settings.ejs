@@ -40,7 +40,10 @@
             <div class="w-30 tr mr4 pt1">Active Project for Slater</div>
             <div class="w-70">
               <select name="active_project_id" class="w-100" style="height: 2rem">
-                <option value="1" selected>multi-scene</option>
+                <% for (let project of projects) { %>
+                  <% let selected = project.id == active_project_id %>
+                  <option value="<%= project.id %>" <%= selected ? 'selected' : '' %>><%= project.name %></option>
+                <% } %>
               </select>
             </div>
           </div>

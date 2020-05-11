@@ -1,4 +1,4 @@
-const { get, run } = require('../db')
+const { run, get, all } = require('../db')
 
 let ALLOWED = [
   'zcam_wired_ip',
@@ -7,22 +7,29 @@ let ALLOWED = [
   'active_project_id'
 ]
 
-const select = () => get(
-  `SELECT ${ALLOWED.join(',')}
-  FROM settings
-  LIMIT 1`)
+const getSettings = () =>
+  get(
+    `SELECT ${ALLOWED.join(',')}
+     FROM settings
+     LIMIT 1`)
+
+const getProjects = () =>
+  all(
+    `SELECT * FROM projects`)
 
 exports.index = (req, res) => {
-  const settings = select()
+  const settings = getSettings()
+  const projects = getProjects()
 
   res.render('settings', {
     ...settings,
+    projects,
     default_uploads_path: require('../config').UPLOADS_PATH
   })
 }
 
 exports.update = (req, res) => {
-  const before = select()
+  let before = getSettings()
 
   let changed = {}
   for (let key of ALLOWED) {
@@ -41,11 +48,13 @@ exports.update = (req, res) => {
   let changelog = Object.entries(changed).map(([key, [value, prev]]) => `${key} changed from ${prev} to ${value}`)
   changelog = changelog.join('<br />\n')
 
-  const after = select()
+  const after = getSettings()
+  const projects = getProjects()
 
   res.render('settings', {
-    flash: `Saved.<br /><small>` + changelog + '</small>',
+    flash: `Saved.<br /><small class="f6 o-60">` + changelog + '</small>',
     ...after,
+    projects,
     default_uploads_path: require('../config').UPLOADS_PATH
   })
 }
