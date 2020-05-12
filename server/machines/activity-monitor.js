@@ -10,8 +10,8 @@ module.exports = {
   initial: 'off',
   strict: true,
   context: {
-    // how long to wait after camera stops recording before downloader can start
-    timeout: 30_000
+    // in msecs, how long to wait after camera stops recording before downloader can start
+    timeout: 30 * 1000
   },
   states: {
     off: {
