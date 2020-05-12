@@ -11,6 +11,15 @@ const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
 
+const humanizeAspectRatio = aspectRatio => {
+  let f = num2fraction(aspectRatio)
+  return f.match(/\/100$/)
+    // e.g.: 2.39:1
+    ? `${f.match(/(\d+)/)[1] / 100}:1`
+    // e.g.: 16:9
+    : f.replace('/', ':')
+}
+
 // FIXME slow
 exports.index = (req, res) => {
   let { projectId } = req.params
@@ -141,15 +150,6 @@ exports.show = (req, res) => {
   )
   days = Day.decorateCollection(days, { events })
 
-  const humanizedAspectRatio = aspectRatio => {
-    let f = num2fraction(aspectRatio)
-    return f.match(/\/100$/)
-      // e.g.: 2.39:1
-      ? `${f.match(/(\d+)/)[1] / 100}:1`
-      // e.g.: 16:9
-      : f.replace('/', ':')
-  }
-
   res.render('shot', {
     project,
     scene: new Scene(scene),
@@ -162,7 +162,7 @@ exports.show = (req, res) => {
     days,
 
     differenceInMilliseconds,
-    humanizedAspectRatio
+    humanizeAspectRatio
   })
 }
 
