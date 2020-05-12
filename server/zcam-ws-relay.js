@@ -138,7 +138,7 @@ class ZcamWsRelay {
           switch (what) {
             case 'ConfigChanged':
               debug('ConfigChanged', value)
-              this.activityMonitor.send('ACTIVITY')
+              // this.activityMonitor.send('ACTIVITY')
               break
 
             case 'CardMounted':
