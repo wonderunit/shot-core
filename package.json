@@ -22,6 +22,7 @@
     "got": "11.0.2",
     "method-override": "3.0.0",
     "multiparty": "4.2.1",
+    "num2fraction": "1.2.2",
     "rtsp-streaming-server": "2.0.6",
     "sockette": "2.0.6",
     "ws": "7.2.3",
