@@ -1,6 +1,6 @@
 const getFocalLength = require('../../lib/getFocalLength')
 
-const Board = require('./Board')
+const Board = require('./board')
 
 class Shot {
   static decorateCollection (collection) {
