@@ -77,8 +77,8 @@ INSERT INTO settings (
   uploads_path,
   active_project_id
 ) VALUES (
-  "10.98.33.1",
   "10.98.32.1",
+  "10.98.33.1",
   NULL,
   1
 );
