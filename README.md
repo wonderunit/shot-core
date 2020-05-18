@@ -15,7 +15,7 @@ sqlite3 dev.sqlite3 < db/schema.sql
 npm start
 ```
 
-Starts the web UI listening at [http://localhost:4000](http://localhost:4000). Attempts to connect to the default Z Cam address (`10.98.33.1`).
+`npm start` starts the web UI listening at [http://localhost:4000](http://localhost:4000). Attempts to connect to the default Z Cam address (`10.98.33.1`).
 
 On macOS, you can then seed a test project on the server by running (in another terminal):
 
@@ -32,6 +32,12 @@ If you don’t have access to a Z Cam, you can run the [Z Cam Mock Server](./lib
 
 ```
 DEBUG=shotcore:* ZCAM=127.0.0.1 npm start
+```
+
+To append the output to a log file:
+
+```
+npm start 2>&1 | tee -a shotcore-log.txt
 ```
 
 For more, read [DEVELOPERS.md](DEVELOPERS.md).
