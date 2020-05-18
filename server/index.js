@@ -32,6 +32,7 @@ const slater = require('./routes/slater')
 const monitor = require('./routes/monitor')
 const remote = require('./routes/remote')
 const settings = require('./routes/settings')
+const status = require('./routes/status')
 
 const { truncate, durationMsecsToString, friendlyDuration, plural } = require('./helpers')
 
@@ -129,6 +130,8 @@ app.post('/projects/:projectId/slater/impromptu.json', jsonParser, remote.improm
 // settings
 app.get('/settings', settings.index)
 app.post('/settings', settings.update)
+
+app.get('/status', status.index)
 
 // TODO await
 visualSlateRenderer.start()
