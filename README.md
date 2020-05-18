@@ -27,6 +27,7 @@ Environment vars:
 - `ZCAM`: address of Z Cam, default `10.98.33.1`  
 - `PORT`: Shot Core server port, default `8000` (proxied through browser-sync to `4000`)  
 - `DEBUG`: configure `debug` library logging. `DEBUG=shotcore:*` to view Shot Core specific logs.  
+- `UPLOADS_PATH`: path to media on the filesystem, which will be served from `/uploads`. Media includes the Storyboarder project files and images, as well as takes downloaded from the camera. Useful for storing all media on a NAS. If blank, defaults to `./public/uploads`.
 
 If you don’t have access to a Z Cam, you can run the [Z Cam Mock Server](./lib/zcam/mock-server/README.md), which will listen locally, and start the Shot Core server with:
 

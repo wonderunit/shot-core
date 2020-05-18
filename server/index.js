@@ -9,6 +9,8 @@ const path = require('path')
 const parse = require('date-fns/parse')
 const { format } = require('date-fns-tz')
 
+const { UPLOADS_PATH } = require('./config')
+
 const ZcamHttpClient = require('../lib/zcam/client')
 const createMjpegProxy = require('../lib/mjpeg-proxy')
 
@@ -50,6 +52,8 @@ app.set('views', path.join(__dirname, './views'))
 app.set('bus', bus)
 console.log('Connecting to Z Cam HTTP at', ZCAM_URL)
 app.set('zcam', new ZcamHttpClient({ uri: ZCAM_URL }))
+console.log('Serving uploaded media from', UPLOADS_PATH)
+app.use('/uploads', express.static(UPLOADS_PATH, { fallthrough: false }))
 app.use(express.static('public'))
 
 app.use(express.urlencoded({ extended: false }))
