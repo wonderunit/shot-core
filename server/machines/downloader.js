@@ -42,12 +42,12 @@ module.exports = {
         3000: 'checking'
       },
     },
-    // if any error happens, clearTake, and turn off
-    // to avoid retrying infinitely
     downloadingError: {
+      // clear the take
       entry: 'clearTake',
-      on: {
-        '': 'off'
+      after: {
+        // wait 3s, then retry
+        3000: 'checking'
       },
     }
   },
