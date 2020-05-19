@@ -137,6 +137,23 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
   let token = new CAF.cancelToken()
 
   let steps = CAF(function * (signal) {
+    // Get number of frames, duration
+    debug(`\nGET ${uri}?act=info`)
+    const infoRequest = got(`${uri}?act=info`)
+    cleanup.info = () => infoRequest.cancel()
+    let infoResponse = yield infoRequest
+    let movInfo = JSON.parse(infoResponse.body)
+    debug('timescale:', movInfo.vts)
+    debug('number of frames:', movInfo.vcnt)
+    debug('duration:', movInfo.dur)
+
+    // Get file size in bytes
+    debug(`\nHEAD ${uri}`)
+    const headRequest = got.head(uri)
+    cleanup.head = () => headRequest.cancel()
+    let headResponse = yield headRequest
+    debug('file size in bytes:', headResponse.headers['content-length'])
+
     // STEP 1
     debug('\ndownload thumbnail')
     yield download(
@@ -218,6 +235,8 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
       token.abort(new Error('Early termination'))
 
       debug('unlinking files …')
+      cleanup.info && cleanup.info()
+      cleanup.head && cleanup.head()
       cleanup.thumbnail && cleanup.thumbnail()
       cleanup.mov && cleanup.mov()
       cleanup.proxy && cleanup.proxy()
