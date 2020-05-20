@@ -13,6 +13,8 @@ const { run, get } = require('../db')
 const { createProxyWithVisualSlate } = require('../systems/visual-slate')
 const Take = require('../decorators/take')
 
+const { spawnSync } = require('child_process')
+
 const downloader = require('../machines/downloader')
 
 // find earliest, complete, not downloaded take
@@ -203,6 +205,27 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     let { size: fileSizeActual } = fs.statSync(path.join(UPLOADS_PATH, takesDir, filename))
     if (fileSizeExpected !== fileSizeActual) {
       throw new Error(`File size mismatch. Expected ${fileSizeExpected} but got ${fileSizeActual}`)
+    }
+
+    // verify frame count via container
+    // (faster than checking the stream)
+    // via https://stackoverflow.com/questions/2017843/fetch-frame-count-with-ffmpeg
+    let { stdout, error } = spawnSync(
+      'ffprobe', [
+        '-v', 'error',
+        '-select_streams', 'v:0',
+        '-show_entries', 'stream=nb_frames',
+        '-of', 'default=noprint_wrappers=1:nokey=1',
+        path.join(UPLOADS_PATH, takesDir, filename)
+      ]
+    )
+    if (error) throw error
+    let framesExpected = movInfo.vcnt - 1
+    let framesActual = parseFloat(stdout.toString())
+    if (framesExpected !== framesActual) {
+      throw new Error(
+        `Frame count mismatch. Expected ${framesExpected} but got ${framesActual}`
+      )
     }
 
     // STEP 4
