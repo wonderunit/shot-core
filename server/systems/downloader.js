@@ -197,7 +197,14 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     })
     // TODO also cleanup tmp folder on abort
     cleanup.proxy = clean(path.join(UPLOADS_PATH, takesDir, proxy))
-  
+
+    // verify file size
+    let fileSizeExpected = parseInt(headResponse.headers['content-length'])
+    let { size: fileSizeActual } = fs.statSync(path.join(UPLOADS_PATH, takesDir, filename))
+    if (fileSizeExpected !== fileSizeActual) {
+      throw new Error(`File size mismatch. Expected ${fileSizeExpected} but got ${fileSizeActual}`)
+    }
+
     // STEP 4
     debug('marking take download complete in database')
     run(
