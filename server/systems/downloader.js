@@ -156,7 +156,7 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     let headResponse = yield headRequest
     debug('file size in bytes:', headResponse.headers['content-length'])
 
-    // STEP 1
+    // download thumbnail
     debug('\ndownload thumbnail')
     yield download(
       `${uri}?act=scr`,
@@ -165,7 +165,7 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     )
     cleanup.thumbnail = clean(path.join(UPLOADS_PATH, takesDir, thumbnail))
 
-    // STEP 2
+    // download mov
     debug('\ndownload mov')
     yield download(
       uri,
@@ -174,7 +174,7 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     )
     cleanup.mov = clean(path.join(UPLOADS_PATH, takesDir, filename))
 
-    // STEP 3
+    // insert slate
     debug('\ninsert slate')
     // TODO handle cancel via signal
     yield createProxyWithVisualSlate({
@@ -201,6 +201,7 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     cleanup.proxy = clean(path.join(UPLOADS_PATH, takesDir, proxy))
 
     // verify file size
+    debug('verifying file size')
     let fileSizeExpected = parseInt(headResponse.headers['content-length'])
     let { size: fileSizeActual } = fs.statSync(path.join(UPLOADS_PATH, takesDir, filename))
     if (fileSizeExpected !== fileSizeActual) {
@@ -210,6 +211,7 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     // verify frame count via container
     // (faster than checking the stream)
     // via https://stackoverflow.com/questions/2017843/fetch-frame-count-with-ffmpeg
+    debug('verifying frame count')
     let { stdout, error } = spawnSync(
       'ffprobe', [
         '-v', 'error',
@@ -244,8 +246,8 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     }
     delete metadata.info.format.filename
 
-    // STEP 4
-    debug('marking take download complete in database')
+    // make take complete
+    debug('marking take downloaded in database')
     run(
       `UPDATE takes
       SET
