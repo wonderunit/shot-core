@@ -13,7 +13,7 @@ const { run, get } = require('../db')
 const { createProxyWithVisualSlate } = require('../systems/visual-slate')
 const Take = require('../decorators/take')
 
-const { spawnSync } = require('child_process')
+const { spawnSync, execSync } = require('child_process')
 
 const downloader = require('../machines/downloader')
 
@@ -228,12 +228,31 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
       )
     }
 
+    // get metadata
+    debug('getting metadata')
+    let metadataString = execSync(
+      `ffprobe \
+        -hide_banner \
+        -loglevel fatal \
+        -show_format \
+        -show_streams \
+        -print_format json \
+        ${path.join(UPLOADS_PATH, takesDir, filename)}`
+    ).toString()
+    let metadata = {
+      info: JSON.parse(metadataString)
+    }
+    delete metadata.info.format.filename
+
     // STEP 4
     debug('marking take download complete in database')
     run(
       `UPDATE takes
-      SET downloaded = 1
+      SET
+        downloaded = 1,
+        metadata_json = ?
       WHERE id = ?`,
+      JSON.stringify(metadata),
       take.id
     )
   })

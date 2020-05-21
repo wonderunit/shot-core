@@ -75,6 +75,8 @@ class Take {
     for (let property in take) {
       this[property] = take[property]
     }
+
+    this.metadata = JSON.parse(this.metadata_json)
   }
 }
 
