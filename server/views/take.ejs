@@ -236,37 +236,42 @@
         </thead>
         <tbody>
           <tr class="f3">
-            <td class="normal">
+            <td class="normal   o-50">
               <b>03:14</b>
             </td>
             <td class="normal">
-              <b>22mm</b>
+              <span
+                style="border-bottom: 1px dashed black"
+                title="<%= take.metadata.info.format.tags["com.zcam.camera.lensType"] %>"
+              >
+                <%= take.metadata.info.format.tags["com.zcam.camera.lensFocalLength"] %>
+              </span>
             </td>
             <td class="normal">
-              <b>f/1.4</b>
+              <b><%= take.metadata.info.format.tags["com.zcam.camera.aperture"].replace('F', 'f/') %></b>
             </td>
             <td class="normal">
-              <b>2500</b>
+              <b><%= take.metadata.info.format.tags["com.zcam.camera.iso"] %></b>
             </td>
-            <td class="normal">
+            <td class="normal   o-50">
               4K
             </td>
             <td class="normal">
-              23.98
+              <%= take.metadata.info.format.tags["com.zcam.camera.projectFps"] %>
             </td>
-            <td class="normal">
+            <td class="normal   o-50">
               2.39
             </td>
             <td class="normal">
-              1/50
+              <%= take.metadata.info.format.tags["com.zcam.camera.shutterSpeed"] %>
             </td>
             <td class="normal">
-              1500
+              <%= take.metadata.info.format.tags["com.zcam.camera.whiteBalanceKelvin"] %>
             </td>
             <td class="normal">
-              -2
+              <%= take.metadata.info.format.tags["com.zcam.camera.nd"] %>
             </td>
-            <td class="normal">
+            <td class="normal   o-50">
               Chroma
             </td>
           </tr>
