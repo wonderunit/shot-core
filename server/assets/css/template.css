@@ -1,14 +1,48 @@
 @import "tailwindcss/base";
+
+@font-face {
+  font-family: THICCCBOI;
+  font-weight: normal;
+  src: url(/fonts/THICCCBOI-Regular.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: THICCCBOI;
+  font-weight: bold;
+  src: url(/fonts/THICCCBOI-Bold.woff2) format("woff2");
+}
+
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+.text-xxs {
+  letter-spacing: 0.05rem;
+}
+.text-xs {
+  letter-spacing: 0.04rem;
+}
+.text-sm {
+  letter-spacing: 0.01rem;
+}
+.text-5xl,
+.text-6xl,
+.text-7xl {
+  letter-spacing: -0.04rem;
+}
+
+.text-shadow {
+  text-shadow: 0px 4px 0px rgba(0, 0, 0, 0.14);
+}
 
 html, body {
   height: 100vh;
 }
+
 body {
+  font-family: THICCCBOI;
   background: #3E2696;
   color: #ffffff;
-  color: #AB94FF;
+  @apply leading-normal;
 }
 
 body:after {
@@ -29,23 +63,23 @@ body:after {
 }
 
 .h1 {
-  font-family: Thicccboi, "Helvetica Neue";
   font-style: normal;
   font-weight: bold;
   font-size: 144px;
   line-height: 166px;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.04rem;
   color: #FFFFFF;
   text-shadow: 0px 4px 0px rgba(0, 0, 0, 0.14);
+  margin: 0;
 }
 
 .h2 {
-  font-family: Thicccboi, "Helvetica Neue";
   font-style: normal;
   font-weight: bold;
   font-size: 48px;
   line-height: 55px;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.04rem;
   color: #AB94FF;
   text-transform: uppercase;
+  margin: 0;
 }
