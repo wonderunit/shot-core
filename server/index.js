@@ -70,7 +70,6 @@ app.use(responseTime())
 let livereload
 
 if (app.get('env') == 'development') {
-
   livereload = require('./livereload')
   app.get('/livereload', livereload.get)
 
