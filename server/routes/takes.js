@@ -13,6 +13,16 @@ const Shot = require('../decorators/shot')
 const Take = require('../decorators/take')
 const Day = require('../decorators/day')
 
+const { humanizeAspectRatio } = require('../helpers')
+
+const humanizeVideoResolution = (width, height) => {
+  if (width === 3840 && height === 2160) {
+    return '4K'
+  } else {
+    return `${width}x${height}`
+  }
+}
+
 const q = arr => arr.map(() => '?').join(',')
 
 exports.create = async (req, res) => {
@@ -153,7 +163,10 @@ exports.show = (req, res) => {
 
     project_scenes_count,
     scene_shots_count,
-    shot_takes_count
+    shot_takes_count,
+
+    humanizeAspectRatio,
+    humanizeVideoResolution
   })
 }
 

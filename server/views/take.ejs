@@ -254,13 +254,18 @@
               <b><%= take.metadata.info.format.tags["com.zcam.camera.iso"] %></b>
             </td>
             <td class="normal   o-50">
-              4K
+              <%=
+                humanizeVideoResolution(
+                  take.metadata.info.streams[0].width,
+                  take.metadata.info.streams[0].height
+                )
+              %>
             </td>
             <td class="normal">
               <%= take.metadata.info.format.tags["com.zcam.camera.projectFps"] %>
             </td>
             <td class="normal   o-50">
-              2.39
+              <%= humanizeAspectRatio(take.metadata.info.streams[0].width / take.metadata.info.streams[0].height) %>
             </td>
             <td class="normal">
               <%= take.metadata.info.format.tags["com.zcam.camera.shutterSpeed"] %>
