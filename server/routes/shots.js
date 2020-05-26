@@ -1,4 +1,3 @@
-const num2fraction = require('num2fraction')
 
 const { run, get, all } = require('../db')
 
@@ -8,17 +7,9 @@ const Take = require('../decorators/take')
 const Day = require('../decorators/day')
 
 const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
+const { humanizeAspectRatio } = require('../helpers')
 
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
-
-const humanizeAspectRatio = aspectRatio => {
-  let f = num2fraction(aspectRatio)
-  return f.match(/\/100$/)
-    // e.g.: 2.39:1
-    ? `${f.match(/(\d+)/)[1] / 100}:1`
-    // e.g.: 16:9
-    : f.replace('/', ':')
-}
 
 // FIXME slow
 exports.index = (req, res) => {

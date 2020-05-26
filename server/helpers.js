@@ -1,5 +1,6 @@
 // view helpers
 const path = require('path')
+const num2fraction = require('num2fraction')
 
 module.exports = {
   truncate: (s, len = 79) =>
@@ -37,5 +38,14 @@ module.exports = {
         : `${s}s`
   },
 
-  plural: v => v == 1 ? '' : 's'
+  plural: v => v == 1 ? '' : 's',
+
+  humanizeAspectRatio: aspectRatio => {
+    let f = num2fraction(aspectRatio)
+    return f.match(/\/100$/)
+      // e.g.: 2.39:1
+      ? `${f.match(/(\d+)/)[1] / 100}:1`
+      // e.g.: 16:9
+      : f.replace('/', ':')
+  }
 }
