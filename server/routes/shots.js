@@ -1,3 +1,4 @@
+const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 
 const { run, get, all } = require('../db')
 
@@ -6,7 +7,6 @@ const Shot = require('../decorators/shot')
 const Take = require('../decorators/take')
 const Day = require('../decorators/day')
 
-const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 const { humanizeAspectRatio } = require('../helpers')
 
 const keyById = (prev, curr) => (prev[curr.id] = curr, prev)
