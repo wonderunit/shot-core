@@ -1,9 +1,9 @@
-<div class="ma4">
-  <small class="lh-copy helvetica black-40">
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto pb-8">
+  <div class="opacity-75 tracking-wider text-purple-100 text-xs md:text-base">
     Server Time:
     <%= format(new Date(), 'd MMM, E hh:mm a') %>
     <%= Intl.DateTimeFormat().resolvedOptions().timeZone %>
-  </small>
+  </div>
 </div>
 <script src="/js/stimulus.umd.js"></script>
 <script src="/js/index.js"></script>

@@ -9,51 +9,51 @@
       --aspect-ratio: <%= 16 / 9 %>;
     }
   </style>
-  <link rel="stylesheet" href="/css/template.css">
+  <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
 
-
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
 
   <div class="flex flex-col justify-center w-full py-12">
-    <div class="font-bold text-8xl leading-none text-center mb-2 text-purple-100">
+    <div class="font-bold text-7xl md:text-8xl leading-none text-center mb-2 text-purple-100">
       Shot Core
     </div>
-    <div class="font-bold uppercase text-5xl leading-tight text-purple-400 text-center">
+    <div class="font-bold uppercase text-4xl md:text-5xl leading-tight text-purple-400 text-center">
       Interface Design
     </div>
   </div>
 
-  <div class="px-8 mb-6 space-y-4">
-    <nav class="text-purple-600 uppercase text-xxs flex justify-end">
-      <ul class="flex">
-        <li class="mr-6">
-          <a class="block fadein hover:text-purple-100" href="#">
+  <div class="my-8 md:mt-16 md:h-4">
+    <nav class="text-purple-600 uppercase text-sm md:text-xxs flex justify-around md:justify-end">
+      <ul class="flex space-x-2 md:space-x-6">
+        <li>
+          <a class="block fadein hover:text-purple-100" href="/projects/1/schedule">
             Schedule
           </a>
         </li>
-        <li class="mr-6">
-          <a class="block fadein hover:text-purple-100" href="#">
+        <li>
+          <a class="block fadein hover:text-purple-100" href="/projects/1/scenes">
             Scenes
           </a>
         </li>
-        <li class="mr-6">
-          <a class="block fadein hover:text-purple-100" href="#">
+        <li>
+          <a class="block fadein hover:text-purple-100" href="/projects/1/shots">
             Shots
           </a>
         </li>
-        <li class="mr-6">
-          <a class="block fadein hover:text-purple-100" href="#">
+        <li>
+          <a class="block fadein hover:text-purple-100" href="/projects/1/takes">
             Takes
           </a>
         </li>
-        <li class="mr-6">
-          <a class="block fadein hover:text-purple-100" href="#">
+        <li>
+          <a class="block fadein hover:text-purple-100" href="/projects/1/monitor">
             Monitor
           </a>
         </li>
         <li>
-          <a class="block fadein hover:text-purple-100" href="#">
+          <a class="block fadein hover:text-purple-100" href="/projects/1/slater">
             Slater
           </a>
         </li>
@@ -61,21 +61,21 @@
     </nav>
   </div>
 
-  <div class="px-8 mb-6 space-y-4 text-purple-100">
+  <div class="mb-6 space-y-4 text-purple-100">
     <div>
-      <div class="text-2xl uppercase text-purple-400 leading-none tracking-wide">
+      <div class="text-1xl md:text-2xl uppercase text-purple-400 leading-relaxed md:leading-none tracking-wide">
         Production
       </div>
-      <div class="text-8xl font-bold uppercase leading-none -mt-2 tracking-tight text-shadow">
+      <div class="text-6xl md:text-8xl font-bold uppercase leading-none -mt-2 tracking-tight text-shadow">
         Explorers
       </div>
     </div>
 
     <div>
-      <div class="text-2xl uppercase text-purple-600 leading-none">
+      <div class="text-1xl md:text-2xl uppercase text-purple-600 leading-none">
         Shot List
       </div>
-      <div class="text-7xl font-bold leading-none tracking-tight text-shadow">
+      <div class="text-5xl md:text-7xl font-bold leading-none tracking-tight text-shadow">
         1,345 Shots
       </div>
     </div>
@@ -85,7 +85,7 @@
         inline-block px-8 py-4
         border-4 rounded-lg
         
-        leading-tight text-2xl font-bold tracking-wide
+        text-1xl md:text-2xl leading-tight font-bold tracking-wide
 
         bg-purple-900 border-white-o
         hover:bg-orange-500 hover:border-yellow-o
@@ -377,7 +377,7 @@
     </p>
   </div>
 
-
+</div>
 
 <% if (process.env.NODE_ENV !== 'production') { %>
   <%- include('livereload') %>

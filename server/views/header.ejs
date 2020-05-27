@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/tachyons.min.css">
-  <link rel="stylesheet" href="/css/app.css">
+
+  <% if (req.url == '/') { %>
+    <link rel="stylesheet" href="/css/app.css">
+  <% } else { %>
+    <link rel="stylesheet" href="/css/tachyons.min.css">
+    <link rel="stylesheet" href="/css/app-old.css">
+  <% } %>
+  
 </head>
 <body>
