@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shot Core Server HTML Template</title>
+  <style>
+    :root {
+      --aspect-ratio: <%= 16 / 9 %>;
+    }
+  </style>
   <link rel="stylesheet" href="/css/template.css">
 </head>
 <body>
@@ -166,7 +171,7 @@
             <td colspan="5">
               <div class="grid grid-cols-9 gap-3px pb-6">
                 <% for (let i = 0; i < 12; i++) { %>
-                  <div class="relative" style="padding-bottom: <%= 1 / (16 / 9) * 100 %>%">
+                  <div class="relative" style="padding-bottom: calc(100% / (var(--aspect-ratio))">
                     <img
                       class="blend-mode-overlay opacity-50 rounded-sm absolute h-full w-full object-cover"
                       src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-thumbnail.png"
@@ -280,7 +285,7 @@
 
                   <div
                     class="mr-6px"
-                    style="width: <%= Math.floor(76 * (16 / 9)) %>px; height: 76px;"
+                    style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
                   >
                     <img
                       src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-thumbnail.png"
@@ -289,7 +294,7 @@
 
                   <div
                     class="mr-6px"
-                    style="width: <%= Math.floor(76 * (16 / 9)) %>px; height: 76px;"
+                    style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
                   >
                     <img
                       class="blend-mode-overlay rounded-sm"
