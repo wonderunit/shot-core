@@ -34,6 +34,10 @@
   text-shadow: 0px 4px 0px rgba(0, 0, 0, 0.14);
 }
 
+.blend-mode-overlay {
+  mix-blend-mode: overlay;
+}
+
 .gap-3px {
   gap: 3px;
 }
@@ -72,8 +76,8 @@
   @apply border-solid border-t border-purple-600;
 }
 
-.blend-mode-overlay {
-  mix-blend-mode: overlay;
+.fadein {
+  @apply transition ease-out duration-150;
 }
 
 html, body {
