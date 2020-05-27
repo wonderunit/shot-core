@@ -38,6 +38,9 @@
   gap: 3px;
 }
 
+.table td {
+  vertical-align: top;
+}
 .table th {
   text-align: left;
 }
