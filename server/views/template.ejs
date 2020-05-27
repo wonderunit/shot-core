@@ -108,41 +108,43 @@
         </tr>
       </thead>
       <tbody class="text-xs leading-tight">
-        <tr>
-          <td>
-            1
-          </td>
-          <td>
-            Jimmy wakes up from a nap.
-          </td>
-          <td>
-            INT. BEDROOM – NIGHT
-          </td>
-          <td>
-            20
-          </td>
-          <td>
-            1:15
-          </td>
-          <td>
-            45 takes
-          </td>
-        </tr>
-        <tr>
-          <td colspan="1"></td>
-          <td colspan="5">
-            <div class="grid grid-cols-9 gap-3px">
-              <% for (let i = 0; i < 12; i++) { %>
-                <div class="relative" style="padding-bottom: <%= 1 / (16 / 9) * 100 %>%">
-                  <img
-                    class="thumbnail-o absolute h-full w-full object-cover"
-                    src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-thumbnail.png"
-                  />
-                </div>
-              <% } %>
-            </div>
-          </td>
-        </tr>
+        <% for (let i = 0; i < 12; i++) { %>
+          <tr>
+            <td>
+              <b>1</b>
+            </td>
+            <td>
+              <b>Jimmy wakes up from a nap.</b>
+            </td>
+            <td>
+              INT. BEDROOM – NIGHT
+            </td>
+            <td>
+              20
+            </td>
+            <td>
+              1:15
+            </td>
+            <td>
+              45 takes
+            </td>
+          </tr>
+          <tr>
+            <td colspan="1"></td>
+            <td colspan="5">
+              <div class="grid grid-cols-9 gap-3px pb-6">
+                <% for (let i = 0; i < 12; i++) { %>
+                  <div class="relative" style="padding-bottom: <%= 1 / (16 / 9) * 100 %>%">
+                    <img
+                      class="thumbnail-o absolute h-full w-full object-cover"
+                      src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-thumbnail.png"
+                    />
+                  </div>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% } %>
       </tbody>
     </table>
   </div>

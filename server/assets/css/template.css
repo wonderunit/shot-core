@@ -45,14 +45,13 @@
   padding-bottom: 0.5rem;
 }
 .table tr td {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
-.table tbody tr:first-child {
-  @apply border-solid border-t border-purple-600;
+  padding-top: 0.5rem;
 }
 .table tr:first-child td {
   padding-top: 0.6rem;
+}
+.table tbody tr:first-child {
+  @apply border-solid border-t border-purple-600;
 }
 
 .thumbnail-o {
