@@ -52,6 +52,12 @@
   padding-top: 0.6rem;
 }
 
+.thumbnail-o {
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+  @apply rounded-sm;
+}
+
 html, body {
   height: 100vh;
 }
