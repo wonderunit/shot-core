@@ -34,6 +34,16 @@
   text-shadow: 0px 4px 0px rgba(0, 0, 0, 0.14);
 }
 
+.table th {
+  text-align: left;
+}
+.table th {
+  padding-bottom: 0.5rem;
+}
+.table tr:first-child td {
+  padding-top: 0.6rem;
+}
+
 html, body {
   height: 100vh;
 }
