@@ -42,8 +42,17 @@
   vertical-align: top;
   padding-right: 0.5rem;
 }
+.table td:last-child {
+  padding-right: 0;
+}
 .table th {
   text-align: left;
+}
+.table th.text-center {
+  text-align: center;
+}
+.table th.text-right {
+  text-align: right;
 }
 .table th {
   padding-bottom: 0.5rem;

@@ -108,7 +108,7 @@
         </tr>
       </thead>
       <tbody class="text-xs leading-tight">
-        <% for (let i = 0; i < 12; i++) { %>
+        <% for (let i = 0; i < 3; i++) { %>
           <tr>
             <td>
               <b>1</b>
@@ -132,6 +132,118 @@
           <tr>
             <td colspan="1"></td>
             <td colspan="5">
+              <div class="grid grid-cols-9 gap-3px pb-6">
+                <% for (let i = 0; i < 12; i++) { %>
+                  <div class="relative" style="padding-bottom: <%= 1 / (16 / 9) * 100 %>%">
+                    <img
+                      class="thumbnail-o absolute h-full w-full object-cover"
+                      src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-thumbnail.png"
+                    />
+                  </div>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <table class="table table-auto border-collapse w-full">
+      <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
+        <tr>
+          <th>
+            Shot
+          </th>
+          <th>
+            Shot Type
+          </th>
+          <th class="text-center">
+            Rigging
+          </th>
+          <th class="text-center">
+            Lens
+          </th>
+          <th class="text-center">
+            Aperature
+          </th>
+          <th class="text-center">
+            ISO
+          </th>
+          <th class="text-center">
+            Res
+          </th>
+          <th class="text-center">
+            FPS
+          </th>
+          <th class="text-center">
+            Shutter
+          </th>
+          <th class="text-center">
+            WB
+          </th>
+          <th class="text-center">
+            ND
+          </th>
+          <th class="text-center">
+            VFX
+          </th>
+          <th class="text-center">
+            Duration
+          </th>
+          <th class="text-right">
+            Takes
+          </th>
+        </tr>
+      </thead>
+      <tbody class="text-xs leading-tight">
+        <% for (let i = 0; i < 3; i++) { %>
+          <tr>
+            <td>
+              <b>1</b>
+            </td>
+            <td>
+              Medium Close up
+            </td>
+            <td class="text-center">
+              Handheld
+            </td>
+            <td class="text-center">
+              22mm
+            </td>
+            <td class="text-center">
+              f/1.4
+            </td>
+            <td class="text-center">
+              2500
+            </td>
+            <td class="text-center">
+              4k
+            </td>
+            <td class="text-center">
+              23.98
+            </td>
+            <td class="text-center">
+              1/50
+            </td>
+            <td class="text-center">
+              1500
+            </td>
+            <td class="text-center">
+              -2
+            </td>
+            <td class="text-center">
+              Chroma
+            </td>
+            <td class="text-center">
+              1:15
+            </td>
+            <td class="text-right">
+              3
+            </td>
+          </tr>
+          <tr>
+            <td colspan="1"></td>
+            <td colspan="13">
               <div class="grid grid-cols-9 gap-3px pb-6">
                 <% for (let i = 0; i < 12; i++) { %>
                   <div class="relative" style="padding-bottom: <%= 1 / (16 / 9) * 100 %>%">
