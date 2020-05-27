@@ -6,8 +6,8 @@ module.exports = {
     extend: {
       fontSize: {
         'xxs': '9px',
-        '7xl': ['4.5rem', 1],
-        '8xl': ['9rem', 1]
+        '7xl': '4.5rem',
+        '8xl': '9rem'
       },
       colors: {
         purple: {
