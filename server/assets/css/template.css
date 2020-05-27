@@ -37,6 +37,9 @@
 .gap-3px {
   gap: 3px;
 }
+.mr-6px {
+  margin-right: 6px;
+}
 
 .table td {
   vertical-align: top;
@@ -67,10 +70,8 @@
   @apply border-solid border-t border-purple-600;
 }
 
-.thumbnail-o {
+.blend-mode-overlay {
   mix-blend-mode: overlay;
-  opacity: 0.5;
-  @apply rounded-sm;
 }
 
 html, body {
