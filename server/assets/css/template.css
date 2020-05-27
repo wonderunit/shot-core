@@ -40,6 +40,7 @@
 
 .table td {
   vertical-align: top;
+  padding-right: 0.5rem;
 }
 .table th {
   text-align: left;
