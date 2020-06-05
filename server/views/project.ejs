@@ -1,6 +1,6 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
+<div class="flex flex-col min-h-screen">
+  <div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto flex-grow">
 
     <%- include('_nav', { project }) %>
 
@@ -13,49 +13,45 @@
       </a>
     </div>
 
-      <div class="mb6">
-
-        <div class="flex justify-between">
-
-          <div>
-            <h3 class="f4 lh-solid ma0 ttu normal">
-              Schedule
-            </h3>
-            <h3 class="f1 lh-solid ma0">
-              <a class="link" href="<%= `/projects/${project.id}/schedule` %>">
-                <%= days_count  %> Day<%= plural(days_count) %>
-              </a>
-            </h3>
-          </div>
-
-          <div>
-            <h3 class="f4 lh-solid ma0 ttu normal">
-              Scene List
-            </h3>
-            <h3 class="f1 lh-solid ma0">
-              <a class="link" href="<%= `/projects/${project.id}/scenes` %>">
-                <%= scenes_count %> Scene<%= plural(scenes_count) %>
-              </a>
-            </h3>
-          </div>
-
-          <div>
-            <h3 class="f4 lh-solid ma0 ttu normal">
-              Shot List
-            </h3>
-            <h3 class="f1 lh-solid ma0">
-              <a class="link" href="<%= `/projects/${project.id}/shots` %>">
-                <%= shots_count %> Shot<%= plural(shots_count) %>
-              </a>
-            </h3>
-          </div>
-
-        </div>
-
+    <div class="flex justify-between mt-16 md:mt-32 space-x-4">
+      <div>
+        <h3 class="text-1xl md:text-2xl uppercase text-purple-600 leading-none">
+          Shot List
+        </h3>
+        <a
+          class="text-4xl md:text-7xl font-bold leading-none tracking-tight text-shadow"
+          href="<%= `/projects/${project.id}/schedule` %>"
+        >
+          <%= days_count  %> Day<%= plural(days_count) %>
+        </a>
       </div>
 
+      <div>
+        <h3 class="text-1xl md:text-2xl uppercase text-purple-600 leading-none">
+          Scene List
+        </h3>
+        <a
+          class="text-4xl md:text-7xl font-bold leading-none tracking-tight text-shadow"
+          href="<%= `/projects/${project.id}/scenes` %>"
+        >
+          <%= scenes_count %> Scene<%= plural(scenes_count) %>
+        </a>
+      </div>
+
+      <div>
+        <h3 class="text-1xl md:text-2xl uppercase text-purple-600 leading-none">
+          Shot List
+        </h3>
+        <a
+          class="text-4xl md:text-7xl font-bold leading-none tracking-tight text-shadow"
+          href="<%= `/projects/${project.id}/shots` %>"
+        >
+          <%= shots_count %> Shot<%= plural(shots_count) %>
+        </a>
+      </div>
     </div>
 
   </div>
+
+  <%- include('footer') -%>
 </div>
-<%- include('footer') -%>
