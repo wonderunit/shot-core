@@ -1,98 +1,120 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
 
-    <div class="mb4">
-      <h2 class="f7 fw4 lh-solid ttu ma0">
-        Production
-      </h2>
-      <h2 class="f5 b lh-solid ttu ma0">
-        <a href="<%= `/projects/${project.id}` %>" class="link">
-          <%= project.name %>
-        </a>
-      </h2>
+<div class="container px-6 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
+
+  <%- include('_nav') %>
+
+  <div class="py-3">
+    <div class="text-xxs uppercase text-purple-600 leading-none tracking-tighter">
+      Production
     </div>
-
-    <div>
-      <h2 class="f1 ma0 mb4">
-        <%= scenes.length %> Scene<%= plural(scenes.length) %>
-      </h2>
+    <div
+      class="text-2xl font-bold text-purple-400 uppercase leading-none"
+      href="<%= `/projects/${project.id}` %>"
+    >
+      Explorers
     </div>
+  </div>
 
-    <div class="w-100">
-      <div class="w-100 flex justify-between mb2">
-        <div class="w-10">
+  <div class="my-2">
+    <div class="font-bold text-7xl md:text-8xl leading-none tracking-tight">
+      <%= scenes.length %> Scene<%= plural(scenes.length) %>
+    </div>
+  </div>
+
+  <table class="table table-auto border-collapse w-full">
+    <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
+      <tr>
+        <th>
           Scene
-        </div>
-        <div class="w-40">
+        </th>
+        <th>
           Title
-        </div>
-        <div class="w-20">
+        </th>
+        <th>
           Slugline
-        </div>
-        <div class="w-10">
+        </th>
+        <th>
           Shots
-        </div>
-        <div class="w-10">
+        </th>
+        <th>
           Duration
-        </div>
-        <div class="w-10">
+        </th>
+        <th class="text-right">
           Takes
-        </div>
-      </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-xs leading-tight">
       <% for (let scene of scenes) { %>
-        <div class="w-100 flex justify-between mb2">
-          <div class="w-10">
-            <a href="<%= `/projects/${project.id}/scenes/${scene.id}`%>" class="link">
-              <%= scene.scene_number %>
+        <tr>
+          <td>
+            <a
+              href="<%= `/projects/${project.id}/scenes/${scene.id}`%>"
+            >
+              <b><%= scene.scene_number %></b>
             </a>
-          </div>
-          <div class="w-40">
-            <% if (scene.description) { %>
-              <b class="ma0"><%= scene.description %></b>
-            <% } %>
-            <% if (scene.synopsis) { %>
-              <span class="ma0"><%= scene.synopsis %></span>
-            <% } %>
-            <% if ( !(scene.description || scene.synopsis)) { %>
-              ---
-            <% } %>
-          </div>
-          <div class="w-20">
+          </td>
+          <td class="max-w-sm">
+            <a
+              href="<%= `/projects/${project.id}/scenes/${scene.id}`%>"
+            >
+              <% if (scene.description) { %>
+                <b class="ma0"><%= scene.description %></b>
+              <% } %>
+              <% if (scene.synopsis) { %>
+                <span class="ma0"><%= scene.synopsis %></span>
+              <% } %>
+              <% if ( !(scene.description || scene.synopsis)) { %>
+                ---
+              <% } %>
+            </a>
+          </td>
+          <td>
             <%= scene.slugline || '---' %>
-          </div>
-          <div class="w-10">
+          </td>
+          <td>
             <%= scene.shots_count %>
-          </div>
-          <div class="w-10">
+          </td>
+          <td>
             <%= durationMsecsToString(scene.shots_duration) %>
-          </div>
-          <div class="w-10">
-            <%= scene.takes_count %> Take<%= plural(0) %>
-          </div>
-        </div>
-        <div class="w-100 flex justify-between mb4">
-          <div class="w-10"></div>
-
-          <div class="w-90 flex">
-            <% shots.filter(shot => shot.scene_id === scene.id).forEach(shot => { %>
-              <div class="mr1" style="width:98px;height:40px">
+          </td>
+          <td class="text-right">
+            <%= scene.takes_count %> Take<%= plural(scene.takes_count) %>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1"></td>
+          <td colspan="5">
+            <div class="grid grid-cols-9 gap-3px pb-6" style="--aspect-ratio: <%= 16 / 9 %>">
+              <% shots.filter(shot => shot.scene_id === scene.id).forEach(shot => { %>
                 <% if (shot.thumbnail) { %>
-                  <img
-                    width="98"
-                    height="40"
-                    loading="lazy"
-                    src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
+                  <a
+                    class="block relative"
+                    style="padding-bottom: calc(100% / (var(--aspect-ratio))"
+                    href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}` %>"
+                  >
+                    <img
+                      class="blend-mode-overlay opacity-50 rounded-sm absolute h-full w-full object-cover"
+                      loading="lazy"
+                      src="<%= scene.imagesPath %>/<%= shot.thumbnail %>"
+                    />
+                  </a>
                 <% } else { %>
                   <!-- no thumbnail, e.g.: impromptu -->
-                  <div style="width:98px;height:40px;background-color:#3333"></div>
+                  <div
+                    class="bg-purple-900"
+                    style="padding-bottom: calc(100% / (var(--aspect-ratio))">
+                  </div>
                 <% } %>
-              </div>
-            <% }) %>
-          </div>
-        </div>
+
+              <% }) %>
+            </div>
+          </td>
+        </tr>
       <% } %>
-    <div>
-  </div>
+    </tbody>
+  </table>
 </div>
+
 <%- include('footer') -%>
