@@ -86,7 +86,10 @@
         <tr>
           <td colspan="1"></td>
           <td colspan="5">
-            <div class="grid grid-cols-9 gap-3px pb-6" style="--aspect-ratio: <%= 16 / 9 %>">
+            <div
+              class="grid grid-cols-9 gap-3px pb-6"
+              style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+            >
               <% shots.filter(shot => shot.scene_id === scene.id).forEach(shot => { %>
                 <% if (shot.thumbnail) { %>
                   <a
