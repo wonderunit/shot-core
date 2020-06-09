@@ -6,16 +6,15 @@
 
   <%
   if (
-    req.url == '/' ||
-    req.url == '/projects/1' ||
-    req.url == '/projects/1/scenes' ||
-    req.url.startsWith('/projects/1/scenes/1')
+    req.url.endsWith('/schedule') || 
+    req.url.endsWith('/monitor') || 
+    req.url.endsWith('/slater')
   ) {
   %>
-    <link rel="stylesheet" href="/css/app.css">
-  <% } else { %>
     <link rel="stylesheet" href="/css/tachyons.min.css">
     <link rel="stylesheet" href="/css/app-old.css">
+  <% } else { %>
+    <link rel="stylesheet" href="/css/app.css">
   <% } %>
 
   <title>Shot Core</title>  
