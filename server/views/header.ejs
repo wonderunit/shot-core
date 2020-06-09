@@ -8,7 +8,9 @@
   if (
     req.url.endsWith('/schedule') || 
     req.url.endsWith('/monitor') || 
-    req.url.endsWith('/slater')
+    req.url.endsWith('/slater') ||
+    req.url.endsWith('/settings') ||
+    req.url.endsWith('/status')
   ) {
   %>
     <link rel="stylesheet" href="/css/tachyons.min.css">
