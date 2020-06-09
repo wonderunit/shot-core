@@ -8,7 +8,8 @@
   if (
     req.url == '/' ||
     req.url == '/projects/1' ||
-    req.url == '/projects/1/scenes'
+    req.url == '/projects/1/scenes' ||
+    req.url.startsWith('/projects/1/scenes/1')
   ) {
   %>
     <link rel="stylesheet" href="/css/app.css">

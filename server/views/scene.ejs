@@ -1,247 +1,296 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
 
-    <div class="mb4">
-      <h2 class="f7 fw4 lh-solid ttu ma0">
-        Production
-      </h2>
-      <h2 class="f5 b lh-solid ttu ma0">
-        <a href="<%= `/projects/${project.id}` %>" class="link">
-          <%= project.name %>
-        </a>
-      </h2>
+  <%- include('_nav') %>
+
+  <div class="py-3 mb-5">
+    <div class="text-xxs uppercase text-purple-600 leading-none tracking-tighter">
+      Production
     </div>
-
-    <div class="flex w-100">
-
-      <div class="flex flex-column items-center w-10 pr2">
-        <div class="f7 ttu">
-          Scene
-        </div>
-        <b class="f-headline lh-solid ma0">
-          <%= scene.scene_number %>
-        </b>
-        <div>
-          / <%= project_scenes_count %>
-        </div>
-      </div>
-
-      <div class="flex flex-column w-60 pr2" style="position: relative;">
-        <div>
-          <%= scene.slugline %>
-        </div>
-        <div class="f2 b">
-          <%= scene.description %>
-        </div>
-        <div>
-          <%= scene.synopsis %>
-        </div>
-
-        <div class="f6 flex justify-end" style="position: absolute; bottom: 0; right:2rem">
-          <ul class="list flex">
-            <li class="mr3">
-              <a href="#" class="link">
-                Show Footage
-              </a>
-            </li>
-            <li>
-              <a href="#" class="link">
-                Download Edit
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="flex flex-column w-30">
-        <div class="mb1">
-          <div class="f7 fw4 ttu">
-            Animatic
-            <div class="w-100 bg-gray" style="padding-bottom: 41%"></div>
-          </div>
-        </div>
-        <div>
-          <div class="f7 fw4 ttu">
-            Rough Edit
-            <div class="w-100 bg-gray" style="padding-bottom: 41%"></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <h3 class="f5 lh-solid h-auto ma0 mb3"><%= shots.length %> Shot<%= plural(shots.length) %></h3>
-
-    <div class="w-100">
-      <table class="w-100 mb2 f7">
-        <thead class="ttu">
-          <tr>
-            <th class="normal">
-              Shot
-            </th>
-            <th class="normal">
-              Shot Type
-            </th>
-            <th class="normal">
-              Rigging
-            </th>
-            <th class="normal">
-              Lens
-            </th>
-            <th class="normal">
-              Aperature
-            </th>
-            <th class="normal">
-              ISO
-            </th>
-            <th class="normal">
-              Res
-            </th>
-            <th class="normal">
-              FPS
-            </th>
-            <th class="normal">
-              Shutter
-            </th>
-            <th class="normal">
-              WB
-            </th>
-            <th class="normal">
-              ND
-            </th>
-            <th class="normal">
-              VFX
-            </th>
-            <th class="normal">
-              Duration
-            </th>
-            <th class="normal">
-              Takes
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% for (let shot of shots) { %>
-            <tr>
-              <td class="normal">
-                <a href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}` %>" class="link">
-                  <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
-                </a>
-              </td>
-              <td class="normal">
-                <%= shot.shotType %>
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                <%= shot.fStop %>
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                <%= durationMsecsToString(shot.duration) %>
-              </td>
-              <td class="normal">
-                <%= takesCountByShotId[shot.id] %>
-              </td>
-            </tr>
-
-            <tr class="mb2">
-              <td colspan="1">
-              </td>
-              <td colspan="11">
-
-                <div class="flex">
-                  <% if (bestTakesByShotId[shot.id]) { %>
-                    <div class="mr2" style="width:186px;height:76px">
-                      <img
-                        width="186"
-                        height="76"
-                        loading="lazy"
-                        src="<%= `/uploads/projects/${project.id}/takes/${bestTakesByShotId[shot.id]}` %>"
-                      />
-                    </div>
-                  <% } %>
-
-                  <% if (shot.thumbnail) { %>
-                    <div class="mr2" style="width:186px;height:76px">
-                      <img
-                        width="186"
-                        height="76"
-                        loading="lazy"
-                        src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
-                    </div>
-                  <% } %>
-
-                  <% if (shot.cameraPlot) { %>
-                    <div class="mr2" style="width:76px;height:76px">
-                      <img
-                        width="76"
-                        height="76"
-                        loading="lazy"
-                        src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
-                    </div>
-                  <% } %>
-                </div>
-
-                <div class="flex w-30 justify-between">
-                  <%
-                  let combinedAction = shot.boards
-                    .map(board => board.action)
-                    .filter(Boolean)
-                    .join(' ')
-                  %>
-                  <% if (combinedAction) { %>
-                    <div title="<%= combinedAction %>">
-                      <%= truncate(combinedAction) %>
-                    </div>
-                  <% } %>
-
-                  <%
-                  let combinedDialogue = shot.boards
-                    .map(board => board.dialogue)
-                    .filter(Boolean)
-                    .join(' ')
-                  %>
-                  <% if (combinedDialogue) { %>
-                    <div title="<%= combinedDialogue %>">
-                      <i>“<%= truncate(combinedDialogue) %>”</i>
-                    </div>
-                  <% } %>
-                </div>
-
-              </td>
-            <tr>
-          <% } %>
-
-        </tbody>
-      </table>
+    <div
+      class="text-2xl font-bold text-purple-400 uppercase leading-none"
+      href="<%= `/projects/${project.id}` %>"
+    >
+      Explorers
     </div>
   </div>
+
+  <div class="flex w-full space-x-8">
+    <div class="flex flex-col items-center">
+      <div class="text-sm leading-snug uppercase text-purple-600">
+        Scene
+      </div>
+      <b class="text-7xl font-bold leading-none text-shadow">
+        <%= scene.scene_number %>
+      </b>
+      <div class="text-lg leading-snug text-purple-600">
+        / <%= project_scenes_count %>
+      </div>
+    </div>
+
+    <div class="flex flex-col flex-grow justify-between">
+      <div class="flex flex-col mb-4" style="min-height: 10rem">
+        <div class="text-lg text-purple-600 leading-none">
+          <%= scene.slugline %>
+        </div>
+        <div class="text-7xl font-bold leading-none text-shadow">
+          <%= scene.description %>
+        </div>
+        <div class="text-lg leading-snug text-purple-600">
+          <%= scene.synopsis %>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <ul class="flex space-x-2">
+          <li>
+            <button class="
+              inline-block px-6 py-4
+              border-2 rounded-lg
+
+              leading-tight text-xxs font-bold
+
+              bg-purple-900 border-white-o
+              hover:bg-orange-500 hover:border-yellow-o
+              fadein
+
+              box-shadow
+            ">
+              Show Footage
+            </button>
+
+          </li>
+          <li>
+
+            <button class="
+              inline-block px-6 py-4
+              border-2 rounded-lg
+
+              leading-tight text-xxs font-bold
+
+              bg-purple-900 border-white-o
+              hover:bg-orange-500 hover:border-yellow-o
+              fadein
+
+              box-shadow
+            ">
+              Download Edit
+            </button>
+
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col flex-end space-y-1">
+      <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
+        <div class="text-xxs uppercase text-purple-400">
+          Animatic
+        </div>
+        <div
+          class="bg-purple-900"
+          style="width: calc(138px * var(--aspect-ratio)); height: 138px;"
+        >
+        </div>
+      </div>
+      <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
+        <div class="text-xxs uppercase text-purple-400">
+          Rough Edit
+        </div>
+        <div
+          class="bg-purple-900"
+          style="width: calc(138px * var(--aspect-ratio)); height: 138px;"
+        >
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h3 class="text-lg font-bold leading-none my-4">
+    <%= shots.length %> Shot<%= plural(shots.length) %>
+  </h3>
+
+  <table class="table table-auto border-collapse w-full">
+    <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
+      <tr>
+        <th>
+          Shot
+        </th>
+        <th>
+          Shot Type
+        </th>
+        <th class="text-center">
+          Rigging
+        </th>
+        <th class="text-center">
+          Lens
+        </th>
+        <th class="text-center">
+          Aperature
+        </th>
+        <th class="text-center">
+          ISO
+        </th>
+        <th class="text-center">
+          Res
+        </th>
+        <th class="text-center">
+          FPS
+        </th>
+        <th class="text-center">
+          Shutter
+        </th>
+        <th class="text-center">
+          WB
+        </th>
+        <th class="text-center">
+          ND
+        </th>
+        <th class="text-center">
+          VFX
+        </th>
+        <th class="text-center">
+          Duration
+        </th>
+        <th class="text-right">
+          Takes
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-xs leading-tight">
+      <% for (let shot of [...shots, ...shots]) { %>
+        <tr>
+          <td class="normal">
+            <a href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}` %>">
+              <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+            </a>
+          </td>
+          <td>
+            <%= shot.shotType %>
+          </td>
+          <td class="text-center">
+
+          </td>
+          <td class="text-center">
+            <%= shot.getCameraFocalLength(scene.metadata.aspectRatio) %>
+          </td>
+          <td class="text-center">
+            <%= shot.fStop %>
+          </td>
+          <td class="text-center">
+
+          </td>
+          <td class="text-center">
+
+          </td>
+          <td class="text-center">
+
+          </td>
+          <td class="text-center">
+
+          </td>
+          <td class="text-center">
+
+          </td>
+          <td class="text-center">
+
+          </td>
+          <td class="text-center">
+
+          </td>
+          <td class="text-center">
+            <%= durationMsecsToString(shot.duration) %>
+          </td>
+          <td class="text-right">
+            <%= takesCountByShotId[shot.id] %>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1"></td>
+          <td colspan="11">
+            <div
+              class="flex pb-2"
+              style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+            >
+              <% if (bestTakesByShotId[shot.id]) { %>
+                <div
+                  class="mr-6px"
+                  style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
+                >
+                  <img
+                    loading="lazy"
+                    src="<%= `/uploads/projects/${project.id}/takes/${bestTakesByShotId[shot.id]}` %>"
+                  />
+                </div>
+              <% } %>
+
+              <% if (shot.thumbnail) { %>
+                <a
+                  class="block relative mr-6px"
+                  style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
+                  href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}` %>"
+                >
+                  <img
+                    class="blend-mode-overlay opacity-50 rounded-sm absolute h-full w-full object-cover"
+                    loading="lazy"
+                    src="<%= scene.imagesPath %>/<%= shot.thumbnail %>"
+                  />
+                </a>
+              <% } else { %>
+                <!-- no thumbnail, e.g.: impromptu -->
+                <div
+                  class="bg-purple-900"
+                  style="padding-bottom: calc(100% / (var(--aspect-ratio))">
+                </div>
+              <% } %>
+
+              <% if (shot.cameraPlot) { %>
+                <div
+                  class="block relative"
+                  style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
+                >
+                  <img
+                    class="blend-mode-overlay opacity-50 rounded-sm absolute h-full object-cover"
+                    loading="lazy"
+                    src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>"
+                  />
+                </div>
+              <% } %>
+
+            </div>
+
+            <div class="flex w-1/3 mb-5 space-x-6">
+              <%
+              let combinedAction = shot.boards
+                .map(board => board.action)
+                .filter(Boolean)
+                .join(' ')
+              %>
+              <% if (combinedAction) { %>
+                <div title="<%= combinedAction %>">
+                  <%= truncate(combinedAction) %>
+                </div>
+              <% } %>
+
+              <%
+              let combinedDialogue = shot.boards
+                .map(board => board.dialogue)
+                .filter(Boolean)
+                .join(' ')
+              %>
+              <% if (combinedDialogue) { %>
+                <div title="<%= combinedDialogue %>">
+                  <i>“<%= truncate(combinedDialogue) %>”</i>
+                </div>
+              <% } %>
+            </div>
+
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+
 </div>
 <%- include('footer') -%>
