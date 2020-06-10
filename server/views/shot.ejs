@@ -219,12 +219,36 @@
         <% } %>
 
         <div class="space-y-8">
-          <div class="flex justify-end space-x-4 my-4">
-            <div>
-              <a class="underline">Previous Shot</a>
+          <div class="flex justify-end space-x-4 mt-2 mb-16">
+            <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
+              <div class="text-xxs leading-none uppercase text-purple-600 mb-1">
+                Previous Shot
+              </div>
+              <a
+                href="#"
+                class="block blend-mode-overlay opacity-50 rounded-sm overflow-hidden"
+                style="width: calc(54px * var(--aspect-ratio)); height: 54px;"
+              >
+                <img
+                  loading="lazy"
+                  src="<%= scene.imagesPath %>/<%= shot.posterframe %>"
+                />
+              </a>
             </div>
-            <div>
-              <a class="underline">Next Shot</a>
+            <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
+              <div class="text-xxs leading-none uppercase text-purple-600 mb-1">
+                Next Shot
+              </div>
+              <a
+                href="#"
+                class="block blend-mode-overlay opacity-50 rounded-sm overflow-hidden"
+                style="width: calc(54px * var(--aspect-ratio)); height: 54px;"
+              >
+                <img
+                  loading="lazy"
+                  src="<%= scene.imagesPath %>/<%= shot.posterframe %>"
+                />
+              </a>
             </div>
           </div>
 
