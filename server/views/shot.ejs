@@ -250,70 +250,70 @@
     </div>
   </div>
 
-  <div class="w-full">
+  <div class="w-full mb-40">
     <h3 class="text-lg leading-none font-bold mt-12 mb-6">
       <%= takes.length %> Take<%= plural(takes.length) %>
     </h3>
 
-    <table class="w-full">
-      <thead class="text-xxs uppercase text-purple-600">
+    <table class="table table-auto border-collapse w-full">
+      <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
         <tr>
           <th>
             Take
           </th>
-          <th>
+          <th class="text-center">
             Day
           </th>
-          <th>
+          <th class="text-center">
             DateTime
           </th>
-          <th>
+          <th class="text-center">
             Lens
           </th>
-          <th>
+          <th class="text-center">
             Aperature
           </th>
-          <th>
+          <th class="text-center">
             ISO
           </th>
           <th>
             Res
           </th>
-          <th>
+          <th class="text-center">
             FPS
           </th>
           <th>
             Shutter
           </th>
-          <th>
+          <th class="text-center">
             WB
           </th>
-          <th>
+          <th class="text-center">
             ND
           </th>
-          <th>
+          <th class="text-center">
             VFX
           </th>
-          <th>
+          <th class="text-center">
             Duration
           </th>
-          <th>
+          <th class="text-center">
             Notes
           </th>
-          <th>
+          <th class="text-right">
             Rating
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="text-xs leading-tight">
         <% for (let take of takes) { %>
           <tr>
-            <td class="normal">
+            <td>
               <a href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}/takes/${take.id}` %>" class="link">
-                <%= take.take_number %>
+                <b><%= take.take_number %></b>
               </a>
             </td>
-            <td class="normal">
+            <td>
               <%
               let day = days.find(day =>
                 format(new Date(day.start_at), 'yyyyMMdd') == 
@@ -326,65 +326,82 @@
                   : format(new Date(take.action_at), 'M/d/yyyy')
               %>
             </td>
-            <td class="normal">
+            <td class="text-center">
               <%= format(new Date(take.action_at), 'M/d/yyyy HH:mm') %>
             </td>
-            <td class="normal">
+            <td class="text-center">
               ---
             </td>
-            <td class="normal">
+            <td class="text-center">
               ---
             </td>
-            <td class="normal">
+            <td class="text-center">
               ---
             </td>
-            <td class="normal">
+            <td>
               ---
             </td>
-            <td class="normal">
+            <td class="text-center">
               ---
             </td>
-            <td class="normal">
+            <td>
               ---
             </td>
-            <td class="normal">
+            <td class="text-center">
               ---
             </td>
-            <td class="normal">
+            <td class="text-center">
               ---
             </td>
-            <td class="normal">
+            <td class="text-center">
               ---
             </td>
-            <td class="normal">
-              <span>
-                <% if (take.cut_at && take.action_at) { %>
-                  <%
-                  let msecs = differenceInMilliseconds(
-                    new Date(take.cut_at),
-                    new Date(take.action_at)
-                  )
-                  %>
-                  <%= durationMsecsToString(msecs) %>
-                <% } %>
-              </span>
-            </td>
-            <td class="normal">
-              ---
-            </td>
-            <td class="normal">
-              <% if (take.rating == null) { %>---<% } else { %>
-                <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
+            <td class="text-center">
+              <% if (take.cut_at && take.action_at) { %>
+                <%
+                let msecs = differenceInMilliseconds(
+                  new Date(take.cut_at),
+                  new Date(take.action_at)
+                )
+                %>
+                <%= durationMsecsToString(msecs) %>
               <% } %>
+            </td>
+            <td>
+              ---
+            </td>
+            <td class="text-right">
+              <div class="flex justify-end">
+                <% if (take.rating == null) { %>
+                  ---
+                <% } else { %>
+                  <% for (let i = 0; i < 5; i++) { %>
+                    <div style="margin-left: 2px">
+                      <svg
+                        width="10"
+                        height="9"
+                        viewBox="0 0 10 9"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5.12195 0L6.58537 3L10 3.46154L7.56098 5.76923L8.04878 9L5.12195 7.38462L1.95122 9L2.43902 5.76923L0 3.46154L3.41463 3L5.12195 0Z"
+                          fill="<%= i <= take.rating ? '#EC8C28' : '#321C83' %>"
+                        />
+                      </svg>
+                    </div>
+                  <% } %>
+                <% } %>
+              </div>
             </td>
           </tr>
 
-          <tr class="mb2">
+          <tr>
             <td colspan="1">
             </td>
             <td colspan="12">
 
-              <div class="w-20 mt1 mb3">
+              <div>
                 <div style="--aspect-ratio:<%= scene.metadata.aspectRatio %>">
                   <% let thumbnail = take.filenameForThumbnail({
                     ...{ scene_number } = scene,
@@ -392,6 +409,7 @@
                   }) %>
                   <img
                     loading="lazy"
+                    style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
                     src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
                   />
                 </div>
