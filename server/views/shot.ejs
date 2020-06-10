@@ -1,67 +1,84 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
+  <%- include('_nav') %>
 
-    <div class="mb4">
-      <h2 class="f7 fw4 lh-solid ttu ma0">
-        Production
-      </h2>
-      <h2 class="f5 b lh-solid ttu ma0">
-        <a href="<%= `/projects/${project.id}` %>" class="link">
-          <%= project.name %>
-        </a>
-      </h2>
+  <div class="py-3 mb-5">
+    <div class="text-xxs uppercase text-purple-600 leading-none tracking-tighter">
+      Production
     </div>
+    <div
+      class="text-2xl font-bold text-purple-400 uppercase leading-none"
+      href="<%= `/projects/${project.id}` %>"
+    >
+      <%= project.name %>
+    </div>
+  </div>
 
-    <div class="flex w-100 mb4">
-      <div class="flex flex-column items-center w-20 pr2">
-        <div class="f7 ttu">
-          Scene
-        </div>
-        <b class="f-headline lh-solid ma0">
-          <a href="<%= `/projects/${project.id}/scenes/${scene.id}` %>" class="link">
+  <div class="flex w-full space-x-8">
+
+    <div class="flex flex-col w-full">
+      <div class="flex space-x-8 mb-6">
+        <div class="flex flex-col items-center">
+          <div class="text-sm leading-snug uppercase text-purple-600">
+            Scene
+          </div>
+          <a
+            href="<%= `/projects/${project.id}/scenes/${scene.id}` %>"
+            class="text-8xl font-bold leading-none text-shadow"
+          >
             <%= scene.scene_number %>
           </a>
-        </b>
-        <div>
-          / <%= project_scenes_count %>
+          <div class="text-lg leading-snug text-purple-600">
+            / <%= project_scenes_count %>
+          </div>
         </div>
+
+        <div class="flex flex-col items-center">
+          <div class="text-sm leading-snug uppercase text-purple-600">
+            Shot
+          </div>
+          <b
+            class="text-8xl font-bold leading-none text-shadow"
+          >
+            <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+          </b>
+          <div class="text-lg leading-snug text-purple-600">
+            / <%= scene_shots_count %>
+          </div>
+        </div>
+
+        <% if (shot.cameraPlot) { %>
+          <div
+            class="flex flex-grow justify-end"
+          >
+            <div
+              class="flex flex-col"
+              style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+            >
+              <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
+                Shot Diagram
+              </div>
+
+              <div
+                style="width: 192px; height: 192px;"
+              >
+                <img
+                  loading="lazy"
+                  src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" 
+                />
+              </div>
+            </div>
+          </div>
+        <% } %>
       </div>
 
-      <div class="flex flex-column items-center w-20 pr2">
-        <div class="f7 ttu">
-          Shot
-        </div>
-        <b class="f-headline lh-solid ma0">
-          <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
-        </b>
+      <div class="space-y-6">
         <div>
-          / <%= scene_shots_count %>
-        </div>
-      </div>
-
-      <% if (shot.cameraPlot) { %>
-        <div class="flex flex-column items-center w-20 mr4">
-          <img class="db mw-100" src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
-        </div>
-      <% } %>
-
-      <% if (shot.posterframe) { %>
-        <div class="flex flex-column items-center w-40">
-          <img class="db mw-100" src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
-        </div>
-      <% } %>
-    </div>
-
-    <div class="flex">
-      <div class="w-50 mr4">
-
-        <div class="mb3">
-          <div class="f6 ttu">
+          <div class="text-sm uppercase text-purple-600">
             <%= scene.slugline %>
           </div>
           <% if (scene.description || scene.synopsis) { %>
-            <div>
+            <div class="text-lg">
               <b><%= scene.description %></b> <%= scene.synopsis %>
             </div>
           <% } %>
@@ -74,12 +91,12 @@
           .join(' ')
         %>
         <% if (combinedDialogue) { %>
-          <div class="mb3">
-            <div class="f7 ttu">
+          <div>
+            <div class="text-xxs uppercase text-purple-600 leading-none">
               Dialogue
             </div>
-            <div>
-              <i>“<%= combinedDialogue %>”</i>
+            <div class="text-4xl">
+              <b>“<%= combinedDialogue %>”</b>
             </div>
           </div>
         <% } %>
@@ -91,11 +108,11 @@
           .join(' ')
         %>
         <% if (combinedAction) { %>
-          <div class="mb3">
-            <div class="f7 ttu">
+          <div>
+            <div class="text-xxs uppercase text-purple-600 leading-none">
               Action
             </div>
-            <div>
+            <div class="text-lg">
               <%= combinedAction %>
             </div>
           </div>
@@ -108,238 +125,284 @@
           .join(' ')
         %>
         <% if (combinedNotes) { %>
-          <div class="mb3">
-            <div class="f7 ttu">
+          <div>
+            <div class="text-xxs uppercase text-purple-600 leading-none">
               Notes
             </div>
-            <div>
+            <div class="text-lg">
               <%= combinedNotes %>
             </div>
           </div>
         <% } %>
 
-        <div class="flex w-100 justify-between">
+        <div class="flex justify-between w-full text-2xl">
           <div>
-            <div class="f7 ttu">Lens</div>
-            <div class="b">
+            <div class="text-xxs uppercase text-purple-600">Lens</div>
+            <b>
               <%= 
                 (
                   shot.boards.length &&
                   shot.boards[0].getCameraFocalLength(scene.metadata.aspectRatio)
                 ) || '---'
               %>
-            </div>
+            </b>
           </div>
           <div>
-            <div class="f7 ttu">Aperature</div>
-            <div class="b">f/1.4</div>
+            <div class="text-xxs uppercase text-purple-600">Aperature</div>
+            <b>f/1.4</b>
           </div>
           <div>
-            <div class="f7 ttu">ISO</div>
-            <div class="b">2500</div>
+            <div class="text-xxs uppercase text-purple-600">ISO</div>
+            <b>2500</b>
           </div>
           <div>
-            <div class="f7 ttu">Res</div>
+            <div class="text-xxs uppercase text-purple-600">Res</div>
             <div>4K</div>
           </div>
           <div>
-            <div class="f7 ttu">FPS</div>
+            <div class="text-xxs uppercase text-purple-600">FPS</div>
             <div>23.98</div>
           </div>
           <div>
-            <div class="f7 ttu">Aspect</div>
+            <div class="text-xxs uppercase text-purple-600">Aspect</div>
             <div><%= humanizeAspectRatio(scene.metadata.aspectRatio) %></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex flex-column w-50">
-        <% if (take) { %>
-        <div class="mb4">
-          <div>
-            Take <%= take.take_number %>
-          </div>
-
-          <div style="--aspect-ratio:<%= scene.metadata.aspectRatio %>">
-            <% let thumbnail = take.filenameForThumbnail({
-              ...{ scene_number } = scene,
-              ...{ shot_number, impromptu } = shot
-            }) %>
-            <img
-              src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
-            />
-          </div>
-        </div>
-        <% } %>
-
-        <div class="flex w-50 justify-between" style="margin-left: 50%">
-          <div>
-            Previous Shot
-          </div>
-          <div>
-            Next Shot
           </div>
         </div>
 
       </div>
     </div>
 
-    <h3 class="f5 lh-solid h-auto ma0 mb3">
+    <div class="flex justify-end space-x-4">
+      <div class="flex flex-col space-y-2">
+        <% if (shot.posterframe) { %>
+          <div
+            class="flex flex-col"
+            style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+          >
+            <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
+              Storyboard
+            </div>
+
+            <div
+              style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
+            >
+              <img
+                loading="lazy"
+                src="<%= scene.imagesPath %>/<%= shot.posterframe %>"
+              />
+            </div>
+          </div>
+        <% } %>
+
+        <% if (take) { %>
+          <div
+            class="flex flex-col"
+            style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+          >
+            <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
+              Take <%= take.take_number %>
+            </div>
+
+            <% let thumbnail = take.filenameForThumbnail({
+              ...{ scene_number } = scene,
+              ...{ shot_number, impromptu } = shot
+            }) %>
+            <div
+              style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
+            >
+              <img
+                loading="lazy"
+                src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
+              />
+            </div>
+          </div>
+        <% } %>
+
+        <div class="space-y-8">
+          <div class="flex justify-end space-x-4 my-4">
+            <div>
+              <a class="underline">Previous Shot</a>
+            </div>
+            <div>
+              <a class="underline">Next Shot</a>
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button class="
+              inline-block px-6 py-4
+              border-2 rounded-lg
+
+              leading-tight text-xxs font-bold
+
+              bg-purple-900 border-white-o
+              hover:bg-orange-500 hover:border-yellow-o
+              fadein
+
+              box-shadow
+            ">
+              Show Footage
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full">
+    <h3 class="text-lg leading-none font-bold mt-12 mb-6">
       <%= takes.length %> Take<%= plural(takes.length) %>
     </h3>
 
-    <div class="w-100">
-      <table class="w-100 mb2 f7">
-        <thead class="ttu">
+    <table class="w-full">
+      <thead class="text-xxs uppercase text-purple-600">
+        <tr>
+          <th>
+            Take
+          </th>
+          <th>
+            Day
+          </th>
+          <th>
+            DateTime
+          </th>
+          <th>
+            Lens
+          </th>
+          <th>
+            Aperature
+          </th>
+          <th>
+            ISO
+          </th>
+          <th>
+            Res
+          </th>
+          <th>
+            FPS
+          </th>
+          <th>
+            Shutter
+          </th>
+          <th>
+            WB
+          </th>
+          <th>
+            ND
+          </th>
+          <th>
+            VFX
+          </th>
+          <th>
+            Duration
+          </th>
+          <th>
+            Notes
+          </th>
+          <th>
+            Rating
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let take of takes) { %>
           <tr>
-            <th class="normal">
-              Take
-            </th>
-            <th class="normal">
-              Day
-            </th>
-            <th class="normal">
-              DateTime
-            </th>
-            <th class="normal">
-              Lens
-            </th>
-            <th class="normal">
-              Aperature
-            </th>
-            <th class="normal">
-              ISO
-            </th>
-            <th class="normal">
-              Res
-            </th>
-            <th class="normal">
-              FPS
-            </th>
-            <th class="normal">
-              Shutter
-            </th>
-            <th class="normal">
-              WB
-            </th>
-            <th class="normal">
-              ND
-            </th>
-            <th class="normal">
-              VFX
-            </th>
-            <th class="normal">
-              Duration
-            </th>
-            <th class="normal">
-              Notes
-            </th>
-            <th class="normal">
-              Rating
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% for (let take of takes) { %>
-            <tr>
-              <td class="normal">
-                <a href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}/takes/${take.id}` %>" class="link">
-                  <%= take.take_number %>
-                </a>
-              </td>
-              <td class="normal">
-                <%
-                let day = days.find(day =>
-                  format(new Date(day.start_at), 'yyyyMMdd') == 
-                  format(new Date(take.action_at), 'yyyyMMdd')
-                )
-                %>
-                <%=
-                  day
-                    ? day.day_number
-                    : format(new Date(take.action_at), 'M/d/yyyy')
-                %>
-              </td>
-              <td class="normal">
-                <%= format(new Date(take.action_at), 'M/d/yyyy HH:mm') %>
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                <span>
-                  <% if (take.cut_at && take.action_at) { %>
-                    <%
-                    let msecs = differenceInMilliseconds(
-                      new Date(take.cut_at),
-                      new Date(take.action_at)
-                    )
-                    %>
-                    <%= durationMsecsToString(msecs) %>
-                  <% } %>
-                </span>
-              </td>
-              <td class="normal">
-                ---
-              </td>
-              <td class="normal">
-                <% if (take.rating == null) { %>---<% } else { %>
-                  <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
+            <td class="normal">
+              <a href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}/takes/${take.id}` %>" class="link">
+                <%= take.take_number %>
+              </a>
+            </td>
+            <td class="normal">
+              <%
+              let day = days.find(day =>
+                format(new Date(day.start_at), 'yyyyMMdd') == 
+                format(new Date(take.action_at), 'yyyyMMdd')
+              )
+              %>
+              <%=
+                day
+                  ? day.day_number
+                  : format(new Date(take.action_at), 'M/d/yyyy')
+              %>
+            </td>
+            <td class="normal">
+              <%= format(new Date(take.action_at), 'M/d/yyyy HH:mm') %>
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              <span>
+                <% if (take.cut_at && take.action_at) { %>
+                  <%
+                  let msecs = differenceInMilliseconds(
+                    new Date(take.cut_at),
+                    new Date(take.action_at)
+                  )
+                  %>
+                  <%= durationMsecsToString(msecs) %>
                 <% } %>
-              </td>
-            </tr>
+              </span>
+            </td>
+            <td class="normal">
+              ---
+            </td>
+            <td class="normal">
+              <% if (take.rating == null) { %>---<% } else { %>
+                <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
+              <% } %>
+            </td>
+          </tr>
 
-            <tr class="mb2">
-              <td colspan="1">
-              </td>
-              <td colspan="12">
+          <tr class="mb2">
+            <td colspan="1">
+            </td>
+            <td colspan="12">
 
-                <div class="w-20 mt1 mb3">
-                  <div style="--aspect-ratio:<%= scene.metadata.aspectRatio %>">
-                    <% let thumbnail = take.filenameForThumbnail({
-                      ...{ scene_number } = scene,
-                      ...{ shot_number, impromptu } = shot
-                    }) %>
-                    <img
-                      loading="lazy"
-                      src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
-                    />
-                  </div>
+              <div class="w-20 mt1 mb3">
+                <div style="--aspect-ratio:<%= scene.metadata.aspectRatio %>">
+                  <% let thumbnail = take.filenameForThumbnail({
+                    ...{ scene_number } = scene,
+                    ...{ shot_number, impromptu } = shot
+                  }) %>
+                  <img
+                    loading="lazy"
+                    src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
+                  />
                 </div>
+              </div>
 
-              </td>
-            <tr>
-          <% } %>
+            </td>
+          <tr>
+        <% } %>
 
-        </tbody>
-      </table>
-    <div>
-
+      </tbody>
+    </table>
   </div>
 </div>
 <%- include('footer') -%>
