@@ -1,122 +1,158 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
-    <h1 class="f3 ma0 mb4">
-      <a href="/">Home</a> /
-      <a href="/projects/<%= project.id %>"><%= project.name %></a> /
-      <br />
-      Takes
-    </h1>
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
+  <%- include('_nav') %>
 
-    <style>
-      .flex-row > div {
-        margin-right: 2rem;
-        margin-bottom: 1rem;
-      }
-      .flex-row > div:last-child {
-        margin-right: 0;
-      }
-    </style>
-    <div class="flex flex-column w-100 f6">
-      <div class="flex flex-row w-100">
-        <div class="w-10 f7 ttu tracked black-40">
-          id
-        </div>
-        <div class="w-20 f7 ttu tracked black-40">
-          thumbnail
-        </div>
-        <div class="w-10 f7 ttu tracked black-40">
-          scene
-        </div>
-        <div class="w-10 f7 ttu tracked black-40">
-          shot
-        </div>
-        <div class="w-10 f7 ttu tracked black-40">
-          take
-        </div>
-        <div class="w-10 f7 ttu tracked black-40">
-          preview
-        </div>
-        <div class="w-10 f7 ttu tracked black-40">
-          proxy
-        </div>
-        <div class="w-10 f7 ttu tracked black-40">
-          footage
-        </div>
-        <div class="w-10 f7 ttu tracked black-40">
-          rating
-        </div>
-      </div>
+  <div class="py-3 mb-5">
+    <div class="text-xxs uppercase text-purple-600 leading-none tracking-tighter">
+      Production
+    </div>
+    <a
+      class="inline-block text-2xl font-bold text-purple-400 uppercase leading-none"
+      href="<%= `/projects/${project.id}` %>"
+    >
+      <%= project.name %>
+    </a>
+  </div>
+
+  <h3 class="text-lg leading-none font-bold mt-12 mb-6">
+    <%= takes.length %> Take<%= plural(takes.length) %>
+  </h3>
+
+  <table class="table table-auto border-collapse w-full">
+    <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
+      <tr>
+        <th>
+          ID
+        </th>
+        <th>
+          Thumbnail
+        </th>
+        <th>
+          Scene
+        </th>
+        <th>
+          Shot
+        </th>
+        <th>
+          Take
+        </th>
+        <th>
+          Preview
+        </th>
+        <th>
+          Proxy
+        </th>
+        <th>
+          Footage
+        </th>
+        <th class="text-right">
+          Rating
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-xs leading-tight">
+      <% if (takes.length == 0) { %>
+      <tr>
+        <td colspan="15">
+          <i class="opacity-75">---</i>
+        </td>
+      </tr>
+      <% } %>
       <% for (let take of takes) { %>
         <% let scene = scenes.find(scene => scene.id == take.scene_id) %>
         <% let shot = shots.find(shot => shot.id == take.shot_id) %>
-        <div class="flex flex-row w-100">
-          <div class="w-10">
-            <a class="link" href="<%= `/projects/${take.project_id}/scenes/${take.scene_id}/shots/${take.shot_id}/takes/${take.id}` %>"><%= take.id %></a>
-          </div>
-          <div class="w-20" style="min-width: 160px">
+        <tr
+          style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+        >
+          <td>
+            <a
+              class="underline"
+              href="<%= `/projects/${take.project_id}/scenes/${take.scene_id}/shots/${take.shot_id}/takes/${take.id}` %>"
+            >
+              <b><%= take.id %></b>
+            </a>
+          </td>
+          <td>
             <% let thumbnail = take.filenameForThumbnail({
               scene_number: scene.scene_number,
               shot_number: shot.shot_number,
               impromptu: shot.impromptu
             }) %>
             <img
-              style="width: 160px; height: 90px"
+              style="width: calc(90px * var(--aspect-ratio)); height: 90px;"
               src="/uploads/projects/<%= project.id %>/takes/<%= thumbnail %>"
             />
-          </div>
-          <div class="w-10">
+          </td>
+          <td>
             <%= scene.scene_number %>
-          </div>
-          <div class="w-10">
+          </td>
+          <td>
             <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
-          </div>
-          <div class="w-10">
+          </td>
+          <td>
             <%= take.take_number %>
-          </div>
-          <div class="w-10">
+          </td>
+          <td>
             <% let stream = take.filenameForStream({
               scene_number: scene.scene_number,
               shot_number: shot.shot_number,
               impromptu: shot.impromptu
             }) %>
-            <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= stream %>">
+            <a class="underline" href="/uploads/projects/<%= project.id %>/takes/<%= stream %>">
               mp4
             </a>
-          </div>
-          <div class="w-10">
+          </td>
+          <td>
             <% let proxy = take.filenameForProxy({
               scene_number: scene.scene_number,
               shot_number: shot.shot_number,
               impromptu: shot.impromptu
             }) %>
-            <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= proxy %>">
+            <a class="underline" href="/uploads/projects/<%= project.id %>/takes/<%= proxy %>">
               mov (h265)
             </a>
-          </div>
-          <div class="w-10">
+          </td>
+          <td>
             <% if (take.downloaded) { %>
               <% let footage = take.filenameForFootage({
                 scene_number: scene.scene_number,
                 shot_number: shot.shot_number,
                 impromptu: shot.impromptu
               }) %>
-              <a class="link" href="/uploads/projects/<%= project.id %>/takes/<%= footage %>">
+              <a class="underline" href="/uploads/projects/<%= project.id %>/takes/<%= footage %>">
                 mov (ProRes)
               </a>
             <% } else { %>
               On Camera
             <% } %>
-          </div>
-          <div class="w-10 f7 no-wrap">
-            <% if (take.rating == null) { %>---<% } else { %>
-              <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
-            <% } %>
-          </div>
-        </div>
+          </td>
+          <td class="text-right">
+            <div class="flex justify-end">
+              <% if (take.rating == null) { %>
+                ---
+              <% } else { %>
+                <% for (let i = 0; i < 5; i++) { %>
+                  <div style="margin-left: 2px">
+                    <svg
+                      width="10"
+                      height="9"
+                      viewBox="0 0 10 9"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M5.12195 0L6.58537 3L10 3.46154L7.56098 5.76923L8.04878 9L5.12195 7.38462L1.95122 9L2.43902 5.76923L0 3.46154L3.41463 3L5.12195 0Z"
+                        fill="<%= i <= take.rating ? '#EC8C28' : '#321C83' %>"
+                      />
+                    </svg>
+                  </div>
+                <% } %>
+              <% } %>
+            </div>
+          </td>
+        </tr>
       <% } %>
-    </div>
-
-  </div>
+    </tbody>
+  </table>
 </div>
 <%- include('footer') -%>
