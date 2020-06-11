@@ -85,7 +85,7 @@
           Animatic
         </div>
         <div
-          class="bg-purple-900"
+          class="bg-purple-900 rounded-sm"
           style="width: calc(138px * var(--aspect-ratio)); height: 138px;"
         >
         </div>
@@ -95,7 +95,7 @@
           Rough Edit
         </div>
         <div
-          class="bg-purple-900"
+          class="bg-purple-900 rounded-sm"
           style="width: calc(138px * var(--aspect-ratio)); height: 138px;"
         >
         </div>
@@ -216,6 +216,7 @@
                   style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
                 >
                   <img
+                    class="rounded-sm"
                     loading="lazy"
                     src="<%= `/uploads/projects/${project.id}/takes/${bestTakesByShotId[shot.id]}` %>"
                   />
