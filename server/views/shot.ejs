@@ -336,6 +336,13 @@
         </tr>
       </thead>
       <tbody class="text-xs leading-tight">
+        <% if (takes.length == 0) { %>
+        <tr>
+          <td colspan="15">
+            <i class="opacity-75">---</i>
+          </td>
+        </tr>
+        <% } %>
         <% for (let take of takes) { %>
           <tr>
             <td>
