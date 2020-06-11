@@ -219,40 +219,46 @@
         <% } %>
 
         <div class="space-y-8">
-          <div class="flex justify-end space-x-4 mt-2 mb-16">
-            <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
-              <div class="text-xxs leading-none uppercase text-purple-600 mb-1">
-                Previous Shot
+          <% if (previousShotInScene || nextShotInScene) { %>
+            <div class="flex justify-end space-x-4 mt-2 mb-12">
+              <% if (previousShotInScene) { %>
+              <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
+                <div class="text-xxs leading-none uppercase text-purple-600 mb-1">
+                  Previous Shot
+                </div>
+                <a
+                  href="<%= previousShotInScene.id %>"
+                  class="block blend-mode-overlay opacity-50 rounded-sm overflow-hidden"
+                  style="width: calc(54px * var(--aspect-ratio)); height: 54px;"
+                >
+                  <img
+                    loading="lazy"
+                    src="<%= scene.imagesPath %>/<%= previousShotInScene.posterframe %>"
+                  />
+                </a>
               </div>
-              <a
-                href="#"
-                class="block blend-mode-overlay opacity-50 rounded-sm overflow-hidden"
-                style="width: calc(54px * var(--aspect-ratio)); height: 54px;"
-              >
-                <img
-                  loading="lazy"
-                  src="<%= scene.imagesPath %>/<%= shot.posterframe %>"
-                />
-              </a>
-            </div>
-            <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
-              <div class="text-xxs leading-none uppercase text-purple-600 mb-1">
-                Next Shot
+              <% } %>
+              <% if (nextShotInScene) { %>
+              <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
+                <div class="text-xxs leading-none uppercase text-purple-600 mb-1">
+                  Next Shot
+                </div>
+                <a
+                  href="<%= nextShotInScene.id %>"
+                  class="block blend-mode-overlay opacity-50 rounded-sm overflow-hidden"
+                  style="width: calc(54px * var(--aspect-ratio)); height: 54px;"
+                >
+                  <img
+                    loading="lazy"
+                    src="<%= scene.imagesPath %>/<%= nextShotInScene.posterframe %>"
+                  />
+                </a>
               </div>
-              <a
-                href="#"
-                class="block blend-mode-overlay opacity-50 rounded-sm overflow-hidden"
-                style="width: calc(54px * var(--aspect-ratio)); height: 54px;"
-              >
-                <img
-                  loading="lazy"
-                  src="<%= scene.imagesPath %>/<%= shot.posterframe %>"
-                />
-              </a>
+              <% } %>
             </div>
-          </div>
+          <% } %>
 
-          <div class="flex justify-end">
+          <div class="flex justify-end mt-4">
             <button class="
               inline-block px-6 py-4
               border-2 rounded-lg
