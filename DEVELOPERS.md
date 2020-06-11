@@ -17,6 +17,16 @@ The server watches other files (public .js and .css, .ejs), and if they change i
 
 The signal for connected browsers to reload is sent via SSE (see `server/livereload.js` and `server/views/livereload.ejs`)
 
+## CSS
+
+To watch for CSS changes:
+
+```
+npm run watch:assets
+```
+
+Changes to `server/assets/css/index.css` will compile to `public/css/app.css`
+
 ## Testing
 
 ```
