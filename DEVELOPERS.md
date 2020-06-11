@@ -22,10 +22,18 @@ The signal for connected browsers to reload is sent via SSE (see `server/liverel
 To watch for CSS changes:
 
 ```
-npm run watch:assets
+npm run assets:watch
 ```
 
 Changes to `server/assets/css/index.css` will compile to `public/css/app.css`
+
+To build the CSS without watching:
+
+```
+npm run assets:build
+```
+
+`npm run postinstall` will run `npm run assets:build` in production mode, writing a small `app.css` for normal use.
 
 ## Testing
 

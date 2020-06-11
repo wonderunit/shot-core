@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node ./server",
-    "watch:assets": "postcss -w server/assets/css/index.css -o public/css/app.css",
+    "assets:build": "postcss server/assets/css/index.css -o public/css/app.css",
+    "assets:watch": "postcss server/assets/css/index.css -o public/css/app.css -w",
     "zcam-mock-server": "node ./lib/zcam/mock-server/index.js",
-    "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js"
+    "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js",
+    "postinstall": "NODE_ENV=production npm run assets:build"
   },
   "dependencies": {
     "adm-zip": "0.4.14",
