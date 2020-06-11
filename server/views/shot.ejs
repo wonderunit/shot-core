@@ -63,6 +63,7 @@
                 style="width: 192px; height: 192px;"
               >
                 <img
+                  class="rounded-sm"
                   loading="lazy"
                   src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" 
                 />
@@ -187,6 +188,7 @@
               style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
             >
               <img
+                class="rounded-sm"
                 loading="lazy"
                 src="<%= scene.imagesPath %>/<%= shot.posterframe %>"
               />
@@ -211,6 +213,7 @@
               style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
             >
               <img
+                class="rounded-sm"
                 loading="lazy"
                 src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
               />
@@ -228,10 +231,11 @@
                 </div>
                 <a
                   href="<%= previousShotInScene.id %>"
-                  class="block blend-mode-overlay opacity-50 rounded-sm overflow-hidden"
+                  class="block"
                   style="width: calc(54px * var(--aspect-ratio)); height: 54px;"
                 >
                   <img
+                    class="blend-mode-overlay opacity-50 rounded-sm"
                     loading="lazy"
                     src="<%= scene.imagesPath %>/<%= previousShotInScene.posterframe %>"
                   />
@@ -245,10 +249,11 @@
                 </div>
                 <a
                   href="<%= nextShotInScene.id %>"
-                  class="block blend-mode-overlay opacity-50 rounded-sm overflow-hidden"
+                  class="block"
                   style="width: calc(54px * var(--aspect-ratio)); height: 54px;"
                 >
                   <img
+                    class="blend-mode-overlay opacity-50 rounded-sm"
                     loading="lazy"
                     src="<%= scene.imagesPath %>/<%= nextShotInScene.posterframe %>"
                   />
@@ -445,6 +450,7 @@
                     ...{ shot_number, impromptu } = shot
                   }) %>
                   <img
+                    class="rounded-sm"
                     loading="lazy"
                     style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
                     src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
