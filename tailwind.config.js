@@ -24,7 +24,9 @@ module.exports = {
       }
     }
   },
-  variants: {},
+  variants: {
+    visibility: ['group-hover']
+  },
   plugins: [],
   corePlugins: {
     fontFamily: false

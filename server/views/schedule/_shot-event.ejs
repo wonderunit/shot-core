@@ -1,5 +1,9 @@
 <section
-  class="schedule-event schedule-shot  section pa3 w-100 flex justify-between hide-child <%= zebra ? 'zebra' : '' %>"
+  class="px-4 py-4 flex justify-between space-x-3 group"
+  style="
+    background: rgba(255, 255, 255, <%= zebra ? '0.125' : '0.05' %>);
+    --aspect-ratio: <%= scene.metadata.aspectRatio %>;
+  "
 
   data-controller="schedule-event"
 
@@ -10,33 +14,45 @@
 
   data-action="pointerdown->schedule-event#pointerDown"
 >
-  <div class="schedule-event__scene-number flex flex-column">
-    <div class="ttu tracked f7">Scene</div>
-    <a class="dib center link f3 lh-solid"
+  <div class="flex flex-col text-center">
+    <div class="text-xs leading-snug uppercase text-purple-600 mb-1">
+      Scene
+    </div>
+    <a
+      class="inline-block text-2xl font-bold leading-none text-shadow"
       href="/projects/<%= event.project_id %>/scenes/<%= scene.scene_number %>"
     ><%= scene.scene_number %></a>
   </div>
-  <div class="schedule-event__shot-number flex flex-column">
-    <div class="ttu tracked f7">Shot</div>
-    <a class="dib center link f3 lh-solid"
-        href="/projects/<%= event.project_id %>/scenes/<%= scene.scene_number %>/shots/<%= shot.id %>"
+
+
+  <div class="flex flex-col text-center">
+    <div class="text-xs leading-snug uppercase text-purple-600 mb-1">
+      Shot
+    </div>
+    <a
+      class="inline-block text-2xl font-bold leading-none text-shadow"
+      href="/projects/<%= event.project_id %>/scenes/<%= scene.scene_number %>/shots/<%= shot.id %>"
     ><%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %></a>
   </div>
-  <div class="schedule-event__image flex flex-column">
-    <% if (shot.thumbnail) { %>
-      <div class="aspect-ratio aspect-ratio--board" style="width:100px;">
-        <img
-          width="100"
-          height="56"
-          loading="lazy"
-          class="aspect-ratio--object bg-black"
-          src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
+
+  <div>
+      <div
+        style="width: calc(56px * var(--aspect-ratio)); height: 56px;"
+      >
+        <% if (shot.thumbnailZ) { %>
+          <img
+            class="rounded-sm"
+            loading="lazy"
+            src="<%= scene.imagesPath %>/<%= shot.thumbnail %>" />
+        <% } else { %>
+          <div class="opacity-50 whitespace-no-wrap text-center">
+            ---
+          </div>
+        <% } %>
       </div>
-    <% } else { %>
-      <div class="nowrap o-60">---</div>
-    <% } %>
   </div>
-  <div class="schedule-event__notes flex flex-column w-40">
+
+  <div class="flex flex-col w-1/4 text-sm">
     <%
     let combinedAction = shot.boards
       .map(board => board.action)
@@ -56,12 +72,13 @@
       .join(' ')
     %>
     <% if (combinedDialogue) { %>
-      <div class="pl3" title="<%= combinedDialogue %>">
+      <div class="pl-3" title="<%= combinedDialogue %>">
         <i>“<%= truncate(combinedDialogue) %>”</i>
       </div>
     <% } %>
   </div>
-  <div class="flex flex-column">
+
+  <div class="flex flex-col w-48">
     <div
       data-controller="inline-editor"
       data-inline-editor-value="<%= shot.shotType %>"
@@ -74,14 +91,14 @@
         data-target="inline-editor.form"
         >
         <label
-          class="pointer link link--dashed"
+          class="text-sm underline underline-dashed cursor-pointer"
           data-action="click->inline-editor#edit"
           data-target="inline-editor.label"
         >
           <%= shot.shotType || 'Shot Type' %>
         </label>
         <input
-          class="w-100 pa2 dn"
+          class="text-xs text-black w-full py-2 px-3 hidden"
           data-action="
             change->inline-editor#change
             blur->inline-editor#blur
@@ -89,16 +106,21 @@
           "
           data-target="inline-editor.input"
           value="<%= shot.shotType %>" />
-          <small data-target="inline-editor.hint" class="black-60 dn pt1">
+          <small
+            data-target="inline-editor.hint"
+            class="text-xs hidden pt-1"
+          >
             Esc to cancel
           </small>
       </form>
     </div>
   </div>
-  <div class="flex flex-column">
-    <div><%= shot.getCameraFocalLength(scene.metadata.aspectRatio) %></div>
+
+  <div class="flex flex-col w-12">
+    <div class="text-sm">
+      <%= shot.getCameraFocalLength(scene.metadata.aspectRatio) %>
+    </div>
     <div
-      class="f7"
       data-controller="inline-editor"
       data-inline-editor-value="<%= shot.fStop %>"
       data-inline-editor-key="fStop"
@@ -110,14 +132,14 @@
         data-target="inline-editor.form"
         >
         <label
-          class="dib center pointer link--dashed"
+          class="text-sm underline underline-dashed cursor-pointer"
           data-action="click->inline-editor#edit"
           data-target="inline-editor.label"
         >
           <%= shot.fStop || '𝑓-Stop' %>
         </label>
         <input
-          class="w-100 pa2 dn"
+          class="text-xs text-black w-full py-2 px-3 hidden"
           data-action="
             change->inline-editor#change
             blur->inline-editor#blur
@@ -125,27 +147,40 @@
           "
           data-target="inline-editor.input"
           value="<%= shot.fStop %>" />
-          <small data-target="inline-editor.hint" class="black-60 dn pt1">
+          <small
+            data-target="inline-editor.hint"
+            class="text-xs hidden pt-1"
+          >
             Esc to cancel
           </small>
       </form>
     </div>
   </div>
-  <div class="flex flex-column">
-    <div>Dur.</div>
-    <div><%= durationMsecsToString(event.duration) %></div>
+
+  <div class="flex flex-col items-center w-16">
+    <div class="text-xs leading-snug uppercase text-purple-600 mb-1">
+      Dur.
+    </div>
+    <div class="text-2xl font-bold leading-none text-shadow">
+      <%= durationMsecsToString(event.duration) %>
+    </div>
   </div>
-  <div class="flex flex-column">
-    <div>Takes</div>
-    <div><%= event.takes_count %></div>
+
+  <div class="flex flex-col items-center w-16">
+    <div class="text-xs leading-snug uppercase text-purple-600 mb-1">
+      Takes
+    </div>
+    <div class="text-2xl font-bold leading-none text-shadow">
+      <%= event.takes_count %>
+    </div>
   </div>
-  <div class="flex items-center child">
-    <a class="db link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>
-    <a class="db link" data-action="click->schedule-event#addNote" href="#">+Note</a>
-  </div>
-  <div class="flex items-center child">
+
+  <div class="flex items-center pl-2 space-x-2 text-sm invisible group-hover:visible">
+    <a class="block" data-action="click->schedule-event#addDay" href="#">+Day</a>
+    <a class="block" data-action="click->schedule-event#addNote" href="#">+Note</a>
+
     <a
-      class="db link f3 lh-solid relative"
+      class="flex w-8 items-center self-stretch justify-center leading-none text-4xl -mt-2"
       data-target="schedule-event.dragHandle schedule.dragHandle"
       style="cursor:grab; top: -0.125rem"
     >≡</a>

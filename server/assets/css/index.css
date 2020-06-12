@@ -83,6 +83,15 @@
   @apply transition ease-out duration-150;
 }
 
+.placeholder.highlight {
+  background-color: theme('colors.yellow.300');
+}
+
+.underline-dashed {
+  text-decoration-style: dashed;
+  text-underline-position: under;
+}
+
 html {
   height: 100%;
 }

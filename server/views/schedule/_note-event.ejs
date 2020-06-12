@@ -1,5 +1,8 @@
 <section
-  class="schedule-event schedule-note  section pa3 w-100 flex justify-between hide-child <%= zebra ? 'zebra' : '' %>"
+  class="px-4 py-4 flex justify-between space-x-3 group h-16"
+  style="
+    background: rgba(255, 255, 255, <%= zebra ? '0.125' : '0.05' %>);
+  "
 
   data-controller="schedule-event"
 
@@ -9,34 +12,32 @@
   data-schedule-event-event-type="<%= event.event_type %>"
 
   data-action="pointerdown->schedule-event#pointerDown"
-
-  style="height: 75px"
 >
   <div
-    class="flex items-center w-100"
+    class="flex items-center w-full"
     data-controller="schedule-note"
     data-schedule-note-value="<%= event.description %>"
   >
     <form
-      class="w-100 tc"
+      class="w-full text-center"
       action="/projects/<%= event.project_id %>/events/<%= event.id %>"
       method="PATCH"
       data-action="submit->schedule-note#submit"
       data-target="schedule-note.form"
       >
       <label
-        class="dib center pointer link--dashed"
+        class="text-sm underline underline-dashed cursor-pointer"
         data-action="click->schedule-note#edit"
         data-target="schedule-note.label"
       >
         <% if (event.description && event.description != '') { %>
           <%= event.description %>
         <% } else { %>
-          <span class="o-50">---</span>
+          <span class="opacity-50">---</span>
         <% } %>
       </label>
       <input
-        class="w-100 pa2 dn"
+        class="text-xs text-black w-full py-2 px-3 hidden"
         data-action="
           change->schedule-note#change
           blur->schedule-note#blur
@@ -44,19 +45,22 @@
         "
         data-target="schedule-note.input"
         value="<%= event.description %>" />
-        <small data-target="schedule-note.hint" class="f7 black-60 dn pt1">
+        <small
+          data-target="schedule-note.hint"
+          class="text-xs hidden pt-1"
+        >
           Esc to cancel
         </small>
     </form>
   </div>
-  <div class="flex items-center child">
-    <a class="db link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>
-    <a class="db link mr3" data-action="click->schedule-event#addNote" href="#">+Note</a>
-    <a class="db link dark-red" data-action="click->schedule-event#destroyEvent" href="#">Trash</a>
-  </div>
-  <div class="flex items-center child">
+
+  <div class="flex items-center pl-2 space-x-2 text-sm invisible group-hover:visible">
+    <a class="block" data-action="click->schedule-event#addDay" href="#">+Day</a>
+    <a class="block" data-action="click->schedule-event#addNote" href="#">+Note</a>
+    <a class="block text-red-600" data-action="click->schedule-event#destroyEvent" href="#">Trash</a>
+
     <a
-      class="db link f3 lh-solid relative"
+      class="flex w-8 items-center self-stretch justify-center leading-none text-4xl -mt-2"
       data-target="schedule-event.dragHandle schedule.dragHandle"
       style="cursor:grab; top: -0.125rem"
     >≡</a>

@@ -1,93 +1,66 @@
 <%- include('header') %>
-<%
-const cycle = (() => {
-  let index = 0
-  return () => index++ % 2 == 0 ? true : false
-})()
-%>
-<style>
-  .aspect-ratio--board {
-    padding-bottom: <%= `${ 1 / aspectRatio * 100 }%` %>;
-  }
-  .section > div {
-    padding-right: 1rem;
-  }
-  .section > div:last-child {
-    padding-right: 0;
-  }
-  .schedule-day {
-    background-color: gainsboro;
-  }
-  .schedule-scene {
-    color: #F5F5F5;
-    background-color: #285757;
-  }
-  .schedule-shot,
-  .schedule-note {
-    background-color: #eee;
-  }
-  .schedule-shot.zebra,
-  .schedule-note.zebra {
-    background-color: #fafafa;
-  }
-  .placeholder {
-    background-color:#eee;
-  }
-  .placeholder.highlight {
-    background-color: yellow;
-  }
-</style>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns bg-white">
-  <div class="lh-copy">
-    <h1 class="f3 ma0 mb4 mw8 center">
-      <a href="/">Home</a> /
-      <a href="/projects/<%= project.id %>"><%= project.name %></a> / <br />
-      Schedule
-    </h1>
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
 
-    <div
-      class="schedule mw8 center flex flex-column f6"
-      data-controller="schedule"
-      data-schedule-project-id="<%= project.id %>"
-      data-action="
-        pointerdown->schedule#pointerDown
+  <%- include('_nav') %>
 
-        dragstart->schedule#dragStart
-        dragover->schedule#dragOver
-        dragenter->schedule#dragOver
-        dragend@window->schedule#dragEnd
-
-        drop@window->schedule#drop
-      "
-    >
-      <% for (let [dayId, children] of tree) { %>
-        <%- include('schedule/_day', { day: daysById[dayId] }) %>
-        <% for (let [type, id, rest] of children) { %>
-          <% if (type == 'scene') { %>
-            <%- include('schedule/_scene', {
-                scene: scenesById[id],
-                ...rest
-              }) %>
-          <% } else if (type == 'shot') { %>
-            <%- include('schedule/_shot-event', {
-                day: daysById[dayId],
-                event: eventsById[id],
-                shot: shotsById[eventsById[id].shot_id],
-                scene: scenesById[eventsById[id].scene_id],
-
-                zebra: cycle()
-              }) %>
-          <% } else if (type == 'note') { %>
-            <%- include('schedule/_note-event', {
-                event: { ...eventsById[id] },
-
-                zebra: cycle()
-              }) %>
-          <% } %>
-        <% } %>
-        <div class="schedule-divider mb3" style="border-top: 3px solid #ddd"></div>
-      <% } %>
+  <div class="py-3 mb-5">
+    <div class="text-xxs uppercase text-purple-600 leading-none tracking-tighter">
+      Production
     </div>
+    <a
+      class="inline-block text-2xl font-bold text-purple-400 uppercase leading-none"
+      href="<%= `/projects/${project.id}` %>"
+    >
+      <%= project.name %>
+    </a>
+  </div>
+
+  <div
+    class="flex flex-col  max-w-screen-lg mx-auto"
+    data-controller="schedule"
+    data-schedule-project-id="<%= project.id %>"
+    data-action="
+      pointerdown->schedule#pointerDown
+
+      dragstart->schedule#dragStart
+      dragover->schedule#dragOver
+      dragenter->schedule#dragOver
+      dragend@window->schedule#dragEnd
+
+      drop@window->schedule#drop
+    "
+  >
+    <% for (let [dayId, children] of tree) { %>
+      <%- include('schedule/_day', { day: daysById[dayId] }) %>
+      <%
+      let index = 0
+      const cycle = () => index++ % 2 == 0 ? true : false
+      %>
+      <% for (let [type, id, rest] of children) { %>
+        <% if (type == 'scene') { %>
+          <%- include('schedule/_scene', {
+              scene: scenesById[id],
+              ...rest
+            }) %>
+        <% } else if (type == 'shot') { %>
+          <%- include('schedule/_shot-event', {
+              day: daysById[dayId],
+              event: eventsById[id],
+              shot: shotsById[eventsById[id].shot_id],
+              scene: scenesById[eventsById[id].scene_id],
+
+              zebra: cycle()
+            }) %>
+        <% } else if (type == 'note') { %>
+          <%- include('schedule/_note-event', {
+              event: { ...eventsById[id] },
+
+              zebra: cycle()
+            }) %>
+        <% } %>
+      <% } %>
+      <div class="mb-3 border-t border-solid border-purple-600"></div>
+    <% } %>
   </div>
 </div>
 <%- include('footer') -%>
