@@ -191,7 +191,7 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
 
     // Get file size in bytes
     debug(`\nHEAD ${uri}`)
-    const headRequest = head(uri)
+    const headRequest = head(uri, signal)
     cleanup.head = () => headRequest.cancel()
     let headResponse = yield headRequest
     debug('file size in bytes:', headResponse.headers['content-length'])
