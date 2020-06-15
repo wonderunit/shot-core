@@ -1,5 +1,9 @@
 # Shot Core
 
+[What is Shot Core?](https://github.com/wonderunit/shot-core/wiki/What-is-Shot-Core%3F)
+
+[Shot Core Open Hardware Project](https://github.com/mike-rankin/Shot-Core)
+
 ## Getting Started
 
 ### System Requirements
