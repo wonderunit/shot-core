@@ -60,6 +60,38 @@ const onDownloadProgress = url => ({ percent, transferred, total }) =>
     '\r'
   )
 
+// HEAD request, with a workaround for malformed Z CAM server response
+// via https://github.com/sindresorhus/got/issues/752
+const head = (src, signal) => {
+  return new Promise((resolve, reject) => {
+    let readable = got
+      .stream(src, {
+        method: 'HEAD',
+        timeout: REQUEST_TIMEOUT_MSECS
+      })
+      .on('error', err => {
+        // ignore parse error
+        if (err.code === 'HPE_INVALID_CONSTANT') {
+          // debug('ignoring parse error', err.code)
+        } else {
+          reject(err)
+        }
+      })
+      .on('response', response => {
+        resolve(response)
+      })
+
+    signal.pr.catch(event => {
+      if (readable) {
+        debug('abort', src)
+        readable.destroy()
+        readable = null
+        reject(event)
+      }
+    })
+ })
+}
+
 const download = (src, dst, signal) => {
   return new Promise((resolve, reject) => {
     let readable = got
@@ -159,7 +191,7 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
 
     // Get file size in bytes
     debug(`\nHEAD ${uri}`)
-    const headRequest = got.head(uri)
+    const headRequest = head(uri)
     cleanup.head = () => headRequest.cancel()
     let headResponse = yield headRequest
     debug('file size in bytes:', headResponse.headers['content-length'])
