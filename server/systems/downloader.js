@@ -17,6 +17,8 @@ const { spawnSync, execSync } = require('child_process')
 
 const downloader = require('../machines/downloader')
 
+const REQUEST_TIMEOUT_MSECS = 3 * 1000
+
 // find earliest, complete, not downloaded take
 const getNextTake = projectId => {
   return get(`
@@ -61,7 +63,9 @@ const onDownloadProgress = url => ({ percent, transferred, total }) =>
 const download = (src, dst, signal) => {
   return new Promise((resolve, reject) => {
     let readable = got
-      .stream(src)
+      .stream(src, {
+        timeout: REQUEST_TIMEOUT_MSECS
+      })
       .on('downloadProgress', onDownloadProgress(src))
     let writable = fs.createWriteStream(dst)
 
@@ -141,7 +145,11 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
   let steps = CAF(function * (signal) {
     // Get number of frames, duration
     debug(`\nGET ${uri}?act=info`)
-    const infoRequest = got(`${uri}?act=info`)
+    const infoRequest = got(
+      `${uri}?act=info`, {
+        timeout: REQUEST_TIMEOUT_MSECS
+      }
+    )
     cleanup.info = () => infoRequest.cancel()
     let infoResponse = yield infoRequest
     let movInfo = JSON.parse(infoResponse.body)
