@@ -192,7 +192,6 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     // Get file size in bytes
     debug(`\nHEAD ${uri}`)
     const headRequest = head(uri, signal)
-    cleanup.head = () => headRequest.cancel()
     let headResponse = yield headRequest
     debug('file size in bytes:', headResponse.headers['content-length'])
 
@@ -327,7 +326,6 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
 
       debug('unlinking files …')
       cleanup.info && cleanup.info()
-      cleanup.head && cleanup.head()
       cleanup.thumbnail && cleanup.thumbnail()
       cleanup.mov && cleanup.mov()
       cleanup.proxy && cleanup.proxy()
