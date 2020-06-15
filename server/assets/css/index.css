@@ -1,0 +1,124 @@
+@import "tailwindcss/base";
+
+@font-face {
+  font-family: THICCCBOI;
+  font-weight: normal;
+  src: url(/fonts/THICCCBOI-Regular.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: THICCCBOI;
+  font-weight: bold;
+  src: url(/fonts/THICCCBOI-Bold.woff2) format("woff2");
+}
+
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+.text-xxs {
+  letter-spacing: 0.05rem;
+}
+.text-xs {
+  letter-spacing: 0.04rem;
+}
+.text-sm {
+  letter-spacing: 0.01rem;
+}
+.text-5xl,
+.text-6xl,
+.text-7xl {
+  letter-spacing: -0.04rem;
+}
+
+.text-shadow {
+  text-shadow: 0px 4px 0px rgba(0, 0, 0, 0.14);
+}
+.box-shadow {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+}
+
+.blend-mode-overlay {
+  mix-blend-mode: overlay;
+}
+
+.gap-3px {
+  gap: 3px;
+}
+.mr-6px {
+  margin-right: 6px;
+}
+
+.table th,
+.table td {
+  vertical-align: top;
+  padding-right: 0.5rem;
+}
+.table th:last-child,
+.table td:last-child {
+  padding-right: 0;
+}
+.table th {
+  text-align: left;
+}
+.table th.text-center {
+  text-align: center;
+}
+.table th.text-right {
+  text-align: right;
+}
+.table th {
+  padding-bottom: 0.5rem;
+}
+.table tr td {
+  padding-top: 0.5rem;
+}
+.table tr:first-child td {
+  padding-top: 0.6rem;
+}
+.table tbody tr:first-child {
+  @apply border-solid border-t border-purple-600;
+}
+
+.fadein {
+  @apply transition ease-out duration-150;
+}
+
+.placeholder.highlight {
+  background-color: theme('colors.yellow.300');
+}
+
+.underline-dashed {
+  text-decoration-style: dashed;
+  text-underline-position: under;
+}
+
+html {
+  height: 100%;
+}
+body {
+  height: 100vh;
+}
+
+body {
+  font-family: THICCCBOI;
+  background: #3E2696;
+  color: #ffffff;
+  @apply leading-normal;
+}
+
+body:after {
+  content: '';
+
+  position: absolute;
+  width: 100%;
+  height: 687px;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+
+  background: linear-gradient(
+    180deg,
+  rgba(0, 0, 0, 0.5) 0%, 
+  rgba(0, 0, 0, 0) 100%
+  );
+}

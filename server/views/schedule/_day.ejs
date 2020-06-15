@@ -1,5 +1,6 @@
 <section
-  class="schedule-event schedule-day  section pa3 w-100 flex hide-child justify-between"
+  class="px-12 py-8 w-full flex group h-32 space-x-4"
+  style="background: rgba(255, 255, 255, 0.03)"
 
   data-controller="schedule-event"
 
@@ -10,22 +11,35 @@
   <% if (day.start_at) { %>
     data-schedule-event-start-at="<%= day.start_at.toISOString() %>"
   <% } %>
-
-  style="height: 125px"
 >
-  <div class="flex flex-column w-10">
-    <div>Day</div>
-    <div><%= day.day_number %> / <%= day.days_total %></div>
+  <div class="flex flex-col w-16">
+    <div class="text-sm leading-snug uppercase text-purple-600">
+      Day
+    </div>
+    <div class="flex">
+      <div class="text-5xl font-bold leading-none text-shadow -mb-1 mr-1">
+        <%= day.day_number %>
+      </div>
+      <div class="text-sm leading-none text-purple-600 mb-px self-end">
+        /&nbsp;<%= day.days_total %>
+      </div>
+    </div>
   </div>
-  <div class="flex flex-column w-10">
-    <div>Shots</div>
-    <div><%= day.shot_count %></div>
+
+  <div class="flex flex-col items-center w-16">
+    <div class="text-sm leading-snug uppercase text-purple-600">
+      Shots
+    </div>
+    <b class="text-5xl font-bold leading-none text-shadow">
+      <%= day.shot_count %>
+    </b>
   </div>
-  <div class="flex justify-end w-40">
-    <h3 class="f3 ma0 lh-solid">
+
+  <div class="flex justify-end flex-1">
+    <h3 class="text-3xl font-bold tracking-wide leading-snug mx-auto -mt-1">
       <% if (day.day_number == 1) { %>
         <a
-          class="dib link link--dashed"
+          class="inline-block underline underline-dashed"
           href="#"
           data-action="click->schedule-event#editDate"
         >
@@ -36,10 +50,14 @@
       <% } %>
     </h3>
   </div>
-  <div class="w-20">
+
+  <div>
     <% if (day.day_number == 1) { %>
-      Start: <a
-        class="dib link link--dashed"
+      <div class="text-sm leading-snug uppercase text-purple-600">
+      Start
+      </div>
+      <a
+        class="inline-block text-sm underline underline-dashed"
         href="#"
         data-action="click->schedule-event#editStartAt"
         >
@@ -51,11 +69,12 @@
       </a>
     <% } %>
   </div>
-  <div class="flex child w-20">
-    <a class="db link mr3" data-action="click->schedule-event#addDay" href="#">+Day</a>
-    <a class="db link <%= (day.day_number > 1) ? 'mr3' : '' %>" data-action="click->schedule-event#addNote" href="#">+Note</a>
+
+  <div class="flex invisible group-hover:visible pl-2 space-x-2 text-sm">
+    <a class="block" data-action="click->schedule-event#addDay" href="#">+Day</a>
+    <a class="block" data-action="click->schedule-event#addNote" href="#">+Note</a>
     <% if (day.day_number > 1) { %>
-      <a class="db link dark-red" data-action="click->schedule-event#destroyEvent" href="#">Trash</a>
+      <a class="block text-red-600" data-action="click->schedule-event#destroyEvent" href="#">Trash</a>
     <% } %>
   </div>
 </section>

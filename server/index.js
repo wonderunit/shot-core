@@ -72,7 +72,16 @@ let livereload
 if (app.get('env') == 'development') {
   livereload = require('./livereload')
   app.get('/livereload', livereload.get)
+
+  app.get('/template.html', (req, res) => res.render('template'))
 }
+// used to switch css files
+app.use((req, res, next) => {
+  res.locals.req = {
+    url: req.url
+  }
+  next()
+})
 
 app.locals = {
   parse,

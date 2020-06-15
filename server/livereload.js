@@ -3,7 +3,8 @@
 const chokidar = require('chokidar')
 
 const files = [
-  'public/*',
+  'public/css/*.css',
+  'public/js/*.js',
   'server/views/*.ejs',
   'server/views/**/*.ejs'
 ]

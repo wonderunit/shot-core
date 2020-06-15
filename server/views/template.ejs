@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shot Core Server HTML Template</title>
+  <style>
+    :root {
+      --aspect-ratio: <%= 16 / 9 %>;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
+
+  <div class="flex flex-col justify-center w-full py-12">
+    <div class="font-bold text-7xl md:text-8xl leading-none text-center mb-2 text-purple-100">
+      Shot Core
+    </div>
+    <div class="font-bold uppercase text-4xl md:text-5xl leading-tight text-purple-400 text-center">
+      Interface Design
+    </div>
+  </div>
+
+  <%- include('_nav', { project: { id: 1 } }) %>
+
+  <div class="mb-6 space-y-4 text-purple-100">
+    <div>
+      <div class="text-1xl md:text-2xl uppercase text-purple-400 leading-relaxed md:leading-none tracking-wide">
+        Production
+      </div>
+      <div class="text-6xl md:text-8xl font-bold uppercase leading-none -mt-2 tracking-tight text-shadow">
+        Explorers
+      </div>
+    </div>
+
+    <div>
+      <div class="text-1xl md:text-2xl uppercase text-purple-600 leading-none">
+        Shot List
+      </div>
+      <div class="text-5xl md:text-7xl font-bold leading-none tracking-tight text-shadow">
+        1,345 Shots
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <button class="
+        inline-block px-8 py-4
+        border-4 rounded-lg
+        
+        text-1xl md:text-2xl leading-tight font-bold tracking-wide
+
+        bg-purple-900 border-white-o
+        hover:bg-orange-500 hover:border-yellow-o
+        fadein
+        
+        box-shadow
+      ">
+        Download Edit
+      </button>
+
+      <button class="
+        inline-block px-5 py-2
+        border-2 rounded-lg
+        
+        leading-tight text-xxs font-bold
+
+        bg-purple-900 border-white-o
+        hover:bg-orange-500 hover:border-yellow-o
+        fadein
+        
+        box-shadow
+      ">
+        Download Edit
+      </button>
+    </div>
+
+    <div class="py-3">
+      <div class="text-xxs uppercase text-purple-600 leading-none tracking-tighter">
+        Production
+      </div>
+      <div class="text-2xl font-bold text-purple-400 uppercase leading-none">
+        Explorers
+      </div>
+    </div>
+
+    <table class="table table-auto border-collapse w-full">
+      <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
+        <tr>
+          <th>
+            Scene
+          </th>
+          <th>
+            Title
+          </th>
+          <th>
+            Slugline
+          </th>
+          <th>
+            Shots
+          </th>
+          <th>
+            Duration
+          </th>
+          <th class="text-right">
+            Takes
+          </th>
+        </tr>
+      </thead>
+      <tbody class="text-xs leading-tight">
+        <% for (let i = 0; i < 3; i++) { %>
+          <tr>
+            <td>
+              <b>1</b>
+            </td>
+            <td class="max-w-sm">
+              <b>Jimmy wakes up from a nap.</b>
+            </td>
+            <td>
+              INT. BEDROOM – NIGHT
+            </td>
+            <td>
+              20
+            </td>
+            <td>
+              1:15
+            </td>
+            <td class="text-right">
+              45 takes
+            </td>
+          </tr>
+          <tr>
+            <td colspan="1"></td>
+            <td colspan="5">
+              <div class="grid grid-cols-9 gap-3px pb-6">
+                <% for (let i = 0; i < 12; i++) { %>
+                  <div class="relative" style="padding-bottom: calc(100% / (var(--aspect-ratio))">
+                    <img
+                      class="blend-mode-overlay opacity-50 rounded-sm absolute h-full w-full object-cover"
+                      src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-thumbnail.png"
+                    />
+                  </div>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <table class="table table-auto border-collapse w-full">
+      <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
+        <tr>
+          <th>
+            Shot
+          </th>
+          <th>
+            Shot Type
+          </th>
+          <th class="text-center">
+            Rigging
+          </th>
+          <th class="text-center">
+            Lens
+          </th>
+          <th class="text-center">
+            Aperature
+          </th>
+          <th class="text-center">
+            ISO
+          </th>
+          <th class="text-center">
+            Res
+          </th>
+          <th class="text-center">
+            FPS
+          </th>
+          <th class="text-center">
+            Shutter
+          </th>
+          <th class="text-center">
+            WB
+          </th>
+          <th class="text-center">
+            ND
+          </th>
+          <th class="text-center">
+            VFX
+          </th>
+          <th class="text-center">
+            Duration
+          </th>
+          <th class="text-right">
+            Takes
+          </th>
+        </tr>
+      </thead>
+      <tbody class="text-xs leading-tight">
+        <% for (let i = 0; i < 3; i++) { %>
+          <tr>
+            <td>
+              <b>1</b>
+            </td>
+            <td>
+              Medium Close up
+            </td>
+            <td class="text-center">
+              Handheld
+            </td>
+            <td class="text-center">
+              22mm
+            </td>
+            <td class="text-center">
+              f/1.4
+            </td>
+            <td class="text-center">
+              2500
+            </td>
+            <td class="text-center">
+              4k
+            </td>
+            <td class="text-center">
+              23.98
+            </td>
+            <td class="text-center">
+              1/50
+            </td>
+            <td class="text-center">
+              1500
+            </td>
+            <td class="text-center">
+              -2
+            </td>
+            <td class="text-center">
+              Chroma
+            </td>
+            <td class="text-center">
+              1:15
+            </td>
+            <td class="text-right">
+              3
+            </td>
+          </tr>
+          <tr>
+            <td colspan="1"></td>
+            <td colspan="13">
+              <div class="flex pb-6">
+                <div
+                  class="mr-6px"
+                  style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
+                >
+                  <img
+                    src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-thumbnail.png"
+                  />
+                </div>
+
+                <div
+                  class="mr-6px"
+                  style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
+                >
+                  <img
+                    class="blend-mode-overlay rounded-sm"
+                    src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-shot-generator.png"
+                  />
+                </div>
+
+                <div
+                  style="width: 76px; height: 76px;"
+                >
+                  <img
+                    src="/uploads/projects/1/storyboards/Scene-1-EXT-A-PLACE-DAY-1-ZX3ZM/images/board-2-ZU9S1-camera-plot.png"
+                  />
+                </div>
+              </div>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="px-8 space-y-4 text-purple-100 tracking-wide">
+    <p>
+      This is a paragraph of normal text at the default font size.
+    </p>
+
+    <p class="text-xxs">
+      text-xxs 9px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-xs">
+      text-xs 12px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-sm">
+      text-sm 14px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-base leading-snug">
+      text-base 16px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-lg leading-snug">
+      text-lg 18px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-xl leading-snug">
+      text-xl The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-2xl leading-snug">
+      text-2xl 24px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-3xl leading-snug">
+      text-3xl The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-4xl leading-snug">
+      text-4xl The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-5xl leading-tight">
+      text-5xl 48px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-6xl leading-tight">
+      text-6xl The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-7xl leading-tight">
+      text-7xl 72px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+
+    <p class="text-8xl leading-none">
+      text-8xl 144px The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog.
+    </p>
+  </div>
+
+</div>
+
+<%- include('footer') -%>
+
+<% if (process.env.NODE_ENV !== 'production') { %>
+  <%- include('livereload') %>
+<% } %>
+</body>
+</html>

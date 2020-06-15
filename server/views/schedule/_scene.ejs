@@ -1,21 +1,51 @@
-<section class="schedule-event schedule-scene   section pa3 w-100 flex justify-between">
-  <div class="schedule-scene__number flex flex-column">
-    <div>Scene</div>
-    <div><%= scene.scene_number %> / <%= project_scenes_count %></div>
+<section
+  class="px-12 py-8 w-full flex space-x-4"
+  style="background: rgba(0, 0, 0, 0.25)"
+>
+  <div class="flex flex-col w-16">
+    <div class="text-xs leading-snug uppercase text-purple-600 mb-1">
+      Scene
+    </div>
+    <div class="flex">
+      <div class="text-2xl font-bold leading-none text-shadow -mb-px mr-1">
+        <%= scene.scene_number %>
+      </div>
+      <div class="text-sm leading-none text-purple-600 mb-px self-end">
+        /&nbsp;<%= project_scenes_count %>
+      </div>
+    </div>
   </div>
-  <div class="schedule-scene__shots flex flex-column">
-    <div>Shots</div>
-    <div><%= scene.shots_count %></div>
+
+  <div class="flex flex-col items-center w-16">
+    <div class="text-xs leading-snug uppercase text-purple-600 mb-1">
+      Shots
+    </div>
+    <div class="text-2xl font-bold leading-none text-shadow">
+      <%= scene.scene_number %>
+    </div>
   </div>
-  <div class="schedule-scene__description flex flex-column">
-    <h3 class="ma0"><%= scene.description || '---' %></h3>
-    <p class="ma0"><%= scene.synopsis || '---' %></p>
+
+  <div class="flex flex-col flex-1">
+    <h3 class="text-2xl font-bold leading-tight -mt-1">
+      <%= scene.description || '---' %>
+    </h3>
+    <p class="text-sm">
+      <%= scene.synopsis || '---' %>
+    </p>
   </div>
-  <div class="schedule-scene__slugline flex flex-column">
-    <%= scene.slugline %>
+
+  <div class="flex flex-col w-56 self-center">
+    <div class="text-1xl font-bold uppercase leading-tight -mt-1">
+      <%= scene.slugline %>
+    </div>
   </div>
-  <div class="schedule-scene__duration flex flex-column">
-    <div>Duration</div>
-    <div><%= durationMsecsToString(scene.shots_duration) %></div>
+
+  <div class="flex flex-col w-32 items-end">
+    <div class="text-xs leading-snug uppercase text-purple-600 mb-1">
+      Duration
+    </div>
+    <div class="text-2xl font-bold leading-none text-shadow">
+      <%= durationMsecsToString(scene.shots_duration) %>
+    </div>
   </div>
 </section>

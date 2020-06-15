@@ -141,6 +141,42 @@ exports.show = (req, res) => {
   )
   days = Day.decorateCollection(days, { events })
 
+  let previousShotInScene
+  // if this is not the first shot
+  if (shot.shot_number > 1) {
+    // find the shot in this scene with the prior shot_number
+    previousShotInScene = get(`
+      SELECT *
+      FROM shots
+      WHERE scene_id = ?
+      AND shot_number = ?
+      AND project_id = ?
+    `,
+    scene.id,
+    shot.shot_number - 1,
+    project.id
+    )
+  }
+  if (previousShotInScene) { previousShotInScene = new Shot(previousShotInScene) }
+
+  let nextShotInScene
+  // if this is not the last shot
+  if (shot.shot_number != scene_shots_count) {
+    // find the shot in this scene with the next shot_number
+    nextShotInScene = get(`
+      SELECT *
+      FROM shots
+      WHERE scene_id = ?
+      AND shot_number = ?
+      AND project_id = ?
+    `,
+    scene.id,
+    shot.shot_number + 1,
+    project.id
+    )
+    if (nextShotInScene) { nextShotInScene = new Shot(nextShotInScene) }
+  }
+
   res.render('shot', {
     project,
     scene: new Scene(scene),
@@ -153,7 +189,10 @@ exports.show = (req, res) => {
     days,
 
     differenceInMilliseconds,
-    humanizeAspectRatio
+    humanizeAspectRatio,
+
+    previousShotInScene,
+    nextShotInScene
   })
 }
 

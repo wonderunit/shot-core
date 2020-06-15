@@ -1,10 +1,13 @@
-<div class="ma4">
-  <small class="lh-copy helvetica black-40">
+<!--
+<div class="container px-3 md:p-8 my-6 md:my-0 pb-8">
+  <div class="opacity-75 tracking-wider text-purple-100 text-xs">
     Server Time:
     <%= format(new Date(), 'd MMM, E hh:mm a') %>
     <%= Intl.DateTimeFormat().resolvedOptions().timeZone %>
-  </small>
+  </div>
 </div>
+-->
+
 <script src="/js/stimulus.umd.js"></script>
 <script src="/js/index.js"></script>
 <% if (process.env.NODE_ENV !== 'production') { %>

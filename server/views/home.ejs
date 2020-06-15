@@ -1,0 +1,59 @@
+<%- include('header') %>
+<script>
+  function confirmation (event) {
+    return confirm('Are you sure?')
+  }
+</script>
+
+<div class="container px-6 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
+
+  <div class="flex flex-col justify-center w-full py-12">
+    <div class="font-bold text-7xl md:text-8xl leading-none text-center mb-2 text-purple-100">
+      Shot Core
+    </div>
+    <div class="font-bold uppercase text-4xl md:text-5xl leading-tight text-purple-400 text-center">
+      Projects
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl m-auto mb-20">
+    <% for (let project of projects) { %>
+      <div class="flex flex-col w-full h-full rounded-md overflow-hidden bg-purple-900 justify-between">
+        <a class="block text-4xl md:text-7xl font-bold leading-none tracking-tight text-shadow p-10 underline"
+          href="/projects/<%= project.id %>"><%= project.name %></a>
+
+        <form
+          class="flex bg-purple-900 w-full justify-end"
+          onsubmit="return confirmation(event)"
+          method="POST"
+          action="/projects/<%= project.id %>"
+        >
+          <input name="_method" type="hidden" value="DELETE" />
+          <button
+            class="bg-purple-100 font-bold text-red-600 py-2 px-5 m-4 rounded fadein hover:bg-red-600 hover:text-white"
+          >Delete</button>
+        </form>
+      </div>
+    <% } %>
+
+    <a class="flex flex-col justify-around items-center p-10 rounded-md overflow-hidden bg-purple-900"
+      href="/projects/new">
+      <div
+        class="text-8xl font-bold uppercase leading-none -mt-2 tracking-tight text-shadow"
+      >+</div>
+
+      <div
+        class="text-2xl text-purple-400 leading-none tracking-wide"
+      >Create a Project</div>
+    </a>
+  </div>
+
+  <div class="mt-32 mb-24">
+    <ul class="flex text-1xl md:text-2xl text-purple-600 leading-relaxed underline space-x-12">
+      <li><a href="/settings">Shot Core Settings</a></li>
+      <li><a href="/status">Downloader Status</a></li>
+    </ul>
+  </div>
+
+</div>
+<%- include('footer') -%>

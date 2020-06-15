@@ -184,10 +184,13 @@ exports.index = (req, res) => {
 
   let sceneIds = takes.map(scene => scene.scene_id)
   let scenes = all(
-    `SELECT id, scene_number FROM scenes WHERE id IN (${q(sceneIds)})`, sceneIds
+    `SELECT id, scene_number, metadata_json FROM scenes WHERE id IN (${q(sceneIds)})`, sceneIds
   )
 
-  takes = Take.decorateCollection(takes)
-
-  res.render('takes', { project, takes, shots, scenes })
+  res.render('takes', {
+    project,
+    takes: Take.decorateCollection(takes),
+    shots: Shot.decorateCollection(shots),
+    scenes: Scene.decorateCollection(scenes)
+  })
 }

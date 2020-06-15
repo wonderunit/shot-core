@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node ./server",
+    "assets:build": "postcss server/assets/css/index.css -o public/css/app.css",
+    "assets:watch": "postcss server/assets/css/index.css -o public/css/app.css -w",
     "zcam-mock-server": "node ./lib/zcam/mock-server/index.js",
-    "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js"
+    "test": "NODE_ENV=test tap -R classic --no-esm --no-cov test/*.test.js",
+    "postinstall": "NODE_ENV=production npm run assets:build"
   },
   "dependencies": {
     "adm-zip": "0.4.14",
@@ -33,7 +36,9 @@
     "chokidar": "3.4.0",
     "mock-fs": "4.10.4",
     "nodemon": "2.0.3",
+    "postcss-cli": "7.1.1",
     "response-time": "2.3.2",
+    "tailwindcss": "1.4.6",
     "tap": "14.10.6"
   }
 }

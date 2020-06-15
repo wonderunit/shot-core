@@ -1,288 +1,352 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
+  <%- include('_nav') %>
 
-    <div class="mb4">
-      <h2 class="f7 fw4 lh-solid ttu ma0">
-        Production
-      </h2>
-      <h2 class="f5 b lh-solid ttu ma0">
-        <a href="<%= `/projects/${project.id}` %>" class="link">
-          <%= project.name %>
-        </a>
-      </h2>
+  <div class="py-3 mb-5">
+    <div class="text-xxs uppercase text-purple-600 leading-none tracking-tighter">
+      Production
     </div>
+    <a
+      class="inline-block text-2xl font-bold text-purple-400 uppercase leading-none"
+      href="<%= `/projects/${project.id}` %>"
+    >
+      <%= project.name %>
+    </a>
+  </div>
 
-    <div class="flex w-100 mb4">
-      <div class="flex flex-column w-50">
-        <div class="flex justify-around mr4 mb4">
-          <div class="flex flex-column items-center pr2">
-            <div class="f7 ttu">
+  <div class="flex w-full space-x-8 mb-16">
+
+    <div class="flex flex-col">
+      <div class="flex flex-col">
+        <div class="flex justify-between mb-6 px-6">
+          <div class="flex flex-col items-center">
+            <div class="text-sm leading-snug uppercase text-purple-600">
               Scene
             </div>
-            <b class="f-headline lh-solid ma0">
-              <a href="<%= `/projects/${project.id}/scenes/${scene.id}` %>" class="link">
-                <%= scene.scene_number %>
-              </a>
-            </b>
-            <div>
+            <a
+              href="<%= `/projects/${project.id}/scenes/${scene.id}` %>"
+              class="text-8xl font-bold leading-none text-shadow"
+            >
+              <%= scene.scene_number %>
+            </a>
+            <div class="text-lg leading-snug text-purple-600">
               / <%= project_scenes_count %>
             </div>
           </div>
 
-          <div class="flex flex-column items-center pr2">
-            <div class="f7 ttu">
+          <div class="flex flex-col items-center">
+            <div class="text-sm leading-snug uppercase text-purple-600">
               Shot
             </div>
-            <b class="f-headline lh-solid ma0">
-              <a href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}` %>" class="link">
-                <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
-              </a>
-            </b>
-            <div>
+            <a
+              href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}` %>"
+              class="text-8xl font-bold leading-none text-shadow"
+            >
+              <%= shot.impromptu ? 'i' : '' %><%= shot.shot_number %>
+            </a>
+            <div class="text-lg leading-snug text-purple-600">
               / <%= scene_shots_count %>
             </div>
           </div>
 
-          <div class="flex flex-column items-center pr2">
-            <div class="f7 ttu">
+          <div class="flex flex-col items-center">
+            <div class="text-sm leading-snug uppercase text-purple-600">
               Take
             </div>
-            <b class="f-headline lh-solid ma0">
+            <a
+              href="<%= `/projects/${project.id}/scenes/${scene.id}/shots/${shot.id}/takes/${take.id}` %>"
+              class="text-8xl font-bold leading-none text-shadow"
+            >
               <%= take.take_number %>
-            </b>
-            <div>
+            </a>
+            <div class="text-lg leading-snug text-purple-600">
               / <%= shot_takes_count %>
             </div>
           </div>
         </div>
 
-        <div class="center pa2">
-          <% if (take.rating == null) { %>No Rating<% } else { %>
-            <% for (let i = 0; i < take.rating; i++) { %>★<% } %>
-          <% } %>
-        </div>
-
-        <div>
-          <div class="mb4">
-            <div class="ttu">Notes</div>
-            <div>I don’t know about this one.</div>
-          </div>
-
-          <div class="mb3">
-            <div class="f6 ttu">
-              <%= scene.slugline %>
-            </div>
-            <% if (scene.description || scene.synopsis) { %>
-              <div>
-                <b><%= scene.description %></b> <%= scene.synopsis %>
-              </div>
+        <div class="flex mt-2 mb-8">
+          <div class="flex m-auto space-x-2">
+            <% if (take.rating == null) { %>
+              ---
+            <% } else { %>
+              <% for (let i = 0; i < 5; i++) { %>
+                <div>
+                  <svg
+                    width="43"
+                    height="41"
+                    viewBox="0 0 43 41"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style="filter: drop-shadow(0px <%= i <= take.rating ? '1px' : '1px' %> 0px rgba(255, 255, 255, 0.25))"
+                  >
+                    <path
+                      d="M22.0244 0L28.3171 13.6667L43 15.7692L32.5122 26.2821L34.6098 41L22.0244 33.641L8.39024 41L10.4878 26.2821L0 15.7692L14.6829 13.6667L22.0244 0Z"
+                      fill="<%= i <= take.rating ? '#EC8C28' : '#130B33af' %>"
+                    />
+                  </svg>
+                </div>
+              <% } %>
             <% } %>
           </div>
-
-          <%
-          let combinedDialogue = shot.boards
-            .map(board => board.dialogue)
-            .filter(Boolean)
-            .join(' ')
-          %>
-          <% if (combinedDialogue) { %>
-            <div class="mb3">
-              <div class="f7 ttu">
-                Dialogue
-              </div>
-              <div class="f3">
-                <%= combinedDialogue %>
-              </div>
-            </div>
-          <% } %>
-
-          <%
-          let combinedAction = shot.boards
-            .map(board => board.action)
-            .filter(Boolean)
-            .join(' ')
-          %>
-          <% if (combinedAction) { %>
-            <div class="mb3">
-              <div class="f7 ttu">
-                Action
-              </div>
-              <div>
-                <%= combinedAction %>
-              </div>
-            </div>
-          <% } %>
-
-          <%
-          let combinedNotes = shot.boards
-            .map(board => board.notes)
-            .filter(Boolean)
-            .join(' ')
-          %>
-          <% if (combinedNotes) { %>
-            <div class="mb3">
-              <div class="f7 ttu">
-                Notes
-              </div>
-              <div>
-                <%= combinedNotes %>
-              </div>
-            </div>
-          <% } %>
-
-          <div class="mb3">
-            <div class="f7 ttu">
-              Shooting Day
-            </div>
-            <div>
-              <% if (day_number != null) { %>
-              Day <%= day_number %>:
-              <% } %>
-              <%= format(take.action_at, 'EEEE, MMM d, yyyy') %> – <%= format(take.action_at, 'HH:mm') %>
-            </div>
-          </div>
-
         </div>
       </div>
 
-      <div class="flex flex-column w-50">
-        <% if (shot.posterframe) { %>
+      <div class="space-y-6">
+        <div>
+          <div class="text-xxs uppercase text-purple-600 leading-none">
+            Take Notes
+          </div>
+          <div class="text-lg">
+            I don’t know about this one.
+          </div>
+        </div>
+
+        <div>
+          <div class="text-xxs uppercase text-purple-600">
+            <%= scene.slugline %>
+          </div>
+          <% if (scene.description || scene.synopsis) { %>
+            <div class="text-lg">
+              <b><%= scene.description %></b> <%= scene.synopsis %>
+            </div>
+          <% } %>
+        </div>
+
+        <%
+        let combinedDialogue = shot.boards
+          .map(board => board.dialogue)
+          .filter(Boolean)
+          .join(' ')
+        %>
+        <% if (combinedDialogue) { %>
           <div>
-            <div class="w-100">
-              <div>Storyboard</div>
-              <img
-                loading="lazy"
-                src="<%= scene.imagesPath %>/<%= shot.posterframe %>" />
+            <div class="text-xxs uppercase text-purple-600 leading-none">
+              Dialogue
+            </div>
+            <div class="text-4xl">
+              <b>“<%= combinedDialogue %>”</b>
             </div>
           </div>
         <% } %>
+
+        <%
+        let combinedAction = shot.boards
+          .map(board => board.action)
+          .filter(Boolean)
+          .join(' ')
+        %>
+        <% if (combinedAction) { %>
+          <div>
+            <div class="text-xxs uppercase text-purple-600 leading-none">
+              Action
+            </div>
+            <div class="text-lg">
+              <%= combinedAction %>
+            </div>
+          </div>
+        <% } %>
+
+        <%
+        let combinedNotes = shot.boards
+          .map(board => board.notes)
+          .filter(Boolean)
+          .join(' ')
+        %>
+        <% if (combinedNotes) { %>
+          <div>
+            <div class="text-xxs uppercase text-purple-600 leading-none">
+              Notes
+            </div>
+            <div class="text-lg">
+              <%= combinedNotes %>
+            </div>
+          </div>
+        <% } %>
+
+        <div>
+          <div class="text-xxs uppercase text-purple-600 leading-none">
+            Shooting Day
+          </div>
+          <div class="text-lg">
+            <% if (day_number != null) { %>
+            Day <%= day_number %>:
+            <% } %>
+            <%= format(take.action_at, 'EEEE, MMM d, yyyy') %> – <%= format(take.action_at, 'HH:mm') %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-4 flex-1">
+      <div class="flex flex-col space-y-2">
+        <% if (shot.posterframe) { %>
+          <div
+            class="flex flex-col"
+            style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+          >
+            <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
+              Storyboard
+            </div>
+
+            <div
+              style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
+            >
+              <img
+                class="rounded-sm"
+                loading="lazy"
+                src="<%= scene.imagesPath %>/<%= shot.posterframe %>"
+              />
+            </div>
+          </div>
+        <% } %>
+
 
         <% let stream = take.filenameForStream({
           ...{ scene_number } = scene,
           ...{ shot_number, impromptu } = shot
         }) %>
         <% if (stream) { %>
-          <div>
-            <div class="w-100">
-              <div>Take Preview</div>
+          <div
+            class="flex flex-col"
+            style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+          >
+            <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
+              Take Video
+            </div>
+
+            <% let thumbnail = take.filenameForThumbnail({
+              ...{ scene_number } = scene,
+              ...{ shot_number, impromptu } = shot
+            }) %>
+            <div
+              style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
+            >
               <video
+                class="w-full rounded-sm"
+
                 controls
-                class="w-100"
-                src="<%= `/uploads/projects/${project.id}/takes/${stream}` %>"
+                preload="metadata"
                 type="video/quicktime"
+
+                poster="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
+                src="<%= `/uploads/projects/${project.id}/takes/${stream}` %>"
               ></video>
             </div>
           </div>
         <% } %>
 
         <% if (shot.cameraPlot) { %>
-          <div>
-            <div class="w-50">
-              <div>Shot Diagram</div>
-              <img
-                loading="lazy"
-                src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" />
+          <div
+            class="flex flex-grow justify-end pb-8"
+          >
+            <div
+              class="flex flex-col"
+              style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+            >
+              <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
+                Shot Diagram
+              </div>
+
+              <div
+                style="width: 192px; height: 192px;"
+              >
+                <img
+                  class="rounded-sm"
+                  loading="lazy"
+                  src="<%= scene.imagesPath %>/<%= shot.cameraPlot %>" 
+                />
+              </div>
             </div>
           </div>
         <% } %>
 
-        <div class="mt3">
-          <a href="#" class="link">
+        <div class="flex justify-end">
+          <button class="
+            inline-block px-6 py-4
+            border-2 rounded-lg
+
+            leading-tight text-xxs font-bold
+
+            bg-purple-900 border-white-o
+            hover:bg-orange-500 hover:border-yellow-o
+            fadein
+
+            box-shadow
+          ">
             Show Footage
-          </a>
+          </button>
         </div>
       </div>
     </div>
-
-    <div class="w-100">
-      <table class="w-100 mb2 f7">
-        <thead class="ttu">
-          <tr>
-            <th class="normal">
-              Duration
-            </th>
-            <th class="normal">
-              Lens
-            </th>
-            <th class="normal">
-              Aperature
-            </th>
-            <th class="normal">
-              ISO
-            </th>
-            <th class="normal">
-              Res
-            </th>
-            <th class="normal">
-              FPS
-            </th>
-            <th class="normal">
-              Aspect
-            </th>
-            <th class="normal">
-              Shutter
-            </th>
-            <th class="normal">
-              WB
-            </th>
-            <th class="normal">
-              ND
-            </th>
-            <th class="normal">
-              VFX
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="f3">
-            <td class="normal   o-50">
-              <b><%= durationMsecsToString(take.metadata.info.streams[0].duration * 1000) %></b>
-            </td>
-            <td class="normal">
-              <span
-                style="border-bottom: 1px dashed black"
-                title="<%= take.metadata.info.format.tags["com.zcam.camera.lensType"] %>"
-              >
-                <%= take.metadata.info.format.tags["com.zcam.camera.lensFocalLength"] %>
-              </span>
-            </td>
-            <td class="normal">
-              <b><%= take.metadata.info.format.tags["com.zcam.camera.aperture"].replace('F', 'f/') %></b>
-            </td>
-            <td class="normal">
-              <b><%= take.metadata.info.format.tags["com.zcam.camera.iso"] %></b>
-            </td>
-            <td class="normal   o-50">
-              <%=
-                humanizeVideoResolution(
-                  take.metadata.info.streams[0].width,
-                  take.metadata.info.streams[0].height
-                )
-              %>
-            </td>
-            <td class="normal">
-              <%= take.metadata.info.format.tags["com.zcam.camera.projectFps"] %>
-            </td>
-            <td class="normal   o-50">
-              <%= humanizeAspectRatio(take.metadata.info.streams[0].width / take.metadata.info.streams[0].height) %>
-            </td>
-            <td class="normal">
-              <%= take.metadata.info.format.tags["com.zcam.camera.shutterSpeed"] %>
-            </td>
-            <td class="normal">
-              <%= take.metadata.info.format.tags["com.zcam.camera.whiteBalanceKelvin"] %>
-            </td>
-            <td class="normal">
-              <%= take.metadata.info.format.tags["com.zcam.camera.nd"] %>
-            </td>
-            <td class="normal   o-50">
-              Chroma
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    <div>
   </div>
+
+  <div class="flex justify-between w-full text-2xl my-8">
+    <div>
+      <div class="text-xxs uppercase text-purple-600">Duration</div>
+      <div>
+        <b><%= durationMsecsToString(take.metadata.info.streams[0].duration * 1000) %></b>
+      </div>
+    </div>
+    <div>
+      <div class="text-xxs uppercase text-purple-600">Lens</div>
+      <span
+        style="border-bottom: 1px dashed white"
+        title="<%= take.metadata.info.format.tags["com.zcam.camera.lensType"] %>"
+      >
+        <%= take.metadata.info.format.tags["com.zcam.camera.lensFocalLength"] %>
+      </span>
+    </div>
+    <div>
+      <div class="text-xxs uppercase text-purple-600">Aperature</div>
+      <b><%= take.metadata.info.format.tags["com.zcam.camera.aperture"].replace('F', 'f/') %></b>
+    </div>
+    <div>
+      <div class="text-xxs uppercase text-purple-600">ISO</div>
+      <b><%= take.metadata.info.format.tags["com.zcam.camera.iso"] %></b>
+    </div>
+    <div>
+      <div class="text-xxs uppercase text-purple-600">Res</div>
+      <div>
+        <%=
+          humanizeVideoResolution(
+            take.metadata.info.streams[0].width,
+            take.metadata.info.streams[0].height
+          )
+        %>
+      </div>
+    </div>
+    <div>
+      <div class="text-xxs uppercase text-purple-600">FPS</div>
+      <div>
+        <%= take.metadata.info.format.tags["com.zcam.camera.projectFps"] %>
+      </div>
+    </div>
+    <div>
+      <div class="text-xxs uppercase text-purple-600">Aspect</div>
+      <%= humanizeAspectRatio(take.metadata.info.streams[0].width / take.metadata.info.streams[0].height) %>
+    </div>
+
+
+    <div class="ml-6">
+      <div class="text-xxs uppercase text-purple-600">Shutter</div>
+      <div><%= take.metadata.info.format.tags["com.zcam.camera.shutterSpeed"] %></div>
+    </div>
+    <div>
+      <div class="text-xxs uppercase text-purple-600">WB</div>
+      <div><%= take.metadata.info.format.tags["com.zcam.camera.whiteBalanceKelvin"] || '--' %></div>
+    </div>
+    <div>
+      <div class="text-xxs uppercase text-purple-600">ND</div>
+      <div><%= take.metadata.info.format.tags["com.zcam.camera.nd"] %></div>
+    </div>
+
+
+    <div class="ml-6">
+      <div class="text-xxs uppercase text-purple-600">VFX</div>
+      <div>Chroma</div>
+    </div>
+  </div>
+
 </div>
 <%- include('footer') -%>
