@@ -3,8 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/tachyons.min.css">
-  <link rel="stylesheet" href="/css/slater.css">
+  <link rel="stylesheet" href="/css/app-old.css">
+  <style>
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      background: #eee;
+      margin: 0;
+    }
+
+    .status_ready {
+      color: orange;
+      animation: blink 0.5s cubic-bezier(.5, 0, 1, 1) infinite;
+    }
+
+    .status_active {
+      color: red;
+    }
+
+    @keyframes blink {
+      0% { opacity: 0.2 }
+      50% { opacity: 1 }
+      100% { opacity: 0.2 }
+    }
+  </style>
 
   <script src="/js/turbolinks.umd.js"></script>
   <script src="/js/stimulus.umd.js"></script>
