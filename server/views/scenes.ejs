@@ -1,7 +1,5 @@
 <%- include('header') %>
-
 <div class="container px-6 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
-
   <%- include('_nav') %>
 
   <div class="py-3">
@@ -16,10 +14,10 @@
     </a>
   </div>
 
-  <div class="mb-5">
-    <div class="font-bold text-7xl md:text-8xl leading-none tracking-tight">
+  <div class="mt-12 mb-6">
+    <h3 class="text-7xl lg:text-8xl font-bold leading-none tracking-tight">
       <%= scenes.length %> Scene<%= plural(scenes.length) %>
-    </div>
+    </h3>
   </div>
 
   <table class="table table-auto border-collapse w-full">

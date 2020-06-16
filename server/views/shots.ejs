@@ -2,7 +2,7 @@
 <div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
   <%- include('_nav') %>
 
-  <div class="py-3 mb-5">
+  <div class="py-3">
     <div class="text-xxs uppercase text-purple-600 leading-none tracking-tighter">
       Production
     </div>
@@ -14,9 +14,11 @@
     </a>
   </div>
 
-  <h3 class="text-lg leading-none font-bold mt-12 mb-6">
-    <%= shots.length %> Shot<%= plural(shots.length) %>
-  </h3>
+  <div class="mt-12 mb-6">
+    <h3 class="text-7xl lg:text-8xl font-bold leading-none tracking-tight">
+      <%= shots.length %> Shot<%= plural(shots.length) %>
+    </h3>
+  </div>
 
   <table class="table table-auto border-collapse w-full">
     <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
