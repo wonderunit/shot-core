@@ -1,70 +1,89 @@
 <%- include('header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
+  <div class="my-24 mb-12">
+    <h1 class="text-5xl font-bold leading-none tracking-tight text-shadow">
+      Status
+    </h1>
+  </div>
 
-    <h1 class="f1">Status</h1>
+  <div class="w-full my-16">
+    <h2 class="text-lg my-4">Downloader</h2>
 
-    <div style="w-100">
-      <h2 class="f2">Downloader Status</h2>
-      <div class="w-100">
-        <div class="f7 w-100 flex justify-between">
-          <div class="w-10">Take ID</div>
-          <div class="w-10">Take #</div>
-          <div class="w-40">Camera File Path</div>
-          <div class="w-40">Downloaded Footage</div>
-        </div>
-      </div>
-      <div class="w-100">
-        <% for (let take of takes) { %>
-          <% let scene = { scene_number: 1 } %>
-          <% let shot = { shot_number: 1, impromptu: true } %>
-          <div class="f7 w-100 flex justify-between">
+  <table class="table table-auto border-collapse w-full">
+    <thead class="text-xxs leading-tight uppercase font-normal text-purple-600">
+      <tr class="whitespace-no-wrap">
+        <th>
+          Take ID
+        </th>
+        <th>
+          Take #
+        </th>
+        <th>
+          Camera File Path
+        </th>
+        <th>
+          Downloaded Footage
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-xs leading-tight">
+      <% if (takes.length == 0) { %>
+        <tr>
+          <td colspan="4">
+            <i class="opacity-75">None</i>
+          </td>
+        </tr>
+      <% } %>
+      <% for (let take of takes) { %>
+        <% let scene = { scene_number: 1 } %>
+        <% let shot = { shot_number: 1, impromptu: true } %>
+        <tr>
+          <td>
             <a
-              class="db w-10"
+              class="block underline"
               href="<%= `/projects/${take.project_id}/scenes/${take.scene_id}/shots/${take.shot_id}/takes/${take.id}` %>"
             >
               <%= take.id %>
             </a>
-            <div class="w-10">
-              <%= take.take_number %>
-            </div>
-            <!--
-            <div>
-              <%= take.ready_at && format(Date.parse(take.ready_at), 'hh:mm:ss.SSS a') %>
-            </div>
-            <div>
-              <%= take.action_at && format(Date.parse(take.action_at), 'hh:mm:ss.SSS a') %>
-            </div>
-            <div>
-              <%= take.cut_at && format(Date.parse(take.cut_at), 'hh:mm:ss.SSS a') %>
-            </div>
-            <div>
-              <%= take.rating == null ? '.' : take.rating %>
-            </div>
-            -->
-            <div class="w-40">
-              <%= take.filepath %>
-            </div>
-            <div class="w-40">
-              <% if (take.downloaded) { %>
-                <% let footage = take.filenameForFootage({
-                  ...{ scene_number } = scene,
-                  ...{ shot_number, impromptu } = shot
-                }) %>
-                <a class="link" href="/uploads/projects/<%= take.project_id %>/takes/<%= footage %>">
-                  <%= footage %>
-                </a>
-              <% } else { %>
-                <div class="red">
-                  PENDING
-                </div>
-              <% } %>
-            </div>
-          </div>
-        <% } %>
-      </div>
-    </div>
-
-  </div>
+          </td>
+          <td>
+            <%= take.take_number %>
+          </td>
+          <!--
+          <td>
+            <%= take.ready_at && format(Date.parse(take.ready_at), 'hh:mm:ss.SSS a') %>
+          </td>
+          <td>
+            <%= take.action_at && format(Date.parse(take.action_at), 'hh:mm:ss.SSS a') %>
+          </td>
+          <td>
+            <%= take.cut_at && format(Date.parse(take.cut_at), 'hh:mm:ss.SSS a') %>
+          </td>
+          <td>
+            <%= take.rating == null ? '.' : take.rating %>
+          </td>
+          -->
+          <td>
+            <%= take.filepath %>
+          </td>
+          <td>
+            <% if (take.downloaded) { %>
+              <% let footage = take.filenameForFootage({
+                ...{ scene_number } = scene,
+                ...{ shot_number, impromptu } = shot
+              }) %>
+              <a class="underline" href="/uploads/projects/<%= take.project_id %>/takes/<%= footage %>">
+                <%= footage %>
+              </a>
+            <% } else { %>
+              <div class="text-red-400">
+                PENDING
+              </div>
+            <% } %>
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
 </div>
 <%- include('footer') -%>
