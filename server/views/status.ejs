@@ -40,7 +40,7 @@
         <tr>
           <td>
             <a
-              class="block underline"
+              class="block border-b border-solid border-purple-400"
               href="<%= `/projects/${take.project_id}/scenes/${take.scene_id}/shots/${take.shot_id}/takes/${take.id}` %>"
             >
               <%= take.id %>
@@ -64,7 +64,12 @@
           </td>
           -->
           <td>
-            <%= take.filepath %>
+            <a
+              class="border-b border-solid border-purple-400"
+              href="<% ZCAM_URL %><%= take.filepath %>"
+            >
+              <%= take.filepath.replace(/\/DCIM\//, '') %>
+            </a>
           </td>
           <td>
             <% if (take.downloaded) { %>
@@ -72,11 +77,14 @@
                 ...{ scene_number } = scene,
                 ...{ shot_number, impromptu } = shot
               }) %>
-              <a class="underline" href="/uploads/projects/<%= take.project_id %>/takes/<%= footage %>">
+              <a
+                class="border-b border-solid border-purple-400"
+                href="/uploads/projects/<%= take.project_id %>/takes/<%= footage %>"
+              >
                 <%= footage %>
               </a>
             <% } else { %>
-              <div class="text-red-400">
+              <div class="text-red-500">
                 PENDING
               </div>
             <% } %>
