@@ -44,7 +44,7 @@ async function startup ({ uri, takeId }) {
   converter
     .createInputFromFile(uri, { rtsp_transport: 'udp+tcp' })
 
-  console.log(`[rtsp-client] - to:   public/uploads/${filepath}`)
+  console.log(`[rtsp-client] - to:   ${UPLOADS_PATH}/${filepath}`)
 
   converter
     .createOutputToFile(path.join(UPLOADS_PATH, dirname, filename), { codec: 'copy' })

@@ -166,9 +166,9 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
 
   debug(`downloading take id:${take.id} …`)
   debug(`from:   ${uri}`)
-  debug(`to:     public/uploads/${path.join(takesDir, filename)}`)
-  debug(`thumb:  public/uploads/${path.join(takesDir, thumbnail)}`)
-  debug(`proxy:  public/uploads/${path.join(takesDir, proxy)}`)
+  debug(`to:     ${UPLOADS_PATH}/${path.join(takesDir, filename)}`)
+  debug(`thumb:  ${UPLOADS_PATH}/${path.join(takesDir, thumbnail)}`)
+  debug(`proxy:  ${UPLOADS_PATH}/${path.join(takesDir, proxy)}`)
 
   fs.mkdirpSync(path.join(UPLOADS_PATH, takesDir))
 
