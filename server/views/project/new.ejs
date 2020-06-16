@@ -1,30 +1,54 @@
 <%- include('../header') %>
-<div class="helvetica ph3 pa4-ns mv3 ma0-ns">
-  <div class="lh-copy">
-    <h1 class="f3 ma0 mb4">
-      <a href="/">Home</a> /
-      New Project
-    </h1>
 
-    <form action="/projects" enctype="multipart/form-data" method="POST" class="w-60 center pa3">
+<div class="container px-3 md:p-8 my-6 md:my-0 text-purple-100 mx-auto">
+  <div class="max-w-screen-sm mx-auto">
+    <div class="my-24 mb-12">
+      <h3 class="text-5xl md:text-7xl font-bold leading-none tracking-tight text-shadow">
+        New Project
+      </h3>
+    </div>
 
-      <div class="mb4" style="display:none">
-        <label class="black-70 db pb1 f5" for="name">Project Name</label>
-        <input class="w-100 pa2" type="text" id="name" name="name" />
-      </div>
+    <div>
+      <form action="/projects" enctype="multipart/form-data" method="POST">
+        <!-- NOTE project name field is not currently used -->
+        <div class="hidden">
+          <label for="name">Project Name</label>
+          <input type="text" id="name" name="name" />
+        </div>
 
-      <label class="black-70 db pb2 f5" for="file">Upload a Storyboarder .ZIP Export</label>
-      <div class="mb4 shadow-4 bg-white h4 pa4 flex items-center justify-center">
-        <input class="w-100 pa0 ma0" type="file" id="file" name="file" />
-      </div>
-      
-      <div>
-        <button>Create Project</button>
-      </div>
-    </form>
+        <div class="mb-12">
+          <label class="text-lg block" for="file">Upload a Storyboarder export .ZIP</label>
+        </div>
 
+        <div class="mt-4 mb-8 h-4 pa-4 flex items-center justify-center">
+          <input
+            class="shadow appearance-none rounded w-full py-4 px-3 mb-3 leading-tight bg-purple-900 text-purple-400"
+            type="file"
+            id="file"
+            name="file" />
+        </div>
+        
+        <div class="mb-8">
+          <button class="
+            inline-block px-8 py-4
+            border-4 rounded-lg
+            
+            text-lg leading-tight font-bold tracking-wide
+
+            bg-purple-900 border-white-o
+            hover:bg-orange-500 hover:border-yellow-o
+            fadein
+            
+            box-shadow
+          ">
+            Create Project
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
+
 <script>
   function preventDefault (event) {
     event.preventDefault()
@@ -54,4 +78,5 @@
   })
   fileInput.addEventListener('change', onChange)
 </script>
+
 <%- include('../footer') -%>
