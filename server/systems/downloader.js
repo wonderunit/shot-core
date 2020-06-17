@@ -10,7 +10,7 @@ const debug = require('debug')('shotcore:downloader')
 
 const { UPLOADS_PATH } = require('../config')
 const { run, get } = require('../db')
-const { createProxyWithVisualSlate } = require('../systems/visual-slate')
+const { createProxyWithVisualSlate, extractProxy } = require('../systems/visual-slate')
 const Take = require('../decorators/take')
 
 const { spawnSync, execSync } = require('child_process')
@@ -213,6 +213,9 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
     )
     cleanup.mov = clean(path.join(UPLOADS_PATH, takesDir, filename))
 
+
+
+    /*
     // insert slate
     debug('\ninsert slate')
     // TODO handle cancel via signal
@@ -236,8 +239,20 @@ const downloadAndProcessTakeFiles = (context, event) => (callback, onReceive) =>
         height: 720
       }
     })
+    */
+    //
+    //
+    // extracting proxy file only (don't generate the slate)
+    //
+    debug('\nextracting proxy', proxy)
+    yield extractProxy({
+      inpath: path.join(UPLOADS_PATH, takesDir, filename),
+      outpath: path.join(UPLOADS_PATH, takesDir, proxy)
+    })
     // TODO also cleanup tmp folder on abort
     cleanup.proxy = clean(path.join(UPLOADS_PATH, takesDir, proxy))
+
+
 
     // verify file size
     debug('verifying file size')

@@ -280,5 +280,6 @@ async function createProxyWithVisualSlate ({ inpath, outpath, frameLengthInSecon
 
 module.exports = {
   // createStreamWithVisualSlate,
-  createProxyWithVisualSlate
+  createProxyWithVisualSlate,
+  extractProxy
 }
