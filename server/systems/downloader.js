@@ -323,9 +323,11 @@ const verifyFrameCount = (context, event) => (callback, onReceive) => {
     })
   }
 
-  let expected = info.vcnt - 1
+  let expected = info.vcnt
   let actual = parseFloat(stdout.toString())
-  if (expected == actual) {
+
+  // accept within +/- 2 frames
+  if (Math.abs(expected - actual) <= 2) {
     callback('SUCCESS')
   } else {
     callback({
