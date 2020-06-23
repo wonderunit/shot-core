@@ -13,7 +13,7 @@ module.exports = {
   states: {
     off: {
       on: {
-        'ON': 'checking'
+        ON: 'checking'
       }
     },
     checking: {
@@ -21,40 +21,249 @@ module.exports = {
         src: 'checkForTakes'
       },
       on: {
-        'NEXT': {
-          target: 'downloading',
-          actions: 'setTake'
+        NEXT: {
+          target: 'prepareTakeForDownload',
+          actions: ['setTake', 'markStepsInProgress']
         }
       }
     },
-    downloading: {
+
+    // STEPS
+    //
+    prepareTakeForDownload: {
       invoke: {
-        src: 'downloadAndProcessTakeFiles'
+        src: 'prepareTakeForDownload',
+        onError: 'handleUnexpectedError'
       },
       on: {
-        'NEXT': 'downloadingSuccess',
-        'ERROR': 'downloadingError',
+        SUCCESS: 'getInfo',
+        ERROR: 'stepFailure'
       }
     },
-    downloadingSuccess: {
-      entry: 'clearTake',
-      after: {
-        3000: 'checking'
+    getInfo: {
+      entry: 'setData',
+      invoke: {
+        src: 'getInfo',
+        onError: 'handleUnexpectedError'
       },
+      on: {
+        SUCCESS: 'getContentLength',
+        ERROR: 'stepFailure'
+      }
     },
-    downloadingError: {
-      // clear the take
-      entry: 'clearTake',
+    getContentLength: {
+      entry: 'setData',
+      invoke: {
+        src: 'getContentLength',
+        onError: 'handleUnexpectedError'
+      },
+      on: {
+        SUCCESS: 'getThumbnail',
+        ERROR: 'stepFailure'
+      }
+    },
+    getThumbnail: {
+      entry: 'setData',
+      invoke: {
+        src: 'getThumbnail',
+        onError: 'handleUnexpectedError'
+      },
+      on: {
+        SUCCESS: 'getFile',
+        ERROR: 'stepFailure'
+      }
+    },
+    getFile: {
+      invoke: {
+        src: 'getFile',
+        onError: 'handleUnexpectedError'
+      },
+      on: {
+        SUCCESS: 'verifyFileSize',
+        ERROR: 'stepFailure'
+      }
+    },
+    verifyFileSize: {
+      invoke: {
+        src: 'verifyFileSize',
+        onError: 'handleUnexpectedError'
+      },
+      on: {
+        SUCCESS: 'verifyFrameCount',
+        ERROR: 'stepFailure'
+      }
+    },
+    verifyFrameCount: {
+      invoke: {
+        src: 'verifyFrameCount',
+        onError: 'handleUnexpectedError'
+      },
+      on: {
+        SUCCESS: 'getMetadata',
+        ERROR: 'stepFailure'
+      }
+    },
+    getMetadata: {
+      invoke: {
+        src: 'getMetadata',
+        onError: 'handleUnexpectedError'
+      },
+      on: {
+        SUCCESS: 'extractProxy',
+        ERROR: 'stepFailure'
+      }
+    },
+    extractProxy: {
+      invoke: {
+        src: 'extractProxy',
+        onError: 'handleUnexpectedError'
+      },
+      on: {
+        // SUCCESS: 'createSlate',
+        SUCCESS: 'copyFilesAndMarkComplete',
+
+        ERROR: 'stepFailure'
+      }
+    },
+
+
+
+    // TODO visual slate:
+    //
+    // createSlate: {
+    //   invoke: {
+    //     src: 'createSlate',
+    //     onError: 'handleUnexpectedError'
+    //   },
+    //   on: {
+    //     SUCCESS: 'createSlatedProxy',
+    //     ERROR: 'stepFailure'
+    //   }
+    // },
+    // createSlatedProxy: {
+    //   invoke: {
+    //     src: 'createSlatedProxy',
+    //     onError: 'handleUnexpectedError'
+    //   },
+    //   on: {
+    //     SUCCESS: 'copyFilesAndMarkComplete',
+    //     ERROR: 'stepFailure'
+    //   }
+    // },
+
+
+
+    copyFilesAndMarkComplete: {
+      entry: 'setData',
+      invoke: {
+        src: 'copyFilesAndMarkComplete',
+        onError: 'handleUnexpectedError'
+      },
+      on: {
+        SUCCESS: 'stepsSuccess',
+        ERROR: 'stepFailure'
+      }
+    },
+
+
+    // step-related handlers
+    //
+    handleUnexpectedError: {
+      entry: [
+        (context, event) => {
+          // state machine error (type: error.platform.*, data: Error)
+          console.error('handleUnexpectedError: one of the steps threw an unexpected error')
+          console.error(event)
+          console.error('*** The above error prevented the cleanup function from running ***')
+        },
+      ],
+      invoke: {
+        src: 'destroyTakeFiles'
+      },
+      on: {
+        SUCCESS: 'stepsFinallyCleanup'
+      }
+    },
+    stepFailure: {
+      entry: [
+        (context, event) => {
+          console.error('stepFailure: one of the steps failed')
+          console.error(event.error)
+        },
+      ],
+      invoke: {
+        src: 'destroyTakeFiles'
+      },
+      on: {
+        SUCCESS: 'stepsFinallyCleanup'
+      }
+    },
+    stepsSuccess: {
+      entry: [
+        () => console.log('stepsSuccess: all steps succeeded')
+      ],
+      on: {
+        '': 'stepsFinallyCleanup'
+      }
+    },
+
+    // final cleanup and reset
+    //
+    stepsFinallyCleanup: {
+      invoke: {
+        src: 'destroyTempDirectory'
+      },
+      on: {
+        SUCCESS: 'stepsFinallyResetContext'
+      }
+    },
+    stepsFinallyResetContext: {
+      entry: [
+        'clearTake',
+        'clearData',
+        'markStepsComplete'
+      ],
       after: {
         // wait 3s, then retry
-        3000: 'checking'
-      },
+        3000: {
+          target: 'checking'
+        }
+      }
+    },
+
+
+    beforeOff: {
+      on: { '': 'beforeOffDestroyTakeFiles' }
+    },
+    beforeOffDestroyTakeFiles: {
+      invoke: { src: 'destroyTakeFiles' },
+      on: { SUCCESS: 'beforeOffDestroyTempDirectory' }
+    },
+    beforeOffDestroyTempDirectory: {
+      invoke: { src: 'destroyTempDirectory' },
+      on: { SUCCESS: 'beforeOffResetContext' }
+    },
+    beforeOffResetContext: {
+      entry: [
+        'clearTake',
+        'clearData',
+        'markStepsComplete'
+      ],
+      on: { '': 'off' }
     }
   },
+
   on: {
-    'OFF': {
-      target: 'off',
-      actions: 'clearTake'
-    }
+    OFF: [
+      {
+        // if steps are in-progress ...
+        cond: 'stepsInProgress',
+        // ... run cleanup functions first
+        target: 'beforeOff'
+      },
+      {
+        target: 'off'
+      }
+    ]
   }
 }
