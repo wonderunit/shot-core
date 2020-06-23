@@ -59,7 +59,7 @@ downloader.send('ON')
 
 const bye = () => {
   console.log('caught signal, exiting …')
-  downloader.send('OFF')
+  downloader.stop()
 }
 process.once('SIGTERM', bye)
 process.once('SIGINT', bye)
