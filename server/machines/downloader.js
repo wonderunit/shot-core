@@ -38,10 +38,10 @@ module.exports = {
       on: {
         SUCCESS: 'getInfo',
         ERROR: 'stepFailure'
-      }
+      },
+      exit: 'setData'
     },
     getInfo: {
-      entry: 'setData',
       invoke: {
         src: 'getInfo',
         onError: 'handleUnexpectedError'
@@ -49,10 +49,10 @@ module.exports = {
       on: {
         SUCCESS: 'getContentLength',
         ERROR: 'stepFailure'
-      }
+      },
+      exit: 'setData'
     },
     getContentLength: {
-      entry: 'setData',
       invoke: {
         src: 'getContentLength',
         onError: 'handleUnexpectedError'
@@ -60,10 +60,10 @@ module.exports = {
       on: {
         SUCCESS: 'getThumbnail',
         ERROR: 'stepFailure'
-      }
+      },
+      exit: 'setData'
     },
     getThumbnail: {
-      entry: 'setData',
       invoke: {
         src: 'getThumbnail',
         onError: 'handleUnexpectedError'
@@ -111,7 +111,8 @@ module.exports = {
       on: {
         SUCCESS: 'extractProxy',
         ERROR: 'stepFailure'
-      }
+      },
+      exit: 'setData'
     },
     extractProxy: {
       invoke: {
@@ -123,7 +124,8 @@ module.exports = {
         SUCCESS: 'copyFilesAndMarkComplete',
 
         ERROR: 'stepFailure'
-      }
+      },
+      exit: 'setData'
     },
 
 
@@ -154,7 +156,6 @@ module.exports = {
 
 
     copyFilesAndMarkComplete: {
-      entry: 'setData',
       invoke: {
         src: 'copyFilesAndMarkComplete',
         onError: 'handleUnexpectedError'
