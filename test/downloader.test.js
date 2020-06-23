@@ -56,3 +56,15 @@ downloader.send('ON')
 // setTimeout(() => {
 //   downloader.send('OFF')
 // }, 500)
+
+const bye = () => {
+  console.log('caught signal, exiting …')
+  downloader.send('OFF')
+}
+process.once('SIGTERM', bye)
+process.once('SIGINT', bye)
+// https://github.com/remy/nodemon#controlling-shutdown-of-your-script
+process.once('SIGUSR2', async function () {
+  await bye()
+  process.kill(process.pid, 'SIGUSR2')
+})
