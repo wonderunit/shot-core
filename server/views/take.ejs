@@ -202,17 +202,17 @@
         <% } %>
 
 
-        <% let proxy = take.filenameForProxy({
+        <% let src = take.filenameForStream({
           ...{ scene_number } = scene,
           ...{ shot_number, impromptu } = shot
         }) %>
-        <% if (proxy) { %>
+        <% if (src) { %>
           <div
             class="flex flex-col"
             style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
           >
             <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
-              Take Video
+              Take Preview (via stream)
             </div>
 
             <% let thumbnail = take.filenameForThumbnail({
@@ -230,7 +230,7 @@
                 type="video/quicktime"
 
                 poster="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
-                src="<%= `/uploads/projects/${project.id}/takes/${proxy}` %>"
+                src="<%= `/uploads/projects/${project.id}/takes/${src}` %>"
               ></video>
             </div>
           </div>
