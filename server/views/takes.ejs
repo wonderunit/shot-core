@@ -75,15 +75,31 @@
             </a>
           </td>
           <td>
-            <% let thumbnail = take.filenameForThumbnail({
-              scene_number: scene.scene_number,
-              shot_number: shot.shot_number,
-              impromptu: shot.impromptu
-            }) %>
-            <img
-              style="width: calc(90px * var(--aspect-ratio)); height: 90px;"
-              src="/uploads/projects/<%= project.id %>/takes/<%= thumbnail %>"
-            />
+            <% if (take.downloaded == false) { %>
+              <!-- placeholder -->
+              <div
+                class="bg-purple-900 rounded-sm"
+                style="width: calc(90px * var(--aspect-ratio)); height: 90px;"
+              >
+                <div
+                  class="flex justify-center items-center h-full w-full"
+                >
+                  <div class="-mt-1 leading-none tracking-wider uppercase opacity-75  text-xxs">
+                    Pending
+                  </div>
+                </div>
+              </div>
+            <% } else { %>
+              <% let thumbnail = take.filenameForThumbnail({
+                scene_number: scene.scene_number,
+                shot_number: shot.shot_number,
+                impromptu: shot.impromptu
+              }) %>
+              <img
+                style="width: calc(90px * var(--aspect-ratio)); height: 90px;"
+                src="/uploads/projects/<%= project.id %>/takes/<%= thumbnail %>"
+              />
+            <% } %>
           </td>
           <td>
             <%= scene.scene_number %>
