@@ -101,7 +101,7 @@ exports.show = (req, res) => {
           ? {
               downloaded: take.downloaded,
               src: new Take(take).filenameForThumbnail({
-                ...{ scene_number } = scenesById[take.scene_id],
+                ...{ scene_number } = scene,
                 ...{ shot_number, impromptu } = shot
               })
             }
