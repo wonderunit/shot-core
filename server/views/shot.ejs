@@ -207,19 +207,34 @@
               Take <%= take.take_number %>
             </div>
 
-            <% let thumbnail = take.filenameForThumbnail({
-              ...{ scene_number } = scene,
-              ...{ shot_number, impromptu } = shot
-            }) %>
             <div
               style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
             >
-              <img
-                class="rounded-sm"
-                loading="lazy"
-                src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
-              />
+              <% if (take.downloaded == false) { %>
+                <div
+                  class="bg-purple-900 rounded-sm  h-full w-full"
+                >
+                  <div
+                    class="flex justify-center items-center h-full w-full"
+                  >
+                    <div class="-mt-1 leading-none tracking-wider uppercase opacity-75  text-xs">
+                      Pending
+                    </div>
+                  </div>
+                </div>
+              <% } else { %>
+                <% let thumbnail = take.filenameForThumbnail({
+                  ...{ scene_number } = scene,
+                  ...{ shot_number, impromptu } = shot
+                }) %>
+                <img
+                  class="rounded-sm"
+                  loading="lazy"
+                  src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
+                />
+              <% } %>
             </div>
+
           </div>
         <% } %>
 
@@ -447,16 +462,31 @@
 
               <div>
                 <div style="--aspect-ratio:<%= scene.metadata.aspectRatio %>">
-                  <% let thumbnail = take.filenameForThumbnail({
-                    ...{ scene_number } = scene,
-                    ...{ shot_number, impromptu } = shot
-                  }) %>
-                  <img
-                    class="rounded-sm"
-                    loading="lazy"
-                    style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
-                    src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
-                  />
+                  <% if (take.downloaded == false) { %>
+                    <div
+                      style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
+                      class="bg-purple-900 rounded-sm  h-full w-full"
+                    >
+                      <div
+                        class="flex justify-center items-center h-full w-full"
+                      >
+                        <div class="-mt-1 leading-none tracking-wider uppercase opacity-75  text-xxs">
+                          Pending
+                        </div>
+                      </div>
+                    </div>
+                  <% } else { %>
+                    <% let thumbnail = take.filenameForThumbnail({
+                      ...{ scene_number } = scene,
+                      ...{ shot_number, impromptu } = shot
+                    }) %>
+                    <img
+                      class="rounded-sm"
+                      loading="lazy"
+                      style="width: calc(76px * var(--aspect-ratio)); height: 76px;"
+                      src="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
+                    />
+                  <% } %>
                 </div>
               </div>
 
