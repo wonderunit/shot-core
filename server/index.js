@@ -196,8 +196,7 @@ server.listen(app.get('port'), () => {
   }
 })
 
-async function bye () {
-  console.log('Shutting down ...')
+async function shutdown () {
   await webSocketServer.stop()
   await downloader.stop()
   await zcamWsRelay.stop()
@@ -205,13 +204,30 @@ async function bye () {
     livereload.stop()
   }
   bus.removeAllListeners()
-  server.close()
+  await new Promise(resolve => server.close(resolve))
 }
- 
-process.once('SIGTERM', bye)
-process.once('SIGINT', bye)
-// https://github.com/remy/nodemon#controlling-shutdown-of-your-script
-process.once('SIGUSR2', async function () {
-  await bye()
-  process.kill(process.pid, 'SIGUSR2')
-})
+
+// via:
+//   https://blog.heroku.com/best-practices-nodejs-errors
+//   https://help.heroku.com/D5GK0FHU/how-can-my-node-app-gracefully-shutdown-when-receiving-sigterm
+function bye (signal) {
+  return async err => {
+    if (err) console.error(err.stack || err)
+    console.log(`\nShutting down via ${signal} …`)
+    await shutdown()
+    setTimeout(
+      () => process.exit(err ? 1 : 0),
+      500
+    ).unref()
+  }
+}
+process
+  .on('SIGTERM', bye('SIGTERM'))
+  .on('SIGINT', bye('SIGINT'))
+  .on('uncaughtException', bye('uncaughtException'))
+  // via https://github.com/remy/nodemon#controlling-shutdown-of-your-script
+  .on('SIGUSR2', async function () {
+    console.log('\nShutting down via SIGUSR2 …')
+    await shutdown()
+    process.kill(process.pid, 'SIGUSR2')
+  })
