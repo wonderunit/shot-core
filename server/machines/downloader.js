@@ -175,7 +175,7 @@ module.exports = {
           // state machine error (type: error.platform.*, data: Error)
           console.error('handleUnexpectedError: one of the steps threw an unexpected error')
           console.error(event)
-          console.error('*** The above error prevented the cleanup function from running ***')
+          console.error('*** The above error prevented the callback service cleanup function from running ***')
         },
       ],
       invoke: {
