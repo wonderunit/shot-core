@@ -612,10 +612,12 @@ async function start () {
 }
 
 async function stop () {
-  // switch off, to run cleanup services (if necessary)
-  downloaderService.send('OFF')
-  // stop the service
-  downloaderService.stop()
+  if (downloaderService.initialized) {
+    // switch off, to run cleanup services (if necessary)
+    downloaderService.send('OFF')
+    // stop the service
+    downloaderService.stop()
+  }
   return true
 }
 
