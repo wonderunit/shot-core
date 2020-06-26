@@ -15,7 +15,7 @@ Environment vars:
 
 When the mock server is running, pass `ZCAM=127.0.0.1` to shot core server:
 ```
-DEBUG=shotcore:* ZCAM=127.0.0.1 npm start
+DEBUG=shotcore:* ZCAM=127.0.0.1 node ./server
 ```
 
 ## Mock Z Cam RTSP

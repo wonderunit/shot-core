@@ -2,7 +2,6 @@
   "name": "shot-core",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ./server",
     "assets:build": "postcss server/assets/css/index.css -o public/css/app.css",
     "assets:watch": "postcss server/assets/css/index.css -o public/css/app.css -w",
     "zcam-mock-server": "node ./lib/zcam/mock-server/index.js",

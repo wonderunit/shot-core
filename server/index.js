@@ -208,26 +208,30 @@ async function shutdown () {
 }
 
 // via:
+//   https://github.com/jtlapp/node-cleanup/blob/d278360/node-cleanup.js
+//   https://stackoverflow.com/a/60273973
 //   https://blog.heroku.com/best-practices-nodejs-errors
 //   https://help.heroku.com/D5GK0FHU/how-can-my-node-app-gracefully-shutdown-when-receiving-sigterm
-function bye (signal) {
-  return async err => {
-    if (err) console.error(err.stack || err)
-    console.log(`\nShutting down via ${signal} …`)
+const createSignalHandler = signal => {
+  return async (err) => {
+    removeHandlers()
+    console.log('\n')
+    console.log(`Shutting down via ${signal} …`)
     await shutdown()
-    setTimeout(
-      () => process.exit(err ? 1 : 0),
-      500
-    ).unref()
+    process.kill(process.pid, signal)
   }
 }
+const sigtermHandler = createSignalHandler('SIGTERM')
+const sigintHandler = createSignalHandler('SIGINT')
+const sigusr2Handler = createSignalHandler('SIGUSR2')
+const removeHandlers = () => {
+  process
+    .off('SIGTERM', sigtermHandler)
+    .off('SIGINT', sigintHandler)
+    .off('SIGUSR2', sigusr2Handler)
+}
 process
-  .on('SIGTERM', bye('SIGTERM'))
-  .on('SIGINT', bye('SIGINT'))
-  .on('uncaughtException', bye('uncaughtException'))
+  .on('SIGTERM', sigtermHandler)
+  .on('SIGINT', sigintHandler)
   // via https://github.com/remy/nodemon#controlling-shutdown-of-your-script
-  .on('SIGUSR2', async function () {
-    console.log('\nShutting down via SIGUSR2 …')
-    await shutdown()
-    process.kill(process.pid, 'SIGUSR2')
-  })
+  .on('SIGUSR2', sigusr2Handler)
