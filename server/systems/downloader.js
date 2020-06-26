@@ -55,7 +55,7 @@ const getTakeFilenames = take => {
 const onDownloadProgress = url => ({ percent, transferred, total }) =>
   process.stdout.write(
     `${path.basename(url)} ` +
-    `${(percent * 100).toFixed().padStart(3)}% (${transferred} bytes)` + 
+    `${(percent * 100).toFixed().padStart(3)}% (${transferred} bytes of ${total})` + 
     '\r'
   )
 
