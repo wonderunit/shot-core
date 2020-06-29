@@ -98,16 +98,37 @@ const prepareTakeForDownload = (context, event) => (callback, onReceive) => {
   fs.mkdirpSync(path.join(UPLOADS_PATH, takesDir))
   let tmpPath = fs.mkdtempSync(path.join(os.tmpdir(), 'shotcore-'))
 
+  let files = {
+    filename: {
+      src: `${tmpPath}/${filename}`,
+      dst: path.join(UPLOADS_PATH, takesDir, filename)
+    },
+    thumbnail: {
+      src: `${tmpPath}/${thumbnail}`,
+      dst: path.join(UPLOADS_PATH, takesDir, thumbnail)
+    },
+    proxy: {
+      src: `${tmpPath}/${proxy}`,
+      dst: path.join(UPLOADS_PATH, takesDir, proxy)
+    }
+  }
+
+  for (let filepath of [files.filename.dst, files.thumbnail.dst, files.proxy.dst]) {
+    if (fs.existsSync(filepath)) {
+      return callback({ type: 'ERROR', error: new Error(`${filepath} already exists`)})
+    }
+  }
+
   debug(`downloading take id:${take.id} …`)
   debug(`from:      ${uri}`)
-  debug(`to:        ${UPLOADS_PATH}/${path.join(takesDir, filename)}`)
-  debug(`thumb:     ${UPLOADS_PATH}/${path.join(takesDir, thumbnail)}`)
-  debug(`proxy:     ${UPLOADS_PATH}/${path.join(takesDir, proxy)}`)
+  debug(`to:        ${files.filename.dst}`)
+  debug(`thumb:     ${files.thumbnail.dst}`)
+  debug(`proxy:     ${files.proxy.dst}`)
   debug(`tmpPath:    ${tmpPath}`)
 
   callback({
     type: 'SUCCESS',
-    data: { UPLOADS_PATH, takesDir, thumbnail, filename, proxy, tmpPath }
+    data: { files }
   })
 }
 
@@ -197,10 +218,10 @@ const getThumbnail = (context, event) => (callback, onReceive) => {
   let complete = false
 
   let { ZCAM_URL, take } = context
-  let { tmpPath, thumbnail } = context.data
+  let { files } = context.data
 
   let uri = `${ZCAM_URL}${take.filepath}?act=scr`
-  let dst = `${tmpPath}/${thumbnail}`
+  let dst = files.thumbnail.src
 
   debug(`GET ${uri}`)
   debug(`to: ${dst}`)
@@ -240,10 +261,10 @@ const getFile = (context, event) => (callback, onReceive) => {
   let complete = false
 
   let { ZCAM_URL, take } = context
-  let { tmpPath, filename } = context.data
+  let { files } = context.data
 
   let uri = `${ZCAM_URL}${take.filepath}`
-  let dst = `${tmpPath}/${filename}`
+  let dst = files.filename.src
 
   debug(`GET ${uri}`)
   debug(`to: ${dst}`)
@@ -285,8 +306,8 @@ const getFile = (context, event) => (callback, onReceive) => {
 const verifyFileSize = (context, event) => (callback, onReceive) => {
   debug('\n\n--- verifyFileSize() ---\n')
 
-  let { tmpPath, filename } = context.data
-  let dst = `${tmpPath}/${filename}`
+  let { files } = context.data
+  let dst = files.filename.src
 
   let expected = context.data.contentLength
   let { size } = fs.statSync(dst)
@@ -304,8 +325,8 @@ const verifyFileSize = (context, event) => (callback, onReceive) => {
 const verifyFrameCount = (context, event) => (callback, onReceive) => {
   debug('\n\n--- verifyFrameCount() ---\n')
 
-  let { tmpPath, filename, info } = context.data
-  let dst = `${tmpPath}/${filename}`
+  let { files, info } = context.data
+  let dst = files.filename.src
 
   let { stdout, error } = spawnSync(
     'ffprobe', [
@@ -342,8 +363,8 @@ const verifyFrameCount = (context, event) => (callback, onReceive) => {
 const getMetadata = (context, event) => (callback, onReceive) => {
   debug('\n\n--- getMetadata() ---\n')
 
-  let { tmpPath, filename } = context.data
-  let dst = `${tmpPath}/${filename}`
+  let { files } = context.data
+  let dst = files.filename.src
 
   let { stdout, error } = spawnSync(
     'ffprobe', [
@@ -378,10 +399,10 @@ const extractProxy = (context, event) => (callback, onReceive) => {
 
   let complete = false
 
-  let { tmpPath, filename, proxy } = context.data
+  let { files } = context.data
 
-  let src = `${tmpPath}/${filename}`
-  let dst = `${tmpPath}/${proxy}`
+  let src = files.filename.src
+  let dst = files.proxy.src
 
   debug(`extracting from ${src} to ${dst}`)
 
@@ -449,22 +470,7 @@ const copyFilesAndMarkComplete = (context, event) => (callback, onReceive) => {
   let complete = false
 
   let { take } = context
-  let { UPLOADS_PATH, takesDir, filename, thumbnail, proxy, tmpPath, metadata } = context.data
-
-  let files = {
-    filename: {
-      src: `${tmpPath}/${filename}`,
-      dst: path.join(UPLOADS_PATH, takesDir, filename)
-    },
-    thumbnail: {
-      src: `${tmpPath}/${thumbnail}`,
-      dst: path.join(UPLOADS_PATH, takesDir, thumbnail)
-    },
-    proxy: {
-      src: `${tmpPath}/${proxy}`,
-      dst: path.join(UPLOADS_PATH, takesDir, proxy)
-    }
-  }
+  let { metadata, files } = context.data
 
   // copy individual files from tmp to UPLOADS_PATH
   let opt = {
@@ -472,14 +478,32 @@ const copyFilesAndMarkComplete = (context, event) => (callback, onReceive) => {
     errorOnExist: true,
     preserveTimestamps: true
   }
-  debug(`copying ${files.filename.src} to ${files.filename.dst}`)
-  fs.copySync(files.filename.src, files.filename.dst, opt)
+  try {
+    debug(`copying ${files.filename.src} to ${files.filename.dst}`)
+    fs.copySync(files.filename.src, files.filename.dst, opt)
 
-  debug(`copying ${files.thumbnail.src} to ${files.thumbnail.dst}`)
-  fs.copySync(files.thumbnail.src, files.thumbnail.dst, opt)
+    debug(`copying ${files.thumbnail.src} to ${files.thumbnail.dst}`)
+    fs.copySync(files.thumbnail.src, files.thumbnail.dst, opt)
 
-  debug(`copying ${files.proxy.src} to ${files.proxy.dst}`)
-  fs.copySync(files.proxy.src, files.proxy.dst, opt)
+    debug(`copying ${files.proxy.src} to ${files.proxy.dst}`)
+    fs.copySync(files.proxy.src, files.proxy.dst, opt)
+
+  } catch (err) {
+    // if any individual file copy fails, destroy them all ...
+    console.error('copy failed!')
+
+    console.error('destroying', files.filename.dst)
+    removeIfExistsSync(files.filename.dst)
+
+    console.error('destroying', files.thumbnail.dst)
+    removeIfExistsSync(files.thumbnail.dst)
+
+    console.error('destroying', files.proxy.dst)
+    removeIfExistsSync(files.proxy.dst)
+
+    // ... and throw the error
+    throw err
+  }
 
   // mark take complete in database
   debug('marking take downloaded in database')
@@ -499,22 +523,8 @@ const copyFilesAndMarkComplete = (context, event) => (callback, onReceive) => {
   return () => {
     if (complete == false) {
       debug('copyFilesAndMarkComplete was interrupted')
-
-      destroyTakeFiles()
     }
   }
-}
-
-const destroyTakeFiles = (context, event) => (callback, onReceive) => {
-  debug('\n\n--- destroyTakeFiles() ---\n')
-
-  let { UPLOADS_PATH, takesDir, filename, thumbnail, proxy } = context.data
-
-  removeIfExistsSync(path.join(UPLOADS_PATH, takesDir, filename))
-  removeIfExistsSync(path.join(UPLOADS_PATH, takesDir, thumbnail))
-  removeIfExistsSync(path.join(UPLOADS_PATH, takesDir, proxy))
-
-  callback('SUCCESS')
 }
 
 const destroyTempDirectory = (context, event) => (callback, onReceive) => {
@@ -564,7 +574,6 @@ function init ({ ZCAM_URL, projectId }) {
           // createSlatedProxy,
           copyFilesAndMarkComplete,
 
-          destroyTakeFiles,
           destroyTempDirectory
         },
         actions: {

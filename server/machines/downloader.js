@@ -178,11 +178,8 @@ module.exports = {
           console.error('*** The above error prevented the callback service cleanup function from running ***')
         },
       ],
-      invoke: {
-        src: 'destroyTakeFiles'
-      },
       on: {
-        SUCCESS: 'stepsFinallyCleanup'
+        '': 'cleanup'
       }
     },
     stepFailure: {
@@ -192,11 +189,8 @@ module.exports = {
           console.error(event.error)
         },
       ],
-      invoke: {
-        src: 'destroyTakeFiles'
-      },
       on: {
-        SUCCESS: 'stepsFinallyCleanup'
+        '': 'cleanup'
       }
     },
     stepsSuccess: {
@@ -204,21 +198,21 @@ module.exports = {
         () => console.log('stepsSuccess: all steps succeeded')
       ],
       on: {
-        '': 'stepsFinallyCleanup'
+        '': 'cleanup'
       }
     },
 
     // final cleanup and reset
     //
-    stepsFinallyCleanup: {
+    cleanup: {
       invoke: {
         src: 'destroyTempDirectory'
       },
       on: {
-        SUCCESS: 'stepsFinallyResetContext'
+        SUCCESS: 'resetContent'
       }
     },
-    stepsFinallyResetContext: {
+    resetContent: {
       entry: [
         'clearTake',
         'clearData',
@@ -233,14 +227,12 @@ module.exports = {
     },
 
 
+    // similar to above, but calls `off` at the end instead of `checking`
+    // 
     beforeOff: {
-      on: { '': 'beforeOffDestroyTakeFiles' }
+      on: { '': 'beforeOffCleanup' }
     },
-    beforeOffDestroyTakeFiles: {
-      invoke: { src: 'destroyTakeFiles' },
-      on: { SUCCESS: 'beforeOffDestroyTempDirectory' }
-    },
-    beforeOffDestroyTempDirectory: {
+    beforeOffCleanup: {
       invoke: { src: 'destroyTempDirectory' },
       on: { SUCCESS: 'beforeOffResetContext' }
     },
@@ -259,7 +251,7 @@ module.exports = {
       {
         // if steps are in-progress ...
         cond: 'stepsInProgress',
-        // ... run cleanup functions first
+        // ... run beforeOff’s cleanup functions first
         target: 'beforeOff'
       },
       {
