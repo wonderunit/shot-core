@@ -6,7 +6,7 @@ Can use nodemon if you prefer:
 
 ```
 npm install -g nodemon
-nodemon
+nodemon ./server
 ```
 
 nodemon will watch server files (.js, .json), and if they change, it will restart the server.

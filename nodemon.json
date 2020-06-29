@@ -1,5 +1,4 @@
 {
   "ignore": ["public/*"],
-  "ext": "js json",
-  "exec": "node ./server"
+  "ext": "js json"
 }
