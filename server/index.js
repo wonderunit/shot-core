@@ -204,7 +204,7 @@ async function shutdown () {
     livereload.stop()
   }
   bus.removeAllListeners()
-  await new Promise(resolve => server.close(resolve))
+  return await new Promise(resolve => server.close(code => resolve(code)))
 }
 
 // via:
