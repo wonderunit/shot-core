@@ -46,7 +46,7 @@
 ZCAM_URL=${httpUri} \\
 ZCAM_WS_URL=${wsUri} \\
 ZCAM_RTSP_URL=${rtspUri} \\
-npm start
+node ./server
       `.trim())
       console.log('')
 

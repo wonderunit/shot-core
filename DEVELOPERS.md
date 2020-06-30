@@ -6,7 +6,7 @@ Can use nodemon if you prefer:
 
 ```
 npm install -g nodemon
-nodemon
+nodemon ./server
 ```
 
 nodemon will watch server files (.js, .json), and if they change, it will restart the server.
@@ -48,7 +48,7 @@ npm t
 
 Can show more detailed logs with:
 ```
-DEBUG=shotcore:* npm start
+DEBUG=shotcore:* node ./server
 ```
 
 ## Scripts

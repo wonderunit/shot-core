@@ -196,8 +196,7 @@ server.listen(app.get('port'), () => {
   }
 })
 
-async function bye () {
-  console.log('Shutting down ...')
+async function shutdown () {
   await webSocketServer.stop()
   await downloader.stop()
   await zcamWsRelay.stop()
@@ -205,13 +204,34 @@ async function bye () {
     livereload.stop()
   }
   bus.removeAllListeners()
-  server.close()
+  return await new Promise(resolve => server.close(code => resolve(code)))
 }
- 
-process.once('SIGTERM', bye)
-process.once('SIGINT', bye)
-// https://github.com/remy/nodemon#controlling-shutdown-of-your-script
-process.once('SIGUSR2', async function () {
-  await bye()
-  process.kill(process.pid, 'SIGUSR2')
-})
+
+// via:
+//   https://github.com/jtlapp/node-cleanup/blob/d278360/node-cleanup.js
+//   https://stackoverflow.com/a/60273973
+//   https://blog.heroku.com/best-practices-nodejs-errors
+//   https://help.heroku.com/D5GK0FHU/how-can-my-node-app-gracefully-shutdown-when-receiving-sigterm
+const createSignalHandler = signal => {
+  return async (err) => {
+    removeHandlers()
+    console.log('\n')
+    console.log(`Shutting down via ${signal} …`)
+    await shutdown()
+    process.kill(process.pid, signal)
+  }
+}
+const sigtermHandler = createSignalHandler('SIGTERM')
+const sigintHandler = createSignalHandler('SIGINT')
+const sigusr2Handler = createSignalHandler('SIGUSR2')
+const removeHandlers = () => {
+  process
+    .off('SIGTERM', sigtermHandler)
+    .off('SIGINT', sigintHandler)
+    .off('SIGUSR2', sigusr2Handler)
+}
+process
+  .on('SIGTERM', sigtermHandler)
+  .on('SIGINT', sigintHandler)
+  // via https://github.com/remy/nodemon#controlling-shutdown-of-your-script
+  .on('SIGUSR2', sigusr2Handler)

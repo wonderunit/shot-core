@@ -94,16 +94,22 @@ exports.show = (req, res) => {
        projectId
     )
     let take = highestRated || mostRecent || null
+    // TODO optimize this
     bestTakesByShotId[shot.id] = take
-      ? Take.filenameForThumbnail({
-        scene_number: scene.scene_number,
-        shot_number: shot.shot_number,
-        take_number: take.take_number,
-        id: take.id,
-        impromptu: shot.impromptu
-      })
-      : null
-  }
+      ?
+        take.downloaded
+          ? {
+              downloaded: take.downloaded,
+              src: new Take(take).filenameForThumbnail({
+                ...{ scene_number } = scene,
+                ...{ shot_number, impromptu } = shot
+              })
+            }
+          : {
+              downloaded: take.downloaded,
+              src: null
+            }
+      : null  }
 
   let takesCountByShotId = {}
   for (let shot of shots) {

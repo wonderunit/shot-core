@@ -2,7 +2,6 @@
   "name": "shot-core",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ./server",
     "assets:build": "postcss server/assets/css/index.css -o public/css/app.css",
     "assets:watch": "postcss server/assets/css/index.css -o public/css/app.css -w",
     "zcam-mock-server": "node ./lib/zcam/mock-server/index.js",
@@ -12,7 +11,6 @@
   "dependencies": {
     "adm-zip": "0.4.14",
     "better-sqlite3": "7.0.1",
-    "caf": "9.0.0",
     "canvas": "2.6.1",
     "cross-fetch": "3.0.4",
     "date-fns": "2.9.0",
@@ -22,14 +20,14 @@
     "express": "4.17.1",
     "ffmpeg-stream": "0.6.0",
     "fs-extra": "8.1.0",
-    "got": "11.0.2",
+    "got": "11.3.0",
     "method-override": "3.0.0",
     "multiparty": "4.2.1",
     "num2fraction": "1.2.2",
     "rtsp-streaming-server": "2.0.6",
     "sockette": "2.0.6",
     "ws": "7.2.3",
-    "xstate": "4.9.1"
+    "xstate": "4.10.0"
   },
   "devDependencies": {
     "browser-sync": "2.26.7",

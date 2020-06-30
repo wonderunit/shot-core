@@ -1,4 +1,4 @@
-// NODE_ENV=test DEBUG=shotcore:* nodemon test/downloader.test.js
+// NODE_ENV=test DEBUG=shotcore:* node test/downloader.test.js
 
 const { run, get } = require('../server/db')
 
@@ -54,5 +54,36 @@ downloader.send('ON')
 
 // wait for a bit, then cancel (during info download) for testing
 // setTimeout(() => {
-//   downloader.send('OFF')
+//   downloader.stop()
 // }, 500)
+
+// via:
+//   https://github.com/jtlapp/node-cleanup/blob/d278360/node-cleanup.js
+//   https://stackoverflow.com/a/60273973
+//   https://blog.heroku.com/best-practices-nodejs-errors
+//   https://help.heroku.com/D5GK0FHU/how-can-my-node-app-gracefully-shutdown-when-receiving-sigterm
+const createSignalHandler = signal => {
+  return async (err) => {
+    removeHandlers()
+    console.log('\n')
+    console.log(`Shutting down via ${signal} …`)
+
+    downloader.stop()
+
+    process.kill(process.pid, signal)
+  }
+}
+const sigtermHandler = createSignalHandler('SIGTERM')
+const sigintHandler = createSignalHandler('SIGINT')
+const sigusr2Handler = createSignalHandler('SIGUSR2')
+const removeHandlers = () => {
+  process
+    .off('SIGTERM', sigtermHandler)
+    .off('SIGINT', sigintHandler)
+    .off('SIGUSR2', sigusr2Handler)
+}
+process
+  .on('SIGTERM', sigtermHandler)
+  .on('SIGINT', sigintHandler)
+  // via https://github.com/remy/nodemon#controlling-shutdown-of-your-script
+  .on('SIGUSR2', sigusr2Handler)

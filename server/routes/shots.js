@@ -50,10 +50,19 @@ exports.index = (req, res) => {
     let take = highestRated || mostRecent || null
     // TODO optimize this
     bestTakesByShotId[shot.id] = take
-      ? new Take(take).filenameForThumbnail({
-        ...{ scene_number } = scenesById[take.scene_id],
-        ...{ shot_number, impromptu } = shot
-      })
+      ?
+        take.downloaded
+          ? {
+              downloaded: take.downloaded,
+              src: new Take(take).filenameForThumbnail({
+                ...{ scene_number } = scenesById[take.scene_id],
+                ...{ shot_number, impromptu } = shot
+              })
+            }
+          : {
+              downloaded: take.downloaded,
+              src: null
+            }
       : null
   }
 

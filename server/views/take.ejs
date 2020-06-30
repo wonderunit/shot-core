@@ -202,26 +202,39 @@
         <% } %>
 
 
-        <% let proxy = take.filenameForProxy({
-          ...{ scene_number } = scene,
-          ...{ shot_number, impromptu } = shot
-        }) %>
-        <% if (proxy) { %>
-          <div
-            class="flex flex-col"
-            style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
-          >
-            <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
-              Take Video
-            </div>
+        <div
+          class="flex flex-col"
+          style="--aspect-ratio: <%= scene.metadata.aspectRatio %>"
+        >
+          <div class="text-xxs leading-snug uppercase text-purple-600 mb-1">
+            Take Preview (via stream)
+          </div>
 
-            <% let thumbnail = take.filenameForThumbnail({
-              ...{ scene_number } = scene,
-              ...{ shot_number, impromptu } = shot
-            }) %>
-            <div
-              style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
-            >
+          <div
+            style="width: calc(192px * var(--aspect-ratio)); height: 192px;"
+          >
+            <% if (take.downloaded == false) { %>
+              <!-- placeholder -->
+              <div
+                class="bg-purple-900 rounded-sm  w-full h-full"
+              >
+                <div
+                  class="flex justify-center items-center h-full w-full leading-none"
+                >
+                  <div class="-mt-1 leading-none tracking-wider uppercase opacity-75  text-xs">
+                    Pending
+                  </div>
+                </div>
+              </div>
+            <% } else { %>
+              <% let src = take.filenameForStream({
+                ...{ scene_number } = scene,
+                ...{ shot_number, impromptu } = shot
+              }) %>
+              <% let thumbnail = take.filenameForThumbnail({
+                ...{ scene_number } = scene,
+                ...{ shot_number, impromptu } = shot
+              }) %>
               <video
                 class="w-full rounded-sm"
 
@@ -230,11 +243,11 @@
                 type="video/quicktime"
 
                 poster="<%= `/uploads/projects/${take.project_id}/takes/${thumbnail}` %>"
-                src="<%= `/uploads/projects/${project.id}/takes/${proxy}` %>"
+                src="<%= `/uploads/projects/${project.id}/takes/${src}` %>"
               ></video>
-            </div>
+            <% } %>
           </div>
-        <% } %>
+        </div>
 
         <% if (shot.cameraPlot) { %>
           <div
@@ -281,72 +294,84 @@
     </div>
   </div>
 
-  <div class="flex justify-between w-full text-2xl my-8">
+  <% if (take.downloaded == false) { %>
     <div>
-      <div class="text-xxs uppercase text-purple-600">Duration</div>
+      File Not Downloaded
+    </div>
+  <% } %>
+
+  <% if (take.metadata) { %>
+    <div class="flex justify-between w-full text-2xl my-8">
       <div>
-        <b><%= durationMsecsToString(take.metadata.info.streams[0].duration * 1000) %></b>
+        <div class="text-xxs uppercase text-purple-600">Duration</div>
+        <div>
+          <b><%= durationMsecsToString(take.metadata.info.streams[0].duration * 1000) %></b>
+        </div>
+      </div>
+      <div>
+        <div class="text-xxs uppercase text-purple-600">Lens</div>
+        <span
+          style="border-bottom: 1px dashed white"
+          title="<%= take.metadata.info.format.tags["com.zcam.camera.lensType"] %>"
+        >
+          <%= take.metadata.info.format.tags["com.zcam.camera.lensFocalLength"] %>
+        </span>
+      </div>
+      <div>
+        <div class="text-xxs uppercase text-purple-600">Aperature</div>
+        <b><%= take.metadata.info.format.tags["com.zcam.camera.aperture"].replace('F', 'f/') %></b>
+      </div>
+      <div>
+        <div class="text-xxs uppercase text-purple-600">ISO</div>
+        <b><%= take.metadata.info.format.tags["com.zcam.camera.iso"] %></b>
+      </div>
+      <div>
+        <div class="text-xxs uppercase text-purple-600">Res</div>
+        <div>
+          <%=
+            humanizeVideoResolution(
+              take.metadata.info.streams[0].width,
+              take.metadata.info.streams[0].height
+            )
+          %>
+        </div>
+      </div>
+      <div>
+        <div class="text-xxs uppercase text-purple-600">FPS</div>
+        <div>
+          <%= take.metadata.info.format.tags["com.zcam.camera.projectFps"] %>
+        </div>
+      </div>
+      <div>
+        <div class="text-xxs uppercase text-purple-600">Aspect</div>
+        <%= humanizeAspectRatio(take.metadata.info.streams[0].width / take.metadata.info.streams[0].height) %>
+      </div>
+
+
+      <div class="ml-6">
+        <div class="text-xxs uppercase text-purple-600">Shutter</div>
+        <div><%= take.metadata.info.format.tags["com.zcam.camera.shutterSpeed"] %></div>
+      </div>
+      <div>
+        <div class="text-xxs uppercase text-purple-600">WB</div>
+        <div><%= take.metadata.info.format.tags["com.zcam.camera.whiteBalanceKelvin"] || '--' %></div>
+      </div>
+      <div>
+        <div class="text-xxs uppercase text-purple-600">ND</div>
+        <div><%= take.metadata.info.format.tags["com.zcam.camera.nd"] %></div>
+      </div>
+
+
+      <div class="ml-6">
+        <div class="text-xxs uppercase text-purple-600">VFX</div>
+        <div>Chroma</div>
       </div>
     </div>
-    <div>
-      <div class="text-xxs uppercase text-purple-600">Lens</div>
-      <span
-        style="border-bottom: 1px dashed white"
-        title="<%= take.metadata.info.format.tags["com.zcam.camera.lensType"] %>"
-      >
-        <%= take.metadata.info.format.tags["com.zcam.camera.lensFocalLength"] %>
-      </span>
+  <% } else { %>
+    <div class="tracking-wide">
+      <i class="opacity-75">No metadata available</i>
     </div>
-    <div>
-      <div class="text-xxs uppercase text-purple-600">Aperature</div>
-      <b><%= take.metadata.info.format.tags["com.zcam.camera.aperture"].replace('F', 'f/') %></b>
-    </div>
-    <div>
-      <div class="text-xxs uppercase text-purple-600">ISO</div>
-      <b><%= take.metadata.info.format.tags["com.zcam.camera.iso"] %></b>
-    </div>
-    <div>
-      <div class="text-xxs uppercase text-purple-600">Res</div>
-      <div>
-        <%=
-          humanizeVideoResolution(
-            take.metadata.info.streams[0].width,
-            take.metadata.info.streams[0].height
-          )
-        %>
-      </div>
-    </div>
-    <div>
-      <div class="text-xxs uppercase text-purple-600">FPS</div>
-      <div>
-        <%= take.metadata.info.format.tags["com.zcam.camera.projectFps"] %>
-      </div>
-    </div>
-    <div>
-      <div class="text-xxs uppercase text-purple-600">Aspect</div>
-      <%= humanizeAspectRatio(take.metadata.info.streams[0].width / take.metadata.info.streams[0].height) %>
-    </div>
-
-
-    <div class="ml-6">
-      <div class="text-xxs uppercase text-purple-600">Shutter</div>
-      <div><%= take.metadata.info.format.tags["com.zcam.camera.shutterSpeed"] %></div>
-    </div>
-    <div>
-      <div class="text-xxs uppercase text-purple-600">WB</div>
-      <div><%= take.metadata.info.format.tags["com.zcam.camera.whiteBalanceKelvin"] || '--' %></div>
-    </div>
-    <div>
-      <div class="text-xxs uppercase text-purple-600">ND</div>
-      <div><%= take.metadata.info.format.tags["com.zcam.camera.nd"] %></div>
-    </div>
-
-
-    <div class="ml-6">
-      <div class="text-xxs uppercase text-purple-600">VFX</div>
-      <div>Chroma</div>
-    </div>
-  </div>
+  <% } %>
 
 </div>
 <%- include('footer') -%>
