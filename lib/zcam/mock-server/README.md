@@ -1,12 +1,25 @@
 # Z Cam Mock Server
 
-If you don’t have access to a Z Cam, you can run the mock server:
+If you don’t have access to a Z Cam, you can run this script …
 
-```
-DEBUG=shotcore:*,rtsp-streaming-server:* \
-TAKE_MOV=./tmp/take.mov \
-npm run zcam-mock-server
-```
+    scripts/zcam-mock-server
+
+… which will start both 1) the mock zcam server code, and 2) a mock RTSP live stream generated with ffmpeg.
+
+To run it, you'll need to create files that represent an example take, like:
+
+    ./tmp/media/take.mov (take)
+    ./tmp/media/take.jpg ("screennail")
+
+… and create a file for the RTSP live stream, like:
+
+    ./tmp/media/stream.mp4 (RTSP stream)
+
+The (1) mock zcam server code can be run independently:
+
+    TAKE_MOV=./tmp/media/take.mov node ./lib/zcam/mock-server/index.js
+
+A (2) mock RTSP live stream with ffmpeg can also be run independently. It is described further below.
 
 Environment vars:  
 - `TAKE_MOV`, path to example take MOV downloaded from Z Cam. default is null, and no video will be served. If a JPG of the same basename exists, it will be served for thumbnail requests.   
@@ -18,9 +31,9 @@ When the mock server is running, pass `ZCAM=127.0.0.1` to shot core server:
 DEBUG=shotcore:* ZCAM=127.0.0.1 node ./server
 ```
 
-## Mock Z Cam RTSP
+## Mock Z Cam RTSP live stream
 
-The mock server runs an RTSP server for clients on :554.
+The mock server runs an RTSP server for clients on :554. You can stream into it via ffmpeg, which the mock server will then distribute to connected clients.
 
 Given a 5 second test file, e.g.:
 

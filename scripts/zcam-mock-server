@@ -5,7 +5,7 @@
 # /tmp/media/stream.mp4 (from camera rtsp stream)
 DEBUG=shotcore:*,rtsp-streaming-server:* \
 TAKE_MOV="${TAKE_MOV:-'./tmp/media/take.mov'}" \
-PORT=80 npm run zcam-mock-server &
+PORT=80 node ./lib/zcam/mock-server/index.js &
 sleep 3
 ffmpeg \
   -v warning \
