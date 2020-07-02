@@ -93,14 +93,9 @@
       </div>
       <div style="--aspect-ratio: <%= scene.metadata.aspectRatio %>">
         <div class="text-xxs uppercase text-purple-400">
-          Rough Edit
+          Rough Assembly
         </div>
-        <!-- placeholder -->
-        <div
-          class="bg-purple-900 rounded-sm"
-          style="width: calc(138px * var(--aspect-ratio)); height: 138px;"
-        >
-        </div>
+        <%- include('_video-player', { takes: previewTakes }) %>
       </div>
     </div>
 
@@ -232,7 +227,7 @@
                     <img
                       class="rounded-sm"
                       loading="lazy"
-                      src="<%= `/uploads/projects/${project.id}/takes/${best.src}` %>"
+                      src="<%= `/uploads/projects/${project.id}/takes/${best.src.thumbnail}` %>"
                     />
                   <% } %>
                 </div>
