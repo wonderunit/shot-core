@@ -166,7 +166,7 @@
             </a>
           </td>
           <td>
-            <%= shot.shotType %>
+            <%= shot.shotType == null ? '–' : shot.shotType %>
           </td>
           <td class="text-center">
 
@@ -199,7 +199,7 @@
 
           </td>
           <td class="text-center">
-            <%= durationMsecsToString(shot.duration) %>
+            <%= shot.duration == null ? '' : durationMsecsToString(shot.duration) %>
           </td>
           <td class="text-right">
             <%= takesCountByShotId[shot.id] %>
@@ -253,8 +253,12 @@
               <% } else { %>
                 <!-- no thumbnail, e.g.: impromptu -->
                 <div
-                  class="bg-purple-900"
-                  style="padding-bottom: calc(100% / (var(--aspect-ratio))">
+                  class="bg-purple-900 flex justify-center items-center"
+                  style="width: calc(76px * var(--aspect-ratio)); height: 76px"
+                >
+                  <span class="text-xxs -mt-1 opacity-75">
+                    Impromptu Shot
+                  </span>
                 </div>
               <% } %>
 
