@@ -106,7 +106,7 @@ exports.show = (req, res) => {
     AND
       shots.scene_id = ?
     ORDER BY
-      impromptu DESC,
+      impromptu ASC,
       shot_number
     `,
     scene.id
