@@ -14,13 +14,13 @@ exports.index = (req, res) => {
   let scenes = all(`
     SELECT
       scenes.*,
-      COUNT(shots.id) AS shots_count,
-      SUM(shots.duration) AS shots_duration,
-      COUNT(takes.id) AS takes_count
+      COUNT(DISTINCT shots.id) AS shots_count,
+      COUNT(DISTINCT takes.id) AS takes_count,
+      SUM(DISTINCT shots.duration) AS shots_duration
     FROM
       scenes
-      LEFT OUTER JOIN shots ON scenes.id = shots.scene_id
-      LEFT OUTER JOIN takes ON scenes.id = takes.scene_id
+      LEFT JOIN takes ON takes.scene_id = scenes.id
+      LEFT JOIN shots ON shots.scene_id = scenes.id
     WHERE
       scenes.project_id = ?
     GROUP BY 1
