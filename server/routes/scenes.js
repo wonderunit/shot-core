@@ -28,7 +28,11 @@ exports.index = (req, res) => {
     projectId
   )
 
-  let shots = all('SELECT * FROM shots WHERE project_id = ?', projectId)
+  let shots = all(
+    `SELECT * FROM shots
+    WHERE project_id = ?
+    ORDER BY impromptu ASC, shot_number
+  `, project.id)
 
   res.render('scenes', {
     project,
@@ -56,12 +60,11 @@ exports.show = (req, res) => {
   )
 
   let shots = all(
-    `SELECT *
-     FROM shots
-     WHERE scene_id = ?
-     AND project_id = ?`,
-    sceneId, projectId
-  )
+    `SELECT * FROM shots
+    WHERE project_id = ?
+    AND scene_id = ?
+    ORDER BY impromptu ASC, shot_number
+  `, project.id, scene.id)
 
   let { project_scenes_count } = get(
     `SELECT COUNT(id) as project_scenes_count
