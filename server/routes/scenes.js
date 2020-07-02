@@ -132,7 +132,6 @@ exports.show = (req, res) => {
   })
   .reduce(keyBy('shot_id'), {})
 
-
   let takesCountByShotId = {}
   for (let shot of shots) {
     let { takes_count } = get(
