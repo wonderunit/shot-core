@@ -9,6 +9,10 @@
       <!-- video -->
       <video
         data-target="video-player.video"
+        data-action="
+          ended->video-player#ended
+          timeupdate->video-player#timeUpdate
+        "
         style="width: calc(138px * var(--aspect-ratio)); height: 138px;"
 
         posterframe="<%= `/uploads/projects/${project.id}/takes/${takes[0].src.thumbnail}` %>"
@@ -61,6 +65,7 @@
               data-scene-number="<%= take.scene_number %>"
               data-shot-number="<%= take.shot_number %>"
               <%= take.impromptu ? 'data-impromptu' : '' %>
+              data-duration="<%= take.stream_duration %>"
               href="<%= `/uploads/projects/${project.id}/takes/${take.src.stream}` %>"
             >
               take id:<%= take.id %>
@@ -73,36 +78,49 @@
     <!-- controls -->
     <div
       data-target="video-player.controls"
-      class="flex items-end select-none w-full"
+      class="flex flex-col"
       >
       <div
-        class="
-        w-full
-        text-xxs leading-none
-        p-2
-        bg-purple-900
+        class="w-full h-px my-px"
+      >
+        <div
+          data-target="video-player.progress"
+          class="h-full bg-white w-0"
+          style="transition: width 0.25s linear"
+        ></div>
+      </div>
+      <div
+        class="flex items-end select-none w-full"
+      >
+        <div
+          class="
+          w-full
+          text-xxs leading-none
+          p-2
+          bg-purple-900
 
-        flex justify-between
-      ">
-        <div
-          class="flex tracking-widest space-x-2"
-        >
+          flex justify-between
+        ">
           <div
-            data-target="video-player.progress"
+            class="flex tracking-widest space-x-2"
           >
-            – / –
+            <div
+              data-target="video-player.current"
+            >
+              – / –
+            </div>
+            <div
+              data-target="video-player.status"
+            >
+              –
+            </div>
           </div>
           <div
-            data-target="video-player.status"
+            class="flex flex-col items-end uppercase tracking-widest space-y-1"
           >
-            –
+            <div data-target="video-player.statusShot">–</div>
+            <div data-target="video-player.statusTake">–</div>
           </div>
-        </div>
-        <div
-          class="flex flex-col items-end uppercase tracking-widest space-y-1"
-        >
-          <div data-target="video-player.statusShot">–</div>
-          <div data-target="video-player.statusTake">–</div>
         </div>
       </div>
     </div>

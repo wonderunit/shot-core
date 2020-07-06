@@ -1,5 +1,9 @@
 const { createMachine, assign, interpret } = XStateFSM
 
+function sum (a, b) {
+  return a + b
+}
+
 const machineConfig = {
   id: 'player',
   initial: 'inactive',
@@ -35,9 +39,9 @@ const machineConfig = {
 }
 
 export default class VideoPlayer extends Stimulus.Controller {
-  static targets = [ 'video', 'segment', 'invitation', 'controls', 'status', 'progress', 'statusShot', 'statusTake' ]
+  static targets = [ 'video', 'segment', 'invitation', 'controls', 'status', 'progress', 'current', 'statusShot', 'statusTake' ]
 
-  initialize () {  
+  initialize () {
     this.service = interpret(
       createMachine({
         ...machineConfig,
@@ -66,10 +70,6 @@ export default class VideoPlayer extends Stimulus.Controller {
       // this.service.subscribe(state => console.log(state.value))
   }
 
-  connect () {
-    this.videoTarget.addEventListener('ended', () => this.service.send('SEGMENT_ENDED'))
-  }
-
   //
   //
   // Controller methods
@@ -78,7 +78,7 @@ export default class VideoPlayer extends Stimulus.Controller {
     let segments = []
     for (let segment of el) {
       const { href } = segment
-      const { takeId, takeNumber, sceneNumber, shotNumber, impromptu, posterframe } = segment.dataset
+      const { takeId, takeNumber, sceneNumber, shotNumber, impromptu, posterframe, duration } = segment.dataset
       segments.push({
         id: takeId,
         takeNumber,
@@ -86,7 +86,8 @@ export default class VideoPlayer extends Stimulus.Controller {
         posterframe,
         sceneNumber,
         shotNumber,
-        impromptu: impromptu == '' ? true : false
+        impromptu: impromptu == '' ? true : false,
+        duration: parseFloat(duration)
       })
     }
     return segments
@@ -118,7 +119,7 @@ export default class VideoPlayer extends Stimulus.Controller {
     let { src } = take
 
     this.videoTarget.src = src
-    this.progressTarget.innerText = `${curr + 1} / ${context.segments.length}`
+    this.currentTarget.innerText = `${curr + 1} / ${context.segments.length}`
 
     this.statusShotTarget.innerText = `Shot ${take.impromptu ? 'i' : ''}${take.shotNumber}`
     this.statusTakeTarget.innerText = `Take ${take.takeNumber}`
@@ -130,5 +131,23 @@ export default class VideoPlayer extends Stimulus.Controller {
   //
   startPlayback (event) {
     this.service.send('CLICK')
+  }
+  ended (event) {
+    this.service.send('SEGMENT_ENDED')
+  }
+  timeUpdate (event) {
+    let video = event.target
+
+    if (video.readyState) {
+      let { segments, curr } = this.service.state.context
+      let total = segments.map(s => s.duration).reduce(sum)
+      let passed = 0
+      for (let i = 0; i < curr; i++) {
+        passed += segments[i].duration
+      }
+      let elapsed = passed + video.currentTime
+      let pct = (elapsed / total) * 100
+      this.progressTarget.style.width = `${pct}%`
+    }
   }
 }
