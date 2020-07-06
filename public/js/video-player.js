@@ -21,7 +21,8 @@ const machineConfig = {
       on: { ACTIVE: 'playing' }
     },
     playing: {
-      entry: 'play',
+      entry: ['startTimer', 'play'],
+      exit: ['stopTimer'],
       on: {
         SEGMENT_ENDED: [
           {
@@ -41,7 +42,10 @@ const machineConfig = {
 export default class VideoPlayer extends Stimulus.Controller {
   static targets = [ 'video', 'segment', 'invitation', 'controls', 'status', 'progress', 'current', 'statusShot', 'statusTake' ]
 
+  static UPDATE_INTERVAL_MS = 1000 / 20 // update the progress bar at 20 fps
+
   initialize () {
+    this.intervalId = null
     this.service = interpret(
       createMachine({
         ...machineConfig,
@@ -55,6 +59,8 @@ export default class VideoPlayer extends Stimulus.Controller {
           activate: this.activate.bind(this),
           play: this.play.bind(this),
           setSrc: this.setSrc.bind(this),
+          startTimer: this.startTimer.bind(this),
+          stopTimer: this.stopTimer.bind(this),
 
           //
           //
@@ -123,6 +129,15 @@ export default class VideoPlayer extends Stimulus.Controller {
 
     this.statusShotTarget.innerText = `Shot ${take.impromptu ? 'i' : ''}${take.shotNumber}`
     this.statusTakeTarget.innerText = `Take ${take.takeNumber}`
+  }
+  startTimer () {
+    this.intervalId = setInterval(
+      () => this.timeUpdate({ target: this.videoTarget }),
+      VideoPlayer.UPDATE_INTERVAL_MS
+    )
+  }
+  stopTimer () {
+    clearTimeout(this.intervalId)
   }
 
   //
