@@ -158,7 +158,7 @@ exports.show = (req, res) => {
   .map(take => ({
     ...take,
     stream_duration: getFileDuration(
-      path.join(UPLOADS_PATH, 'projects', project.id, 'takes', take.src.stream)
+      path.join(UPLOADS_PATH, 'projects', project.id.toString(), 'takes', take.src.stream)
     )
   }))
   .reduce(keyBy('shot_id'), {})
