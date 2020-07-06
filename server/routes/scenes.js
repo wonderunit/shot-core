@@ -1,3 +1,7 @@
+const { spawnSync } = require('child_process')
+const path = require('path')
+const { UPLOADS_PATH } = require('../config')
+
 const { get, all } = require('../db')
 
 const Scene = require('../decorators/scene')
@@ -5,6 +9,25 @@ const Shot = require('../decorators/shot')
 const Take = require('../decorators/take')
 
 const keyBy = id => (prev, curr) => (prev[curr[id]] = curr, prev)
+
+const getFileDuration = src => {
+  let { stdout, stderr } = spawnSync(
+    'ffprobe', [
+      '-v', 'error',
+      '-select_streams', 'v:0',
+      '-show_entries', 'format=duration',
+      '-of', 'default=noprint_wrappers=1:nokey=1',
+      src
+    ]
+  )
+  stdout = stdout.toString().trim()
+  stderr = stderr.toString().trim()
+  if (stderr) {
+    console.error(stderr)
+    throw new Error(`Error getting duration of file ${src}\n` + stderr)
+  }
+  return parseFloat(stdout)
+}
 
 exports.index = (req, res) => {
   let { projectId } = req.params
@@ -130,6 +153,14 @@ exports.show = (req, res) => {
       }
     }
   })
+  // TODO store preview file’s duration in `takes.metadata_json`
+  //      (instead of calculating each request)
+  .map(take => ({
+    ...take,
+    stream_duration: getFileDuration(
+      path.join(UPLOADS_PATH, 'projects', project.id, 'takes', take.src.stream)
+    )
+  }))
   .reduce(keyBy('shot_id'), {})
 
   let takesCountByShotId = {}
