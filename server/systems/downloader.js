@@ -511,7 +511,7 @@ const copyFilesAndMarkComplete = (context, event) => (callback, onReceive) => {
     `UPDATE takes
     SET
       downloaded = 1,
-      metadata_json = ?
+      metadata_json = json_patch(metadata_json, ?)
     WHERE id = ?`,
     JSON.stringify(metadata),
     take.id

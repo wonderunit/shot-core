@@ -65,7 +65,7 @@
               data-scene-number="<%= take.scene_number %>"
               data-shot-number="<%= take.shot_number %>"
               <%= take.impromptu ? 'data-impromptu' : '' %>
-              data-duration="<%= take.stream_duration %>"
+              data-duration="<%= take.metadata.preview.duration %>"
               href="<%= `/uploads/projects/${project.id}/takes/${take.src.stream}` %>"
             >
               take id:<%= take.id %>

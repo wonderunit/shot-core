@@ -145,18 +145,15 @@ app.get('/status', status.index)
 // TODO await
 visualSlateRenderer.start()
 
+rtspClient.start()
 bus
   .on('takes/create', async ({ id }) => {
     console.log('[server] RTSP client START recording stream for take', id)
-    try {
-      await rtspClient.startup({ uri: ZCAM_RTSP_URL, takeId: id })
-    } catch (err) {
-      console.error('[server] RTSP client error', err)
-    }
+    rtspClient.send({ type: 'REC_START', src: ZCAM_RTSP_URL, takeId: id })
   })
   .on('takes/cut', () => {
     console.log('[server] RTSP client STOP recording stream')
-    rtspClient.shutdown()
+    rtspClient.send('REC_STOP')
   })
 
 // Z Cam connections
@@ -200,6 +197,7 @@ async function shutdown () {
   await webSocketServer.stop()
   await downloader.stop()
   await zcamWsRelay.stop()
+  await rtspClient.stop()
   if (livereload) {
     livereload.stop()
   }

@@ -13,12 +13,14 @@ module.exports = function create ({ projectId, sceneId, shotId, at }) {
     (project_id, scene_id, shot_id,
       take_number,
       ready_at,
-      downloaded)
+      downloaded,
+      metadata_json)
     VALUES
     (?, ?, ?,
       ?,
       ?,
-      0
+      0,
+      '{}'
     )`,
     projectId, sceneId, shotId,
     take_number,
