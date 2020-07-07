@@ -131,10 +131,12 @@ const recordingService = (context, event) => (callback, onReceive) => {
       '-i', src,
       // transport
       '-rtsp_transport', 'udp+tcp',
+
       // force start time to 0
       // NOTE: this may only be required for the zcam-mock-server RTSP server
       //       real Z Cam RTSP server might not need it?
-      '-filter_complex', 'setpts=PTS-STARTPTS',
+      '-vf', 'setpts=PTS-STARTPTS',
+
       // never overwrite
       '-n',
       // output
