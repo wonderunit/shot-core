@@ -17,7 +17,6 @@
     "debug": "4.1.1",
     "ejs": "3.0.1",
     "express": "4.17.1",
-    "ffmpeg-stream": "0.6.0",
     "fs-extra": "8.1.0",
     "got": "11.3.0",
     "method-override": "3.0.0",
