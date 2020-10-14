@@ -131,7 +131,7 @@ Generally we’re writing SQL variables `with_underscores` and JavaScript variab
 
 ## URLs
 
-For simplicity we currently use the database id for a resource in the URL, and NOT any resource-representitive number. For example, if a URL path was `/projects/53/scenes/31/shots/5/takes/29`, it would NOT be referring to the 31st scene, 5th shot, and 29th take. Those numbers are just database ids, NOT scene number, shot number, take number.
+For simplicity we currently use the database id for a resource in the URL, and NOT any resource-representative number. For example, if a URL path was `/projects/53/scenes/31/shots/5/takes/29`, it would NOT be referring to the 31st scene, 5th shot, and 29th take. Those numbers are just database ids, NOT scene number, shot number, take number.
 
 ## Mock Z Cam Server
 
