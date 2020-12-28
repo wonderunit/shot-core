@@ -1,0 +1,140 @@
+<% if (takes.length) { %>
+  <div
+    data-controller="video-player"
+    class="flex flex-col"
+  >
+    <div
+      class="bg-purple-900 rounded-sm relative w-full h-full"
+    >
+      <!-- video -->
+      <video
+        data-target="video-player.video"
+        data-action="
+          ended->video-player#ended
+          timeupdate->video-player#timeUpdate
+        "
+        style="width: calc(138px * var(--aspect-ratio)); height: 138px;"
+
+        posterframe="<%= `/uploads/projects/${project.id}/takes/${takes[0].src.thumbnail}` %>"
+
+        autobuffer
+      >
+      </video>
+
+      <!-- “Click to Play” -->
+      <a
+        class="
+          absolute
+          w-full h-full
+          top-0
+          flex justify-center items-center
+          bg-opacity-75 bg-black
+          cursor-pointer select-none
+        "
+        data-target="video-player.invitation"
+        data-action="click->video-player#startPlayback"
+        >
+        <span
+
+          class="
+            inline-block px-3 py-2
+            border-2 rounded-lg
+
+            leading-tight text-xxs font-bold
+
+            bg-purple-900 border-white-o
+            hover:bg-orange-500 hover:border-yellow-o
+            fadein
+
+            box-shadow
+          "
+        >
+          Click to Play
+        </span>
+      </a>
+
+      <!-- video segment data -->
+      <ul class="hidden list-inside list-disc p-2">
+        <% for (let take of takes) { %>
+          <li class="text-xs">
+            <a
+              class="underline"
+              data-target="video-player.segment"
+              data-take-id="<%= take.id %>"
+              data-take-number="<%= take.take_number %>"
+              data-scene-number="<%= take.scene_number %>"
+              data-shot-number="<%= take.shot_number %>"
+              <%= take.impromptu ? 'data-impromptu' : '' %>
+              data-duration="<%= take.metadata.preview.duration %>"
+              href="<%= `/uploads/projects/${project.id}/takes/${take.src.stream}` %>"
+            >
+              take id:<%= take.id %>
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+
+    <!-- controls -->
+    <div
+      data-target="video-player.controls"
+      class="flex flex-col"
+      >
+      <div
+        class="w-full h-px my-px"
+      >
+        <div
+          data-target="video-player.progress"
+          class="h-full bg-white w-0"
+        ></div>
+      </div>
+      <div
+        class="flex items-end select-none w-full"
+      >
+        <div
+          class="
+          w-full
+          text-xxs leading-none
+          p-2
+          bg-purple-900
+
+          flex justify-between
+        ">
+          <div
+            class="flex tracking-widest space-x-2"
+          >
+            <div
+              data-target="video-player.current"
+            >
+              – / –
+            </div>
+            <div
+              data-target="video-player.status"
+            >
+              –
+            </div>
+          </div>
+          <div
+            class="flex flex-col items-end uppercase tracking-widest space-y-1"
+          >
+            <div data-target="video-player.statusShot">–</div>
+            <div data-target="video-player.statusTake">–</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } else { %>
+  <div
+    class="bg-purple-900 rounded-sm relative"
+    style="width: calc(138px * var(--aspect-ratio)); height: 138px;"
+  >
+    <div
+      class="absolute w-full h-full flex justify-center items-center"
+      >
+      <span class="text-xs -mt-2 opacity-75">
+        Not Available
+      </span>
+    </div>
+  </div>
+<% } %>

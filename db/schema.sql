@@ -53,7 +53,7 @@ CREATE TABLE takes(
   filepath TEXT,
   downloaded BOOLEAN NOT NULL CHECK (downloaded IN (0,1)),
   rating INTEGER CHECK (rating BETWEEN 0 AND 5),
-  metadata_json JSON
+  metadata_json JSON NOT NULL
 );
 
 CREATE TRIGGER AutoGenerateUid

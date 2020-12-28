@@ -347,8 +347,8 @@ const verifyFrameCount = (context, event) => (callback, onReceive) => {
   let expected = info.vcnt
   let actual = parseFloat(stdout.toString())
 
-  // accept within +/- 2 frames
-  if (Math.abs(expected - actual) <= 2) {
+  // accept within +/- 10 frames
+  if (Math.abs(expected - actual) <= 10) {
     callback('SUCCESS')
   } else {
     callback({
@@ -511,7 +511,7 @@ const copyFilesAndMarkComplete = (context, event) => (callback, onReceive) => {
     `UPDATE takes
     SET
       downloaded = 1,
-      metadata_json = ?
+      metadata_json = json_patch(metadata_json, ?)
     WHERE id = ?`,
     JSON.stringify(metadata),
     take.id
