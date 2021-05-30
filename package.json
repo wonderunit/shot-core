@@ -25,7 +25,7 @@
     "num2fraction": "1.2.2",
     "rtsp-streaming-server": "2.0.6",
     "sockette": "2.0.6",
-    "ws": "7.2.3",
+    "ws": "7.4.6",
     "xstate": "4.10.0"
   },
   "devDependencies": {
