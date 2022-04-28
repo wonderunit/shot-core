@@ -11,7 +11,7 @@
     "adm-zip": "0.4.14",
     "better-sqlite3": "7.0.1",
     "canvas": "2.6.1",
-    "cross-fetch": "3.0.4",
+    "cross-fetch": "3.1.5",
     "date-fns": "2.9.0",
     "date-fns-tz": "1.0.9",
     "debug": "4.1.1",
