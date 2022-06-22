@@ -19,7 +19,7 @@
     "express": "4.17.1",
     "ffmpeg-stream": "0.6.0",
     "fs-extra": "8.1.0",
-    "got": "11.3.0",
+    "got": "11.8.5",
     "method-override": "3.0.0",
     "multiparty": "4.2.1",
     "num2fraction": "1.2.2",
